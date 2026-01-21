@@ -1,0 +1,24 @@
+ource: NASA OMNIWeb / WDC Kyoto.
+Download Instructions:
+Go to: NASA OMNIWeb Data Explorer: https://omniweb.gsfc.nasa.gov/form/dx1.html
+Resolution: Hourly averaged
+Date Range: 20170904 to 20170911.
+Select:
+[x] IMF Magnitude Avg, nT (The incoming magnetic blow from the Sun).
+[x] Proton Density, n/cc (The mass of the solar wind hitting us).
+[x] Kp*10 Index This measures global geomagnetic activity. If Dst shows a drop and Kp shows a spike,
+[x] Solar index F10.7 Why: This tracks solar radio flux. It helps distinguish "Radio Interference" from "Magnetic Turbulence."
+Format: Text/CSV.
+
+  FORMAT OF THE SUBSETTED FILE
+
+    ITEMS                      FORMAT
+
+ 1 YEAR                          I4
+ 2 DOY                           I4
+ 3 Hour                          I3
+ 4 Scalar B, nT                  F6.1
+ 5 SW Proton Density, N/cm^3     F6.1
+ 6 Kp index                      I3
+ 7 Dst-index, nT                 I6
+ 8 f10.7_index                   F6.1
