@@ -1,0 +1,47 @@
+[workspace]
+resolver = "2"
+members = [
+    "chrono_data_manager",
+    "chrono_experiments",
+    "deep_causality_physics",
+]
+
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.90.0"
+
+
+[workspace.dependencies]
+# Internal crates
+chrono_data_manager = { path = "chrono_data_manager" }
+deep_causality_physics = { path = "deep_causality_physics" }
+
+# External crates
+chrono = { version = "0.4" }
+rayon = {version = "1.11"}
+
+# See https://github.com/deepcausality-rs/deep_causality/blob/main/Cargo.toml
+deep_causality_metric= { git = "https://github.com/deepcausality-rs/deep_causality.git", branch = "main" }
+deep_causality_multivector= { git = "https://github.com/deepcausality-rs/deep_causality.git", branch = "main" }
+deep_causality_tensor= { git = "https://github.com/deepcausality-rs/deep_causality.git", branch = "main" }
+deep_causality_topology= { git = "https://github.com/deepcausality-rs/deep_causality.git", branch = "main" }
+deep_causality_haft ={ git = "https://github.com/deepcausality-rs/deep_causality.git", branch = "main" }
+deep_causality_num ={ git = "https://github.com/deepcausality-rs/deep_causality.git", branch = "main" }
+deep_causality_rand ={ git = "https://github.com/deepcausality-rs/deep_causality.git", branch = "main" }
+
+# Optimize all crates
+[profile.release]
+opt-level = 3
+strip = true  # Automatically strip debug symbols from the binary
+lto = true    # Enable Link Time Optimization (LTO)
+codegen-units = 1 # Reduce Parallel Code Generation Units to Increase Optimization
+
+# There's a Cargo feature named profile-overrides
+# that lets you override the optimization level of dependencies.
+# https://docs.rust-embedded.org/book/unsorted/speed-vs-size.html
+[profile.release.package."*"]
+opt-level = 3
+strip = true  # Automatically strip debug symbols from the binary to reduce size
+codegen-units = 1 # Reduce Parallel Code Generation Units to Increase Optimization
+
