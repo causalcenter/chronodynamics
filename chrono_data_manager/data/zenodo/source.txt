@@ -1,0 +1,30 @@
+BATTELIER, B. (2025). Data Atom interferometry in an Einstein Elevator. Nature Communications. https://doi.org/10.5281/zenodo.15167723
+Creative Commons Attribution 4.0 International
+
+https://zenodo.org/records/15167723
+
+
+Jarlaud, V. (2024). Atom interferometry at arbitrary orientations and rotation rates [Data set]. Zenodo. https://doi.org/10.5281/zenodo.11543715
+Creative Commons Attribution 4.0 International
+
+https://zenodo.org/records/11543715
+
+The NANOGrav 15-Year Data Set
+
+The NANOGrav Collaboration. (2025). The NANOGrav 15-Year Data Set (2.1.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.16051178
+Creative Commons Attribution 4.0 International
+
+https://zenodo.org/records/16051178
+
+SPARC Galaxy Rotation Curve
+
+Complete SPARC (Spitzer Photometry and Accurate Rotation Curves) database containing rotation curves for 175 disk galaxies. Data includes radial velocity measurements, surface brightness profiles, and stellar mass models used for dark matter studies.
+
+Original source: http://astroweb.cwru.edu/SPARC/ and https://ui.adsabs.harvard.edu/abs/2016AJ....152..157L
+
+Creative Commons Attribution 4.0 International
+
+Citation
+Lelli, F., McGaugh, S., & Schombert, J. (2016). SPARC Galaxy Rotation Curve [Data set]. Zenodo. https://doi.org/10.5281/zenodo.16284118
+
+https://zenodo.org/records/16284118

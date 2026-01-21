@@ -1,0 +1,60 @@
+Software Version: 3.4
+Run: 16
+Data Type: Raman
+Track Protocol: Two-Point kInterlaced
+Track Mode: Closed Loop, RT Chirp
+Axis Mode: Z-Only
+Scan Quantity: Raman Pulse Duration (us)
+Raman Scan Mode: Phase kDown
+Raman kU Freq: 6.834662203E+9 6.834644856E+9 6.834682611E+9
+Raman kD Freq: 6.834662203E+9 6.834644856E+9 6.834682611E+9
+Raman kU Chirp: 1.472810000E+7 -1.436040000E+7 2.513500000E+7
+Raman kD Chirp: -1.472810000E+7 1.436040000E+7 -2.513500000E+7
+Raman Detuning: -8.770E+8
+Raman Power: 9.500E-1
+Raman TOF: 2.000E-2
+Raman T: 1.000E-2
+Raman pi X: 1.000E-5
+Raman pi Y: 1.000E-5
+Raman pi Z: 6.000E-6
+MOT Coils: 8.000
+MOT Loading: 2.000E-1
+Molasses Time: 1.200E-2
+GMolass Frequency: 6.834622000E+9
+Repump Freqs: 6.575000000E+9 6.635000000E+9
+Selection Freqs: 6.834457611E+9 6.834907611E+9
+Selection Sweep Time: 3.599E-4
+Bias MOT X: -0.010
+Bias MOT Y: 0.080
+Bias MOT Z: 0.060
+Bias Raman X: 0.630
+Bias Raman Y: 0.750
+Bias Raman Z: 0.605
+Bias Gradient Z: 0.220
+LCR MOT X: 2.700
+LCR MOT Y: 5.000
+LCR MOT Z: 2.700
+LCR Raman X: 4.300
+LCR Raman Y: 6.600
+LCR Raman Z: 4.200
+LCR Burst Up: 0.000
+LCR Burst Down X: 6.500
+LCR Burst Down Y: 9.600
+LCR Burst Down Z: 6.300
+LCR Burst Up Length: 1.200E-2
+LCR Burst Down Length: 2.500E-3
+Tilt X: 0.000
+Tilt Z: 0.000
+Shield State: Full Shield
+Using RT Sequencer?: 1
+RT Accel Type: QA750
+RT Phase Continuous?: 0
+RT Phase Enabled?: 1
+RT Phase Filter Enabled?: 0
+RT Freq Enabled?: 1
+RT Positive Feedback?: 0
+RT Model Accel?: 1
+Detect Config: All Detectors
+Detector: Middle
+Detect TOF: 0.088
+Detect Cursors: 8 56 160 212 985 1029 1137 1183

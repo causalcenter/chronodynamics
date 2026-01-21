@@ -1,0 +1,54 @@
+Run 01
+Experiment Type Rb MOT
+Experiment Mode Parabolic Flight
+Interferometer Type Single
+Data Type Ramsey
+Raman Mode Chirp Up
+Rb Ch.U Frequency 6.834682611E+9
+K Ch.U Frequency 4.61709762E+8
+Rb Ch.D Frequency 6.834730000E+9
+K Ch.D Frequency 4.61195593E+8
+Rb Raman Chirp 2.5134914E+7
+K Raman Chirp 2.5560000E+7
+Rb Raman Detuning -1.10E+9
+K Raman Detuning -1.34E+9
+Rb MOT Loading 0.50
+K MOT Loading 0.50
+Rb Molasses Time 1.0E-2
+K Molasses Time 1.0E-2
+Rb Raman TOF 0.00E+0
+K Raman TOF 9.00E-3
+Rb T1 2.00E-3
+K T1 2.00E-3
+RbK DeltaT 0.00E+0
+Rb T 3.00E-3
+K T 1.20E-2
+Rb tau pi/2 1.00E-5
+K tau pi/2 2.50E-6
+Rb tau pi 2.00E-5
+K tau pi 5.00E-6
+Rb Raman Power -7.649E-4
+K Raman Power -7.870E-4
+Rb MOT Power 5.066E-1
+K D2 MOT Power 4.985E-1
+K D1 MOT Power 4.378E-1
+Unused 6.070E-1
+Rb Raman Ratio 1.055E+1
+Rb Master Freq 9.506E-3
+Rb Dispenser 3.90
+K Dispenser 4.80
+Compensation X 0.00
+Compensation Y 0.00
+Compensation Z 0.00
+Gradient Z 0.00
+Bias 0.00
+Shield State Full Shield
+Tilt X 2.4347
+Tilt Y 2.4165
+Temperature Int 5.309E-1
+Temperature Ext 4.221E-1
+Accel Type Colibrys
+Accel Sensitivity 1.2
+Accel Sample Rate 5.00E+4
+Detector Upper
+Detect Cursors	57	118	187	261	339	400	530	566
