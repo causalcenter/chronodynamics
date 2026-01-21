@@ -1,0 +1,16 @@
+Metric,Value
+Year,2018
+Total_Data_Points,151064
+Global_Median_GM,3.9858247290e14
+Global_Mean_GM,3.9860229756e14
+Std_Deviation_GM,3.4453041872e12
+Reference_GM,3.9860044180e14
+Error_GM_Pct,0.004508
+Recovered_G,6.6739745587e-11
+Reference_G,6.6743000000e-11
+Assumed_M_kg,5.9721904750e24
+Error_G_Pct,0.004876
+Recovered_M_kg,5.9718992688e24
+Reference_M_kg,5.9721904750e24
+Assumed_G,6.6743000000e-11
+Error_M_Pct,0.004876

@@ -1,0 +1,16 @@
+Metric,Value
+Year,2016
+Total_Data_Points,171195
+Global_Median_GM,3.9860027345e14
+Global_Mean_GM,3.9850659772e14
+Std_Deviation_GM,7.3928786145e12
+Reference_GM,3.9860044180e14
+Error_GM_Pct,0.000042
+Recovered_G,6.6742726160e-11
+Reference_G,6.6743000000e-11
+Assumed_M_kg,5.9721904750e24
+Error_G_Pct,0.000410
+Recovered_M_kg,5.9721659717e24
+Reference_M_kg,5.9721904750e24
+Assumed_G,6.6743000000e-11
+Error_M_Pct,0.000410
