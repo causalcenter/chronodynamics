@@ -1,0 +1,425 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║        Forensic Clock Analysis & Fleet Health Monitoring                 ║
+║       Float Type: deep_causality_num::float_double::DoubleFloat            ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│  OBSERVATORY CONFIGURATION                                               │
+├──────────────────────────────────────────────────────────────────────────┤
+│  Temporal Coordinates:                                                   │
+│    T1: E12 (circular orbit) - Reference baseline                         │
+│    T2: E18 (eccentric orbit) - Cross-correlation baseline                │
+│    T3: E14 at t₀ (eccentric) - Dynamic clock                             │
+│    T4: E14 at t₀+1h - Temporal offset 1                                  │
+│    T5: E14 at t₀+2h - Temporal offset 2                                  │
+├──────────────────────────────────────────────────────────────────────────┤
+│  Physical Constants:                                                     │
+│    G (NIST):     6.67430e-11  m³/(kg·s²)                                 │
+│    c:            299792458    m/s                                        │
+│    GM_Earth:     3.986004418e14 m³/s²                                    │
+│    Time delay:   7200 seconds (2 hours)                                  │
+└──────────────────────────────────────────────────────────────────────────┘
+╔══════════════════════════════════════════════════════════════════════════╗
+║  ANALYZING YEAR: 2016                                                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  Loading data for satellites: ["E14", "E18", "E12", "E11", "E19", "E08", "E09"] (parallel)
+  Processing 112 datasets...
+
+  Total epochs collected: 32256
+  Swarm Analysis: Quad Power = 8.6704e10, Mono Power = 5.2837e11
+  Valid 5T measurements: 29603
+╔══════════════════════════════════════════════════════════════════════════╗
+║  UNIVERSAL GRAVITATION MAP                                               ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  J2 OBLATENESS MAP (from Latitude Correlation)                           ║
+║    Satellites Used:    5 (Circular Only)                                 ║
+║    Points Analyzed:    145221                                             ║
+║    Inverted J2:        3.3913e-3     (Err: 213.2474463956067+-0.0000000000000054243915309372586%)                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  OBSERVATORY RESULTS - 2016                                                ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DATA QUALITY                                                            ║
+║    Total epochs analyzed:         29603                                  ║
+║    Valid 5T measurements:         29350                                  ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  CLOCK DIFFERENTIAL (E14 - E12)                                          ║
+║    Mean clock difference:      +5.8644e6  ns                             ║
+║    Std deviation:              1.4623e6   ns                              ║
+║    Mean altitude difference:   -1260468.91 m                                ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  GENERAL RELATIVITY VERIFICATION                                         ║
+║    Predicted GR shift:         6.6641e-3  ns/s                            ║
+║    Observed shift:             6.6603e0   ns/s                            ║
+║    GR agreement:               0.00%                                     ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  ISOLATED GR ANALYSIS (Systematics Removed)                              ║
+║    Clock-Altitude correlation: -0.0011                                      ║
+║    Measured GR coeff:          -8.6931e-8 ns/km                            ║
+║    Predicted GR coeff:         5.0619e-6  ns/km                            ║
+║    GR coefficient agreement:   0.00%                                     ║
+║    Detrended residual:         2.5545e-1  ns (GR removed)                 ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  CORRELATION ANALYSIS                                                    ║
+║    E12-E18 correlation:        +0.6002                                      ║
+║    E14 temporal autocorr:      +0.9999                                      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  SWARM COVARIANCE ANALYSIS (7-Sat Fleet Health)                          ║
+║    Differential Power:         8.6704e10                                  ║
+║    Common Mode Power:          5.2837e11                                  ║
+║    ✓ Common mode dominant - Fleet operating coherently                  ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  INTERPRETATION                                                          ║
+├──────────────────────────────────────────────────────────────────────────┤
+║  ~ Moderate E12-E18 correlation - partial common-mode rejection         ║
+║  ✓ High E14 temporal autocorr indicates stable orbital dynamics         ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  PCA ANOMALY DETECTION: 2016                                                ║
+  Computing Principal Component Analysis on 20825 epochs...
+║  PC1: Variance Explained =  81.99%                                      ║
+║      Dominant Sat:     E19 (Loading: -0.492)                            ║
+║  PC2: Variance Explained =  11.41%                                      ║
+║      Dominant Sat:     E14 (Loading: +0.777)                            ║
+║  PC3: Variance Explained =   6.62%                                      ║
+║      Dominant Sat:     E19 (Loading: +0.807)                            ║
+║  PC4: Variance Explained =   0.04%                                      ║
+║      Dominant Sat:     E09 (Loading: -0.784)                            ║
+║  PC5: Variance Explained =  -0.06%                                      ║
+║      Dominant Sat:     E08 (Loading: -0.583)                            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  INTERPRETATION:                                                         ║
+║  WARNING: Eccentric satellites (E14/E18) may dominate PCs.            ║
+║  Orbital eccentricity is introducing significant systematic variance.    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  TEMPORAL ANOMALY SCAN (2016) - Empirical Null Distribution             ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Baseline Windows (first 40%):   29                                    ║
+║  PC2 Null Mean:               3.36%                                    ║
+║  PC2 Null Std Dev:            5.12%                                    ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  THRESHOLDS (From Empirical Null Distribution, Bonferroni-Corrected)    ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  90th percentile:   13.10 %  (α_eff = 1.39e-3)                       ║
+║  99th percentile:   14.68 %  (α_eff = 1.39e-4)                       ║
+║  99.9th percentile: 14.74 %  (α_eff = 1.39e-5)                       ║
+║  Total Windows Tested:   72                                             ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DETECTED ANOMALIES BY TIER                                             ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  > 99.9% (extreme):       7     events                                     ║
+║  > 99% (significant):     0     events                                     ║
+║  > 90% (elevated):        5     events                                     ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DETECTED ANOMALIES                                                      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Rank | Date/Time (UTC)      | Sat  | PC2    | Pctl   | Tier            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║   1   | 2016-11-30 11:05:00 | E11/E19 | 27.1 % | 100.0% | EXTREME ***     ║
+║   2   | 2016-11-29 11:05:00 | E19  | 22.9 % | 100.0% | EXTREME ***     ║
+║   3   | 2016-09-18 10:40:00 | E08/E09 | 20.2 % | 100.0% | EXTREME ***     ║
+║   4   | 2016-09-23 11:05:00 | E19  | 20.2 % | 100.0% | EXTREME ***     ║
+║   5   | 2016-09-24 11:05:00 | E12/E09 | 17.9 % | 100.0% | EXTREME ***     ║
+║   6   | 2016-11-28 11:05:00 | E11  | 15.1 % | 100.0% | EXTREME ***     ║
+║   7   | 2016-06-16 00:00:00 | E12/E08 | 14.7 % | 96.6 % | EXTREME ***     ║
+║   8   | 2016-06-10 00:00:00 | E12/E08 | 14.5 % | 93.1 % | ELEVATED *      ║
+║   9   | 2016-06-15 00:00:00 | E12  | 14.3 % | 89.7 % | ELEVATED *      ║
+║   10  | 2016-09-04 10:00:00 | E11  | 14.2 % | 89.7 % | ELEVATED *      ║
+║   11  | 2016-09-13 10:35:00 | E11  | 13.9 % | 89.7 % | ELEVATED *      ║
+║   12  | 2016-12-01 15:00:00 | E12/E19 | 13.6 % | 89.7 % | ELEVATED *      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  METHODOLOGY NOTE                                                        ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  This analysis is forensic (retrospective). Thresholds derived from     ║
+║  the first 40% of data as empirical null distribution.                  ║
+╚══════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════╗
+║  ANALYZING YEAR: 2017                                                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  Loading data for satellites: ["E14", "E18", "E12", "E11", "E19", "E08", "E09"] (parallel)
+  Processing 112 datasets...
+
+  Total epochs collected: 32256
+  Swarm Analysis: Quad Power = 2.1953e8, Mono Power = 1.2074e10
+  Valid 5T measurements: 32104
+╔══════════════════════════════════════════════════════════════════════════╗
+║  UNIVERSAL GRAVITATION MAP                                               ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  J2 OBLATENESS MAP (from Latitude Correlation)                           ║
+║    Satellites Used:    5 (Circular Only)                                 ║
+║    Points Analyzed:    160758                                             ║
+║    Inverted J2:        6.4533e-3     (Err: 496.0738625541533+0.000000000000003737022694005026%)                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  OBSERVATORY RESULTS - 2017                                                ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DATA QUALITY                                                            ║
+║    Total epochs analyzed:         32104                                  ║
+║    Valid 5T measurements:         32010                                  ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  CLOCK DIFFERENTIAL (E14 - E12)                                          ║
+║    Mean clock difference:      +4.6115e6  ns                             ║
+║    Std deviation:              8.4918e4   ns                              ║
+║    Mean altitude difference:   -1249997.66 m                                ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  GENERAL RELATIVITY VERIFICATION                                         ║
+║    Predicted GR shift:         6.6063e-3  ns/s                            ║
+║    Observed shift:             4.8022e0   ns/s                            ║
+║    GR agreement:               0.00%                                     ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  ISOLATED GR ANALYSIS (Systematics Removed)                              ║
+║    Clock-Altitude correlation: +0.0048                                      ║
+║    Measured GR coeff:          1.7814e-7  ns/km                            ║
+║    Predicted GR coeff:         5.0619e-6  ns/km                            ║
+║    GR coefficient agreement:   0.00%                                     ║
+║    Detrended residual:         1.1981e-1  ns (GR removed)                 ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  CORRELATION ANALYSIS                                                    ║
+║    E12-E18 correlation:        -0.9963                                      ║
+║    E14 temporal autocorr:      +1.0000                                      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  SWARM COVARIANCE ANALYSIS (7-Sat Fleet Health)                          ║
+║    Differential Power:         2.1953e8                                   ║
+║    Common Mode Power:          1.2074e10                                  ║
+║    ✓ Common mode dominant - Fleet operating coherently                  ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  INTERPRETATION                                                          ║
+├──────────────────────────────────────────────────────────────────────────┤
+║  ! Low E12-E18 correlation - satellites experiencing different fields   ║
+║  ✓ High E14 temporal autocorr indicates stable orbital dynamics         ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  PCA ANOMALY DETECTION: 2017                                                ║
+  Computing Principal Component Analysis on 30874 epochs...
+║  PC1: Variance Explained =  66.25%                                      ║
+║      Dominant Sat:     E09 (Loading: +0.574)                            ║
+║  PC2: Variance Explained =  23.80%                                      ║
+║      Dominant Sat:     E08 (Loading: -0.934)                            ║
+║  PC3: Variance Explained =   8.14%                                      ║
+║      Dominant Sat:     E14 (Loading: +0.651)                            ║
+║  PC4: Variance Explained =   1.53%                                      ║
+║      Dominant Sat:     E18 (Loading: -0.680)                            ║
+║  PC5: Variance Explained =   0.30%                                      ║
+║      Dominant Sat:     E19 (Loading: -0.771)                            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  INTERPRETATION:                                                         ║
+║  WARNING: Eccentric satellites (E14/E18) may dominate PCs.            ║
+║  Orbital eccentricity is introducing significant systematic variance.    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  TEMPORAL ANOMALY SCAN (2017) - Empirical Null Distribution             ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Baseline Windows (first 40%):   43                                    ║
+║  PC2 Null Mean:               2.58%                                    ║
+║  PC2 Null Std Dev:            4.18%                                    ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  THRESHOLDS (From Empirical Null Distribution, Bonferroni-Corrected)    ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  90th percentile:   6.59  %  (α_eff = 9.35e-4)                       ║
+║  99th percentile:   16.99 %  (α_eff = 9.35e-5)                       ║
+║  99.9th percentile: 18.15 %  (α_eff = 9.35e-6)                       ║
+║  Total Windows Tested:   107                                            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DETECTED ANOMALIES BY TIER                                             ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  > 99.9% (extreme):       2     events                                     ║
+║  > 99% (significant):     2     events                                     ║
+║  > 90% (elevated):        25    events                                     ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DETECTED ANOMALIES                                                      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Rank | Date/Time (UTC)      | Sat  | PC2    | Pctl   | Tier            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║   1   | 2017-09-17 13:15:00 | E11/E19 | 21.8 % | 100.0% | EXTREME ***     ║
+║   2   | 2017-09-13 13:15:00 | E18/E19/E08 | 20.4 % | 100.0% | EXTREME ***     ║
+║   3   | 2017-09-14 13:15:00 | E12  | 17.8 % | 97.7 % | SIGNIF **       ║
+║   4   | 2017-12-16 19:00:00 | E12/E11 | 17.1 % | 97.7 % | SIGNIF **       ║
+║   5   | 2017-09-30 19:00:00 | E12  | 16.8 % | 97.7 % | ELEVATED *      ║
+║   6   | 2017-12-18 19:00:00 | E12/E19 | 16.3 % | 97.7 % | ELEVATED *      ║
+║   7   | 2017-09-16 13:15:00 | E09  | 15.9 % | 97.7 % | ELEVATED *      ║
+║   8   | 2017-09-24 13:15:00 | E14/E18 | 15.4 % | 97.7 % | ELEVATED *      ║
+║   9   | 2017-12-29 19:00:00 | E14  | 15.3 % | 97.7 % | ELEVATED *      ║
+║   10  | 2017-03-12 00:00:00 | E19  | 15.2 % | 95.3 % | ELEVATED *      ║
+║   11  | 2017-09-11 13:15:00 | E18/E12 | 14.7 % | 95.3 % | ELEVATED *      ║
+║   12  | 2017-09-15 13:15:00 | E09  | 14.5 % | 95.3 % | ELEVATED *      ║
+║   13  | 2017-12-23 19:00:00 | E19  | 14.4 % | 95.3 % | ELEVATED *      ║
+║   14  | 2017-06-23 13:15:00 | E12  | 13.9 % | 95.3 % | ELEVATED *      ║
+║   15  | 2017-12-19 19:00:00 | E12/E11 | 13.8 % | 95.3 % | ELEVATED *      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  METHODOLOGY NOTE                                                        ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  This analysis is forensic (retrospective). Thresholds derived from     ║
+║  the first 40% of data as empirical null distribution.                  ║
+╚══════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════╗
+║  ANALYZING YEAR: 2018                                                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  Loading data for satellites: ["E14", "E18", "E12", "E11", "E19", "E08", "E09"] (parallel)
+  Processing 107 datasets...
+
+  Total epochs collected: 30695
+  Swarm Analysis: Quad Power = 3.3808e8, Mono Power = 7.3178e11
+  Valid 5T measurements: 30695
+╔══════════════════════════════════════════════════════════════════════════╗
+║  UNIVERSAL GRAVITATION MAP                                               ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  J2 OBLATENESS MAP (from Latitude Correlation)                           ║
+║    Satellites Used:    5 (Circular Only)                                 ║
+║    Points Analyzed:    153444                                             ║
+║    Inverted J2:        5.0235e-2     (Err: 4540.122127578781+0.00000000000022571030345573192%)                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  OBSERVATORY RESULTS - 2018                                                ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DATA QUALITY                                                            ║
+║    Total epochs analyzed:         30695                                  ║
+║    Valid 5T measurements:         30695                                  ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  CLOCK DIFFERENTIAL (E14 - E12)                                          ║
+║    Mean clock difference:      +1.7967e6  ns                             ║
+║    Std deviation:              6.7280e1   ns                              ║
+║    Mean altitude difference:   -1243379.79 m                                ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  GENERAL RELATIVITY VERIFICATION                                         ║
+║    Predicted GR shift:         6.5698e-3  ns/s                            ║
+║    Observed shift:             1.9511e0   ns/s                            ║
+║    GR agreement:               0.00%                                     ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  ISOLATED GR ANALYSIS (Systematics Removed)                              ║
+║    Clock-Altitude correlation: +0.0145                                      ║
+║    Measured GR coeff:          4.2705e-10 ns/km                            ║
+║    Predicted GR coeff:         5.0619e-6  ns/km                            ║
+║    GR coefficient agreement:   0.00%                                     ║
+║    Detrended residual:         9.5649e-5  ns (GR removed)                 ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  CORRELATION ANALYSIS                                                    ║
+║    E12-E18 correlation:        -1.0000                                      ║
+║    E14 temporal autocorr:      +1.0000                                      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  SWARM COVARIANCE ANALYSIS (7-Sat Fleet Health)                          ║
+║    Differential Power:         3.3808e8                                   ║
+║    Common Mode Power:          7.3178e11                                  ║
+║    ✓ Common mode dominant - Fleet operating coherently                  ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  INTERPRETATION                                                          ║
+├──────────────────────────────────────────────────────────────────────────┤
+║  ! Low E12-E18 correlation - satellites experiencing different fields   ║
+║  ✓ High E14 temporal autocorr indicates stable orbital dynamics         ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  PCA ANOMALY DETECTION: 2018                                                ║
+  Computing Principal Component Analysis on 30694 epochs...
+║  PC1: Variance Explained =  67.96%                                      ║
+║      Dominant Sat:     E18 (Loading: -0.576)                            ║
+║  PC2: Variance Explained =  28.42%                                      ║
+║      Dominant Sat:     E14 (Loading: -0.653)                            ║
+║  PC3: Variance Explained =   2.38%                                      ║
+║      Dominant Sat:     E12 (Loading: -0.720)                            ║
+║  PC4: Variance Explained =   0.72%                                      ║
+║      Dominant Sat:     E08 (Loading: +0.730)                            ║
+║  PC5: Variance Explained =   0.53%                                      ║
+║      Dominant Sat:     E18 (Loading: -0.701)                            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  INTERPRETATION:                                                         ║
+║  WARNING: Eccentric satellites (E14/E18) may dominate PCs.            ║
+║  Orbital eccentricity is introducing significant systematic variance.    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  TEMPORAL ANOMALY SCAN (2018) - Empirical Null Distribution             ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Baseline Windows (first 40%):   43                                    ║
+║  PC2 Null Mean:               5.75%                                    ║
+║  PC2 Null Std Dev:            6.95%                                    ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  THRESHOLDS (From Empirical Null Distribution, Bonferroni-Corrected)    ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  90th percentile:   15.12 %  (α_eff = 9.35e-4)                       ║
+║  99th percentile:   26.33 %  (α_eff = 9.35e-5)                       ║
+║  99.9th percentile: 31.00 %  (α_eff = 9.35e-6)                       ║
+║  Total Windows Tested:   107                                            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DETECTED ANOMALIES BY TIER                                             ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  > 99.9% (extreme):       7     events                                     ║
+║  > 99% (significant):     8     events                                     ║
+║  > 90% (elevated):        23    events                                     ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  DETECTED ANOMALIES                                                      ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Rank | Date/Time (UTC)      | Sat  | PC2    | Pctl   | Tier            ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║   1   | 2018-09-05 09:30:00 | E08  | 39.6 % | 100.0% | EXTREME ***     ║
+║   2   | 2018-09-08 10:10:00 | E12  | 36.9 % | 100.0% | EXTREME ***     ║
+║   3   | 2018-09-18 10:10:00 | E12  | 35.8 % | 100.0% | EXTREME ***     ║
+║   4   | 2018-09-19 10:10:00 | E12  | 34.9 % | 100.0% | EXTREME ***     ║
+║   5   | 2018-09-06 09:30:00 | E12  | 32.4 % | 100.0% | EXTREME ***     ║
+║   6   | 2018-09-15 10:10:00 | E12  | 31.7 % | 100.0% | EXTREME ***     ║
+║   7   | 2018-09-07 10:10:00 | E12  | 31.5 % | 97.7 % | EXTREME ***     ║
+║   8   | 2018-09-17 10:10:00 | E09  | 30.5 % | 97.7 % | SIGNIF **       ║
+║   9   | 2018-09-20 10:10:00 | E12/E08/E09 | 28.8 % | 97.7 % | SIGNIF **       ║
+║   10  | 2018-09-21 10:10:00 | E19/E09 | 28.4 % | 97.7 % | SIGNIF **       ║
+║   11  | 2018-09-14 10:10:00 | E08/E09 | 28.2 % | 97.7 % | SIGNIF **       ║
+║   12  | 2018-09-09 10:10:00 | E18/E08 | 27.7 % | 97.7 % | SIGNIF **       ║
+║   13  | 2018-09-13 10:10:00 | E12  | 27.0 % | 97.7 % | SIGNIF **       ║
+║   14  | 2018-09-16 10:10:00 | E12/E19 | 26.9 % | 97.7 % | SIGNIF **       ║
+║   15  | 2018-12-08 10:10:00 | E12  | 26.5 % | 97.7 % | SIGNIF **       ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  METHODOLOGY NOTE                                                        ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  This analysis is forensic (retrospective). Thresholds derived from     ║
+║  the first 40% of data as empirical null distribution.                  ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  GNSS INCIDENT CATALOGUE (2016-2018)                                     ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Full forensic timeline of detected anomalies.                           ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+| Rank | Date/Time (UTC)      | Satellite | PC2 Var | Status       | Phase             |
+|:-----|:---------------------|:----------|:--------|:-------------|:------------------|
+| **1** | **2016-06-16 00:00:00** | **E12/E08** | **14.7%** | **CRITICAL** | Initial Signs |
+| **2** | **2016-09-18 10:40:00** | **E08/E09** | **20.2%** | **CRITICAL** | Early Warning |
+| **3** | **2016-09-23 11:05:00** | **E19** | **20.2%** | **CRITICAL** | Early Warning |
+| **4** | **2016-09-24 11:05:00** | **E12/E09** | **17.9%** | **CRITICAL** | Early Warning |
+| **5** | **2016-11-28 11:05:00** | **E11** | **15.1%** | **CRITICAL** | Pre-Crisis |
+| **6** | **2016-11-29 11:05:00** | **E19** | **22.9%** | **CRITICAL** | Pre-Crisis |
+| **7** | **2016-11-30 11:05:00** | **E11/E19** | **27.1%** | **CRITICAL** | Pre-Crisis |
+| **8** | **2017-09-13 13:15:00** | **E18/E19/E08** | **20.4%** | **CRITICAL** | Escalation |
+| **9** | **2017-09-14 13:15:00** | **E12** | **17.8%** | **SEVERE** | Escalation |
+| **10** | **2017-09-17 13:15:00** | **E11/E19** | **21.8%** | **CRITICAL** | Escalation |
+| **11** | **2017-12-16 19:00:00** | **E12/E11** | **17.1%** | **SEVERE** | Persistent |
+| **12** | **2018-09-05 09:30:00** | **E08** | **39.6%** | **CRITICAL** | Persistent |
+| **13** | **2018-09-06 09:30:00** | **E12** | **32.4%** | **CRITICAL** | Persistent |
+| **14** | **2018-09-07 10:10:00** | **E12** | **31.5%** | **CRITICAL** | Persistent |
+| **15** | **2018-09-08 10:10:00** | **E12** | **36.9%** | **CRITICAL** | Persistent |
+| **16** | **2018-09-09 10:10:00** | **E18/E08** | **27.7%** | **SEVERE** | Persistent |
+| **17** | **2018-09-13 10:10:00** | **E12** | **27.0%** | **SEVERE** | Persistent |
+| **18** | **2018-09-14 10:10:00** | **E08/E09** | **28.2%** | **SEVERE** | Persistent |
+| **19** | **2018-09-15 10:10:00** | **E12** | **31.7%** | **CRITICAL** | Persistent |
+| **20** | **2018-09-16 10:10:00** | **E12/E19** | **26.9%** | **SEVERE** | Persistent |
+| **21** | **2018-09-17 10:10:00** | **E09** | **30.5%** | **SEVERE** | Persistent |
+| **22** | **2018-09-18 10:10:00** | **E12** | **35.8%** | **CRITICAL** | Persistent |
+| **23** | **2018-09-19 10:10:00** | **E12** | **34.9%** | **CRITICAL** | Persistent |
+| **24** | **2018-09-20 10:10:00** | **E12/E08/E09** | **28.8%** | **SEVERE** | Persistent |
+| **25** | **2018-09-21 10:10:00** | **E19/E09** | **28.4%** | **SEVERE** | Persistent |
+| **26** | **2018-12-08 10:10:00** | **E12** | **26.5%** | **SEVERE** | Persistent |
+
+
+real	0m17.300s
+user	2m27.584s
+sys	0m10.106s

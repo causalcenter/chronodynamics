@@ -1,0 +1,27 @@
+[package]
+name = "chrono_experiments"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+
+
+[[bin]]
+name = "chrono_observatory"
+path = "bin/E00_chrono_observatory/main.rs"
+
+[[bin]]
+name = "chrono_mass"
+path = "bin/E01_chrono_mass/main.rs"
+
+[[bin]]
+name = "chrono_gauge"
+path = "bin/E02_chrono_gauge/main.rs"
+
+[dependencies]
+chrono = { workspace = true }
+rayon = { workspace = true }
+
+chrono_data_manager = { workspace = true }
+deep_causality_physics = { workspace = true }
+deep_causality_num = { workspace = true }
+deep_causality_topology = { workspace = true }
