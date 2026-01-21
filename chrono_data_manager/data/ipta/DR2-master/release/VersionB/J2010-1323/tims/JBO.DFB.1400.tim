@@ -1,0 +1,15 @@
+FORMAT 1
+MODE 1
+J090119_122110.FT 1400.000 54850.5211353806613 9.499 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1189.992 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090129_154012.FT 1400.000 54860.6591045381518 14.713 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1176.992 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090209_143105.FT 1400.000 54871.6114595307776 7.002 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1187.996 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090219_111712.FT 1400.000 54881.4774344676478 3.619 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1189.993 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090228_084102.FT 1400.000 54890.3683043838156 7.302 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.998 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090307_083018.FT 1400.000 54897.3618595028620 9.441 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1199.995 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090315_074023.FT 1400.000 54905.3263110424840 3.029 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1199.994 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090401_100449.FT 1400.000 54922.4276561057206 5.093 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 1199.994 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090419_063731.FT 1400.000 54940.2831980219005 6.784 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 1199.997 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090430_043533.FT 1400.000 54951.1984848129689 6.170 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 1199.997 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090519_002455.FT 1400.000 54970.0215464644693 11.451 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 719.995 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090526_233042.FT 1400.000 54977.9840541719057 12.839 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 719.995 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928
+J090720_202742.FT 1400.000 55032.8570343562669 7.490 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 719.997 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -B D -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.170928

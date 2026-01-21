@@ -1,0 +1,11 @@
+FORMAT 1
+MODE 1
+J090114_192655.FT 1400.000 54845.8158417667989 6.564 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.995 -proc EPTA_dr1 -nbin 256 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090209_182957.FT 1400.000 54871.7771027529788 14.208 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1055.996 -proc EPTA_dr1 -nbin 256 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090220_163449.FT 1400.000 54882.6961953033193 15.974 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 899.998 -proc EPTA_dr1 -nbin 256 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090317_100012.FT 1400.000 54907.4235006769656 5.385 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.998 -proc EPTA_dr1 -nbin 256 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090321_100744.FT 1400.000 54911.4284390098802 18.064 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1019.997 -proc EPTA_dr1 -nbin 256 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090412_133801.FT 1400.000 54933.5755832854234 11.351 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 1079.997 -proc EPTA_dr1 -nbin 256 -nch 256 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090425_115043.FT 1400.000 54946.4968787887903 11.344 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 1079.996 -proc EPTA_dr1 -nbin 256 -nch 256 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090513_101420.FT 1400.000 54964.4298535768153 5.375 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 539.996 -proc EPTA_dr1 -nbin 256 -nch 256 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177
+J090527_102643.FT 1400.000 54978.4416276540832 14.204 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 1079.997 -proc EPTA_dr1 -nbin 256 -nch 256 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd 0.885177

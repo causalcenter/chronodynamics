@@ -1,0 +1,38 @@
+PSRJ           J0931-1902
+RAJ             09:31:19.1173900         1  0.00016391283582048082   
+DECJ           -19:02:55.02267           1  0.00179961337306085880   
+F0             215.60881047726571658     1  0.00000000009988417278   
+F1             -1.8842919208847337732e-16 1  2.5077536036477350628e-17
+PEPOCH         56468.999793393246726       
+POSEPOCH       56468.999793393246726       
+DMEPOCH        56469                       
+DM             41.487876875551991124     1  0.00023890799781423549   
+DM1            0                           
+DM2            0                           
+PX             -1.1162910223080764938    1  2.89603911375961509123   
+START          56351.055635052793505       
+FINISH         56586.468300742406512       
+TZRMJD         56472.743041249810048       
+TZRFRQ         1568.7490230000000793    
+TZRSITE        gbt   
+TRES           3.690        
+EPHVER         2                           
+NE_SW          4                           
+CLK            TT(BIPM2015)
+MODE 1
+UNITS          TDB
+TIMEEPH        FB90
+DILATEFREQ     N
+PLANET_SHAPIRO N
+T2CMETHOD      TEMPO
+CORRECT_TROPOSPHERE  N
+EPHEM          DE436
+NITS           1
+NTOA           712
+CHI2R          1.0049 704
+JUMP -fe Rcvr1_2 0 0
+JUMP -fe Rcvr_800 4.8829255645551e-06 1
+T2EFAC -f Rcvr1_2_GUPPI 1.004
+T2EFAC -f Rcvr_800_GUPPI 1.179
+T2EQUAD -f Rcvr1_2_GUPPI 0.00028
+T2EQUAD -f Rcvr_800_GUPPI 0.0215

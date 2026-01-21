@@ -1,0 +1,59 @@
+FORMAT 1
+
+200000357.ll 840.078 51643.3563657701987 1.2 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200000934.ll 840.039 51832.5631944595378 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200000985.ll 840.039 51856.4667824269407 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200100136.ll 840.078 51970.5800926090038 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200100393.ll 840.078 52076.3159722486612 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200100485.ll 840.078 52110.2068287182298 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200100527.ll 840.078 52146.1062500168405 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200100567.ll 840.078 52180.9817129866240 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200100612.ll 840.078 52215.9133102027459 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200200948.ll 840.078 52306.5818287270304 1.2 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200201735.ll 840.078 52336.5555555771477 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+TIME -0.00096518
+200206059.ll 840.078 52504.0810185373092 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+TIME +0.00096518
+200207079.ll 840.078 52532.9534722360935 1.2 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200207599.ll 840.078 52559.9552083553479 1.0 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200208895.ll 840.078 52621.7361111349158 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200300367.ll 820.078 52650.6084491031546 1.4 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200301005.ll 840.078 52671.5018518700258 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200301532.ll 840.078 52699.5452546453337 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200302129.ll 840.078 52727.4487268819991 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200304083.ll 840.000 52804.1857639119445 0.7 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200305298.ll 840.000 52848.1643518800868 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200305877.ll 840.000 52867.0990740879067 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200307068.ll 840.000 52913.9327546548157 0.7 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200307188.ll 840.000 52917.9287037179056 1.0 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200308954.ll 840.000 52993.7570602150508 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200400586.ll 840.000 53028.6005787348518 0.7 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200401529.ll 840.000 53063.5811342769707 0.7 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200401934.ll 840.000 53084.5237268749463 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200403338.ll 840.000 53140.2952546535037 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+TIME -0.001
+200404042.ll 835.000 53175.2481481919396 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200406892.ll 840.000 53335.8120370773102 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200500196.ll 820.000 53379.6844907832591 1.3 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200500754.ll 840.000 53405.6498843114130 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200501377.ll 840.000 53442.4365741199652 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200501919.ll 840.000 53477.4081018899967 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200503103.ll 840.000 53546.2784722763352 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840 -sys WSRT.P1.840 -padd 0.465962
+200503745.ll 840.000 53581.1689815349059 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200504170.ll 840.000 53609.0848380012131 1.2 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200506331.ll 840.000 53720.7994213449174 0.7 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200600262.ll 840.000 53749.6894676349387 0.6 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200601883.ll 840.000 53841.1817130040521 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200603024.ll 840.000 53910.2655093109022 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200604020.ll 840.000 53945.9717593090293 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200604625.ll 840.000 53974.9822917140826 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200605721.ll 840.000 54029.9312500412588 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200701587.ll 840.000 54197.4678241203014 0.9 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200701854.ll 840.000 54218.4383102357631 0.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200703418.ll 860.000 54309.1416667060544 0.7 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200704011.ll 840.000 54337.1146379083357 1.8 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200704601.ll 840.000 54371.9545139306147 1.0 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200705129.ll 840.000 54399.8534722619441 1.2 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+200705464.ll 840.000 54422.6697917191443 1.0 wsrt -i puma1 -B C -r 840 -nbin 64   -pta EPTA -group WSRT.P1.840.C -sys WSRT.P1.840.C  -padd 0.465962
+TIME +0.001
+

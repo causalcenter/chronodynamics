@@ -1,0 +1,11 @@
+FORMAT 1
+MODE 1
+J090216_093156.FT 1400.000 54878.4035722615917 9.346 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.992 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090226_093420.FT 1400.000 54888.4052872400276 9.580 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.999 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090228_102231.FT 1400.000 54890.4377698054791 7.579 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 899.975 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090301_101448.FT 1400.000 54891.4333528917131 5.076 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.987 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090306_093122.FT 1400.000 54896.4032164852827 7.891 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.983 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090308_090930.FT 1400.000 54898.3873048053095 9.011 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 889.987 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090315_084723.FT 1400.000 54905.3726861303098 3.098 jbdfb -fe L_band -be DFB -B 21CM -bw 112.75 -tobs 1079.973 -proc EPTA_dr1 -nbin 1024 -nch 226 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090412_114912.FT 1400.000 54933.4937499649947 1.430 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 179.983 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437
+J090510_104945.FT 1400.000 54961.4582676584607 3.302 jbdfb -fe L_band -be DFB -B 21CM -bw 128 -tobs 1079.980 -proc EPTA_dr1 -nbin 1024 -nch 256 -i dfb -r 1400jb -pta EPTA -group JBO.DFB.1400 -sys JBO.DFB.1400 -padd -0.50437

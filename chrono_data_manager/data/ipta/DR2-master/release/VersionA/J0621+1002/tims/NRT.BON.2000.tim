@@ -1,0 +1,12 @@
+FORMAT 1
+MODE 1
+ ../data/54206.000006.f.000.000.zap 2048.00000000 54206.69622681610141512 11.76200 ncy -fe S_Band -be BON -bw 64 -tobs 2765.8 -tmplt 0621_1600.tpl -nbin 2048 -nch 16   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/54358.000006.f.000.000.zap 2048.03900000 54358.28288767622307986 17.55900 ncy -fe S_Band -be BON -bw 64 -tobs 2645.5 -tmplt 0621_1600.tpl -nbin 2048 -nch 16   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/54618.000011.f.000.000.zap 2048.00000000 54618.56672777297821852 22.91000 ncy -fe S_Band -be BON -bw 64 -tobs 3006.3 -tmplt 0621_1600.tpl -nbin 2048 -nch 16   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/55115.500003.f.000.000.zap 2047.16100000 55115.21173453956703270 11.55200 ncy -fe S_Band -be BON -bw 128 -tobs 2169.9 -tmplt 0621_1600.tpl -nbin 2048 -nch 32   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/55764.500013.f.000.000.zap 2047.13100000 55764.43395482254054940 9.29200 ncy -fe S_Band -be BON -bw 128 -tobs 2531.5 -tmplt 0621_1600.tpl -nbin 2048 -nch 32   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/55792.500009.f.000.000.zap 2047.10200000 55792.35731155641222756 14.13600 ncy -fe S_Band -be BON -bw 128 -tobs 2531.5 -tmplt 0621_1600.tpl -nbin 2048 -nch 32   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+C ../data/56019.500003.f.000.000.zap 2202.29900000 56019.72898079156028572 85.05400 ncy -fe S_Band -be BON -bw 128 -tobs 3240.9 -tmplt 0621_1600.tpl -nbin 2048 -nch 32   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/part2/56210.500009.f.000.000.zap 2681.77800000 56210.19417241978245414 53.70100 ncy -fe S_Band -be BON -bw 128 -tobs 1560.6 -tmplt 0621_1600.tpl -nbin 2048 -nch 32   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/part2/56222.500003.f.000.000.zap 2372.00000000 56222.17331238044554453 20.35000 ncy -fe S_Band -be BON -bw 128 -tobs 3601.2 -tmplt 0621_1600.tpl -nbin 2048 -nch 32   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924
+ ../data/part2/56710.500019.f.000.000.zap 2683.31800000 56710.83474979604673649 76.73000 ncy -fe S_Band -be BON -bw 128 -tobs 3841.5 -tmplt 0621_1600.tpl -nbin 2048 -nch 32   -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000  -padd 0.00357924

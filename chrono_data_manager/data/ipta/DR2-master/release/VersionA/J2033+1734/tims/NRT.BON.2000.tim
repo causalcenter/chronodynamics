@@ -1,0 +1,2 @@
+FORMAT 1
+../data/part2/56510.500040.f.000.000.zap 2298.281 56510.981970828772934  41.893  ncy  -fe S_Band -be BON -bw 128 -tobs 2761 -tmplt 2033_1600.tpl -gof 1.23 -nbin 2048 -nch 32  -pta EPTA -group NRT.BON.2000 -sys NRT.BON.2000 -padd -0.00341337
