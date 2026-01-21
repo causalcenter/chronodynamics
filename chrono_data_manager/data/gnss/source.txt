@@ -1,0 +1,86 @@
+Global Navigation Satellite System (GNSS) IGS Multi-GNSS Experiment (MGEX)
+Products from NASA CDDIS
+
+This derived product set consists of Global Navigation Satellite System satellite orbit products (daily files, generated daily) from the real-time IGS analysis center submissions available from NASA Crustal Dynamics Data Information System (CDDIS). GNSS provide autonomous geo-spatial positioning with global coverage. GNSS data sets from ground receivers at the CDDIS consist
+
+GNSS_IGS_MGEX_prod
+https://www.earthdata.nasa.gov/data/catalog/cddis-gnss-igs-mgex-prod-1
+https://cddis.nasa.gov/archive/gnss/products/
+
+GPS weeks begin on Sundays (GPS Day 0) at 00:00:00 GPS time.
+The numbers provided refer to the continuous GPS week count
+
+
+DONWLOADED - INCLUDED IN THE REPO
+
+
+2016 (Era 1: IGb08)
+Mar: 1886 – 1890
+Jun: 1899 – 1903
+Sep: 1912 – 1916
+Dec: 1925 – 1929
+
+2017 (Era 2: IGS14)
+Mar: 1939 - 1942
+Jun: 1952 - 1955
+Sep: 1965 - 1968
+Dec: 1978 - 1981
+
+2018 (Era 2: IGS14)
+Mar: 1991 - 1994
+Jun: 2004 - 2007
+Sep: 2017 - 2020
+Dec: 2030 - 2033
+
+
+
+FUTURE WORK
+In case more verification becomes requied,
+the following data sets can
+
+2019 (Era 2: IGS14)
+Mar: 2043 - 2046
+Jun: 2056 - 2059
+Sep: 2069 - 2072
+Dec: 2082 - 2085
+
+2020 (Era 2: IGS14)
+Mar: 2095 - 2098
+Jun: 2108 - 2111
+Sep: 2121 - 2124
+Dec: 2134 - 2137
+
+2021 (Era 2: IGS14)
+Mar: 2147 - 2150
+Jun: 2160 - 2163
+Sep: 2173 - 2176
+Dec: 2186 - 2189
+
+2022 (The Transition Year)
+Mar: 2199 - 2202 (IGS14)
+Jun: 2212 - 2215 (IGS14)
+Sep: 2225 - 2228 (IGS14 - Last Clean Data)
+--- ⚠️ METRIC SWITCH: IGS14
+→
+→
+ IGS20 (Week 2238 / Nov 27, 2022) ⚠️ ---
+Dec: 2239 - 2242 (IGS20 - First Clean Data)
+Hypothesis: You should see a tiny discontinuity in the "Derived Earth Mass" between Sep 2022 and Dec 2022 due to the coordinate origin shift (Z-axis shift of ~1.8mm).
+
+2023 (Era 3: IGS20)
+Mar: 2251 - 2254
+Jun: 2264 - 2267
+Sep: 2277 - 2280
+Dec: 2290 - 2293
+
+2024 (Era 3: IGS20)
+Mar: 2303 - 2306
+Jun: 2316 - 2319
+Sep: 2329 - 2332
+Dec: 2342 - 2345
+
+2025 (Era 3: IGS20)
+Mar: 2356 - 2359
+Jun: 2369 - 2372
+Sep: 2382 - 2385
+Dec: 2395 - 2398
