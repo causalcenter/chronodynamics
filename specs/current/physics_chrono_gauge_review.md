@@ -57,9 +57,6 @@ The "Hybrid" approach yields exceptional results by leveraging the strengths of 
 2.  **HKT Integration**: The system successfully implements the `RiemannMap`, `Adjunction`, and `Promonad` traits, fulfilling the interface contract even if the internal dispatch is "unsafe" or analytical.
 3.  **Comprehensive Validation**: The `E02` experiment successfully cross-validates 7 different physical observables.
 
-### Architectural Risks
-1.  **"Magic" Methods**: Calling `ChronoGaugeWitness::source(field, ...)` implies the `field` is being used to compute the source, but it is ignored. This could lead to confusion if a user expects changes to the lattice link variables (e.g., via heating/cooling) to affect the GM result—**they will not**.
-2.  **Unsafe Dispatch**: The explicit use of `unsafe` code to cast pointers for `HKT4` dispatch (`chrono_hkt.rs`) is a known trade-off for GAT limitations but requires careful maintenance (must only pass `ChronoVector`).
 
 ## 4. Recommendations
 

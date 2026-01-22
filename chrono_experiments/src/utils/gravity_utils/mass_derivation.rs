@@ -91,7 +91,7 @@ where
 
         // We need SpaceTimeCoordinate to implement ChronoGaugeWitness logic if not using the trait...
         // But assuming the trait is available as used in E01.
-        if let Ok(gm) = gauge_field.source(&data[idx_a], &data[idx_b]) {
+        if let Ok(gm) = gauge_field.solve_gm(&data[idx_a], &data[idx_b]) {
             raw_gm_values.push(gm);
         }
 

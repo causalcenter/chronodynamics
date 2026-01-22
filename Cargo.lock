@@ -106,12 +106,12 @@ checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 [[package]]
 name = "deep_causality_ast"
 version = "0.1.5"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 
 [[package]]
 name = "deep_causality_core"
 version = "0.0.5"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 dependencies = [
  "deep_causality_haft",
 ]
@@ -119,17 +119,17 @@ dependencies = [
 [[package]]
 name = "deep_causality_haft"
 version = "0.3.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 
 [[package]]
 name = "deep_causality_metric"
 version = "0.2.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 
 [[package]]
 name = "deep_causality_multivector"
 version = "0.4.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 dependencies = [
  "deep_causality_core",
  "deep_causality_haft",
@@ -141,7 +141,7 @@ dependencies = [
 [[package]]
 name = "deep_causality_num"
 version = "0.2.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 
 [[package]]
 name = "deep_causality_physics"
@@ -158,7 +158,7 @@ dependencies = [
 [[package]]
 name = "deep_causality_rand"
 version = "0.1.11"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 dependencies = [
  "deep_causality_num",
 ]
@@ -166,7 +166,7 @@ dependencies = [
 [[package]]
 name = "deep_causality_sparse"
 version = "0.1.5"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 dependencies = [
  "deep_causality_haft",
  "deep_causality_num",
@@ -175,7 +175,7 @@ dependencies = [
 [[package]]
 name = "deep_causality_tensor"
 version = "0.4.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 dependencies = [
  "deep_causality_ast",
  "deep_causality_haft",
@@ -185,7 +185,7 @@ dependencies = [
 [[package]]
 name = "deep_causality_topology"
 version = "0.4.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#0b4c05d1ba8f5cb2a3c548320998fc39dbfa496d"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#fbc07af51db129069830704ec938146dc94485ce"
 dependencies = [
  "deep_causality_haft",
  "deep_causality_metric",

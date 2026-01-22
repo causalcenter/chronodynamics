@@ -37,7 +37,8 @@ const DIM_2D_SPACE_TIME: usize = 2; // 2D spacetime (1 Space + 1 Time)
 /// lattice sites. The U(1) phase represents the scalar gravitational potential,
 /// while the SU(2) matrix encodes gravitomagnetic (frame-dragging) effects.
 ///
-pub type ChronoGauge<FloatType> =
-    LatticeGaugeField<SU2_U1, DIM_4D_SPACE_TIME, Complex<FloatType>, FloatType>;
+///
+pub type ChronoGauge<FloatType, FieldSource = Vec<FloatType>> =
+    LatticeGaugeField<SU2_U1, DIM_4D_SPACE_TIME, Complex<FloatType>, FloatType, FieldSource>;
 
 pub type KineticGauge<FloatType> = LatticeGaugeField<SE3, DIM_2D_SPACE_TIME, FloatType, FloatType>;

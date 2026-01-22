@@ -124,7 +124,7 @@ where
     // Einstein Field Equation Inversion
     // =========================================================================
 
-    fn source<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
+    fn solve_gm<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>,
     {

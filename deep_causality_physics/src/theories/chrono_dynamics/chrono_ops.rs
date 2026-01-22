@@ -86,7 +86,7 @@ pub trait ChronoGaugeOps<R: RealField> {
     // Einstein Field Equation Inversion
     // =========================================================================
 
-    /// Inverts the Einstein field equation to compute source mass GM.
+    /// Inverts the Einstein field equation to compute gravity mass GM.
     ///
     /// This method solves the Einstein field equations in reverse, deriving
     /// the gravitational parameter GM from observed curvature (clock effects)
@@ -116,7 +116,7 @@ pub trait ChronoGaugeOps<R: RealField> {
     /// # Errors
     ///
     /// Returns `TopologyError::LatticeGaugeError` if the radial separation is insufficient.
-    fn source<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
+    fn solve_gm<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>;
 

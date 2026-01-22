@@ -199,7 +199,7 @@ fn process_dataset(
         }
 
         // Use source() to invert the Einstein field equation
-        if let Ok(gm) = gauge_field.source(&data[idx_a], &data[idx_b]) {
+        if let Ok(gm) = gauge_field.solve_gm(&data[idx_a], &data[idx_b]) {
             raw_gm_values.push(gm);
         }
 
