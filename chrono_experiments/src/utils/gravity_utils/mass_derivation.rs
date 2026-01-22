@@ -7,7 +7,7 @@ use crate::utils::proces_utils::{apply_mad_filter, interpolate_space_time};
 use crate::{AnalysisConfig, SpaceTimeCoordinate};
 use chrono_data_manager::DataManager;
 use deep_causality_num::RealField;
-use deep_causality_physics::{ChronoGauge, ChronoGaugeWitness};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeOps};
 use deep_causality_physics::{
     EARTH_GM, EARTH_MASS_KG, EARTH_RADIUS, NEWTONIAN_CONSTANT_OF_GRAVITATION,
 };
@@ -49,13 +49,14 @@ pub fn derive_mass_from_dataset<R>(
 ) -> io::Result<Option<MassDerivationResult<R>>>
 where
     R: RealField
+        + Clone
         + From<f64>
         + Into<f64>
-        + Copy
+        + RealField
         + Default
         + std::fmt::Debug
-        + std::fmt::Display
-        + deep_causality_num::Float,
+        + deep_causality_num::FromPrimitive
+        + deep_causality_num::ToPrimitive,
 {
     // 1. Filter Anomalous Weeks
     if let Some(week) = extract_gps_week(dataset_name)
@@ -90,7 +91,7 @@ where
 
         // We need SpaceTimeCoordinate to implement ChronoGaugeWitness logic if not using the trait...
         // But assuming the trait is available as used in E01.
-        if let Ok(gm) = ChronoGaugeWitness::source(gauge_field, &data[idx_a], &data[idx_b]) {
+        if let Ok(gm) = gauge_field.source(&data[idx_a], &data[idx_b]) {
             raw_gm_values.push(gm);
         }
 

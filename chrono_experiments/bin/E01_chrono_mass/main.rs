@@ -9,7 +9,7 @@ use chrono_experiments::print_utils::{print_mass_global_summary, print_mass_stat
 use chrono_experiments::proces_utils::{apply_mad_filter, interpolate_space_time};
 use chrono_experiments::{AnalysisConfig, SpaceTimeCoordinate};
 use deep_causality_num::{Float106, RealField};
-use deep_causality_physics::{ChronoGauge, ChronoGaugeWitness};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeOps};
 use deep_causality_topology::Lattice;
 use rayon::iter::IntoParallelRefIterator;
 use rayon::prelude::*;
@@ -198,8 +198,8 @@ fn process_dataset(
             continue;
         }
 
-        // Use ChronoGaugeWitness::source() to invert the Einstein field equation
-        if let Ok(gm) = ChronoGaugeWitness::source(gauge_field, &data[idx_a], &data[idx_b]) {
+        // Use source() to invert the Einstein field equation
+        if let Ok(gm) = gauge_field.source(&data[idx_a], &data[idx_b]) {
             raw_gm_values.push(gm);
         }
 

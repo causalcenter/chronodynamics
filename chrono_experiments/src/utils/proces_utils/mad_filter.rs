@@ -3,7 +3,7 @@
  * Copyright (c) "2025" . The DeepCausality Authors and Contributors. All Rights Reserved.
  */
 
-use deep_causality_num::Float;
+use deep_causality_num::RealField;
 
 /// Apply MAD (Median Absolute Deviation) filtering to remove outliers.
 ///
@@ -14,7 +14,10 @@ use deep_causality_num::Float;
 /// The constant 1.4826 ≈ 1/Φ⁻¹(3/4) where Φ⁻¹ is the inverse normal CDF.
 /// This makes MAD a consistent estimator of σ for Gaussian-distributed data:
 /// σ ≈ 1.4826 × MAD
-pub fn apply_mad_filter<T: Float>(data: &[T], outlier_sigma: T) -> Vec<T> {
+pub fn apply_mad_filter<T>(data: &[T], outlier_sigma: T) -> Vec<T>
+where
+    T: RealField + From<f64> + Clone,
+{
     if data.is_empty() {
         return Vec::new();
     }
@@ -28,7 +31,7 @@ pub fn apply_mad_filter<T: Float>(data: &[T], outlier_sigma: T) -> Vec<T> {
         sorted[sorted.len() / 2]
     } else {
         let mid = sorted.len() / 2;
-        let two = T::from(2.0).unwrap_or_else(|| T::one() + T::one());
+        let two = T::from(2.0);
         (sorted[mid - 1] + sorted[mid]) / two
     };
 
@@ -42,15 +45,12 @@ pub fn apply_mad_filter<T: Float>(data: &[T], outlier_sigma: T) -> Vec<T> {
         sorted_residuals[sorted_residuals.len() / 2]
     } else {
         let mid = sorted_residuals.len() / 2;
-        let two = T::from(2.0).unwrap_or_else(|| T::one() + T::one());
+        let two = T::from(2.0);
         (sorted_residuals[mid - 1] + sorted_residuals[mid]) / two
     };
 
     // Estimate sigma from MAD (σ ≈ 1.4826 × MAD)
-    // Fallback chain: 1.4826 → 1.5 → 1.0
-    let scale_factor = T::from(1.4826)
-        .or_else(|| T::from(1.5))
-        .unwrap_or_else(T::one);
+    let scale_factor = T::from(1.4826);
     let sigma_est = scale_factor * mad;
 
     if sigma_est > T::zero() {

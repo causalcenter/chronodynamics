@@ -14,6 +14,7 @@
 //! With standard Wilson action: O(a²) discretization errors.
 //! With Symanzik improvement: O(a⁴) discretization errors.
 
+use crate::SpaceTimeCoord;
 use deep_causality_num::RealField;
 use deep_causality_topology::TopologyError;
 
@@ -82,65 +83,60 @@ pub trait ChronoGaugeOps<R: RealField> {
     fn action_phase_correlation(&self) -> Result<R, TopologyError>;
 
     // =========================================================================
-    // Monte Carlo Methods
+    // Einstein Field Equation Inversion
     // =========================================================================
 
-    /// Thermalizes the gauge field with Metropolis sweeps.
+    /// Inverts the Einstein field equation to compute source mass GM.
     ///
-    /// Performs `n_sweeps` Metropolis updates with step size `epsilon`.
-    /// Returns the acceptance rate (should be 0.3-0.5 for efficiency).
+    /// This method solves the Einstein field equations in reverse, deriving
+    /// the gravitational parameter GM from observed curvature (clock effects)
+    /// and kinetic energy differences between two space-time coordinates.
     ///
-    /// # Arguments
+    /// # Mathematics
     ///
-    /// * `n_sweeps` - Number of full lattice sweeps
-    /// * `epsilon` - Step size for link updates
-    /// * `rng` - Random number generator
-    fn thermalize<Rng: deep_causality_rand::Rng>(
-        &mut self,
-        n_sweeps: usize,
-        epsilon: R,
-        rng: &mut Rng,
-    ) -> Result<f64, TopologyError>;
-
-    /// Computes an observable with jackknife error estimation.
+    /// Given curvature tensor R and stress-energy tensor T, solve:
     ///
-    /// Performs `n_measurements` measurements with `skip` sweeps between each.
-    /// Returns (mean, error) of the observable.
+    /// $$G_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}$$
+    ///
+    /// for the source mass parameter $GM$.
+    ///
+    /// # Formula
+    ///
+    /// $$GM = \frac{c^2(\dot{\tau}_b - \dot{\tau}_a) + \frac{1}{2}(v_b^2 - v_a^2)}{1/r_a - 1/r_b}$$
     ///
     /// # Arguments
     ///
-    /// * `observable` - Function that computes the observable from the field
-    /// * `n_measurements` - Number of measurements
-    /// * `skip` - Number of sweeps between measurements (decorrelation)
-    /// * `epsilon` - Step size for Metropolis updates
-    /// * `rng` - Random number generator
-    fn measure_with_error<F, Rng>(
-        &mut self,
-        observable: F,
-        n_measurements: usize,
-        skip: usize,
-        epsilon: R,
-        rng: &mut Rng,
-    ) -> Result<(R, R), TopologyError>
+    /// * `coord_a` - First space-time coordinate (typically lower altitude/slower clock)
+    /// * `coord_b` - Second space-time coordinate (typically higher altitude/faster clock)
+    ///
+    /// # Type Parameters
+    ///
+    /// * `C` - Type implementing `SpaceTimeCoord<R>` trait for coordinate access
+    ///
+    /// # Errors
+    ///
+    /// Returns `TopologyError::LatticeGaugeError` if the radial separation is insufficient.
+    fn source<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
     where
-        F: Fn(&Self) -> Result<R, TopologyError>,
-        Rng: deep_causality_rand::Rng;
+        C: SpaceTimeCoord<R>;
 
-    /// Automatically tunes the Metropolis step size `epsilon`.
+    /// Computes J2 oblateness coefficient from observed satellite data.
     ///
-    /// Iteratively adjusts epsilon to achieve a target acceptance rate.
+    /// The J2 term represents Earth's equatorial bulge and is a critical
+    /// correction for precise orbital mechanics and gravitational modeling.
     ///
     /// # Arguments
     ///
-    /// * `initial_epsilon` - Starting step size
-    /// * `target_acceptance` - Desired acceptance rate (e.g. 0.5)
-    /// * `max_steps` - Maximum tuning iterations
-    /// * `rng` - Random number generator
-    fn auto_tune_metropolis<Rng: deep_causality_rand::Rng>(
-        &mut self,
-        initial_epsilon: R,
-        target_acceptance: f64,
-        max_steps: usize,
-        rng: &mut Rng,
-    ) -> Result<R, TopologyError>;
+    /// * `data` - Slice of space-time coordinates for J2 calculation
+    ///
+    /// # Type Parameters
+    ///
+    /// * `C` - Type implementing `SpaceTimeCoord<R>` trait for coordinate access
+    ///
+    /// # Errors
+    ///
+    /// Returns `TopologyError::LatticeGaugeError` if computation fails.
+    fn solve_j2<C>(&self, data: &[C]) -> Result<R, TopologyError>
+    where
+        C: SpaceTimeCoord<R>;
 }

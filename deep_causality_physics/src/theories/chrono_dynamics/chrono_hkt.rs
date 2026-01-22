@@ -28,12 +28,10 @@
 //! 1. **Prefer safe alternatives**: Use the `source()` method directly with concrete types.
 //! 2. **Type-safe wrappers**: Always use `ChronoVector<T>` explicitly in your code.
 
-use crate::SPEED_OF_LIGHT;
-use crate::theories::alias::ChronoGauge;
 use crate::theories::chrono_dynamics::ChronoVector;
 use deep_causality_haft::{HKT4Unbound, NoConstraint, RiemannMap, Satisfies};
 use deep_causality_num::{Complex, RealField};
-use deep_causality_topology::{LatticeGaugeField, SU2_U1, TopologyError};
+use deep_causality_topology::{LatticeGaugeField, SU2_U1};
 use std::marker::PhantomData;
 
 // ============================================================================
@@ -269,75 +267,6 @@ pub trait SpaceTimeCoord<T: RealField> {
 
     /// Returns the Z coordinate (ECEF) in meters.
     fn z_m(&self) -> T;
-}
-
-impl<T> ChronoGaugeWitness<T>
-where
-    T: RealField + Clone + From<f64>,
-{
-    /// Inverts the Einstein field equation to compute source mass GM.
-    ///
-    /// This is the HKT-enabled replacement for `solve_for_gm()` in gravity_solver.rs.
-    ///
-    /// # Mathematics
-    ///
-    /// Given curvature tensor R and stress-energy tensor T, solve:
-    ///
-    /// $$G_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}$$
-    ///
-    /// for the source mass parameter $GM$.
-    ///
-    /// # Formula
-    ///
-    /// $$GM = \frac{c^2(\dot{\tau}_b - \dot{\tau}_a) + \frac{1}{2}(v_b^2 - v_a^2)}{1/r_a - 1/r_b}$$
-    ///
-    /// # Arguments
-    ///
-    /// * `_field` - The chrono-gauge field (used for consistency; actual computation is analytic)
-    /// * `coord_a` - First space-time coordinate (typically lower altitude/slower clock)
-    /// * `coord_b` - Second space-time coordinate (typically higher altitude/faster clock)
-    ///
-    /// # Errors
-    ///
-    /// Returns `TopologyError::LatticeGaugeError` if the radial separation is insufficient.
-    pub fn source<C: SpaceTimeCoord<T>>(
-        _field: &ChronoGauge<T>,
-        coord_a: &C,
-        coord_b: &C,
-    ) -> Result<T, TopologyError> {
-        let c_sq = T::from(SPEED_OF_LIGHT * SPEED_OF_LIGHT);
-
-        // Term 1: Clock rate difference (curvature contribution)
-        let term_time = c_sq * (coord_b.clock_drift_rate() - coord_a.clock_drift_rate());
-
-        // Term 2: Kinetic energy difference
-        let v_a = coord_a.inertial_velocity_magnitude();
-        let v_b = coord_b.inertial_velocity_magnitude();
-        let half = T::from(0.5);
-        let term_kinetic = half * (v_b * v_b - v_a * v_a);
-
-        // Term 3: Potential geometry
-        let r_a = coord_a.radius_m();
-        let r_b = coord_b.radius_m();
-        let term_potential = T::one() / r_a - T::one() / r_b;
-
-        // Check for sufficient separation
-        let epsilon = T::from(1e-20);
-        if term_potential.abs() < epsilon {
-            return Err(TopologyError::LatticeGaugeError(
-                "Insufficient radial separation for GM derivation".to_string(),
-            ));
-        }
-
-        Ok((term_time + term_kinetic) / term_potential)
-    }
-
-    pub fn solve_j2<C: SpaceTimeCoord<T>>(
-        _field: &ChronoGauge<T>,
-        _data: &[C],
-    ) -> Result<T, TopologyError> {
-        unimplemented!();
-    }
 }
 
 // ============================================================================

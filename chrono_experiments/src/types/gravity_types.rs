@@ -51,7 +51,7 @@ impl<R: RealField + From<f64>> SpaceTimeCoordinate<R> {
 }
 
 /// Implements the `SpaceTimeCoord` trait from CGLT for direct use with
-/// `ChronoGaugeWitness::source()`.
+/// `ChronoGaugeOps::source()` and other physics operations.
 impl<R: RealField + From<f64>> deep_causality_physics::SpaceTimeCoord<R>
     for SpaceTimeCoordinate<R>
 {

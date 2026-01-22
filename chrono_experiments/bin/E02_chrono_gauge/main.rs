@@ -29,7 +29,7 @@ use chrono_experiments::{
     statistics_utils::calculate_pca,
 };
 use deep_causality_num::{Float106, RealField};
-use deep_causality_physics::{ChronoGauge, ChronoGaugeWitness, EARTH_J2};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, EARTH_J2};
 use deep_causality_topology::{Lattice, LatticeGaugeField};
 use rayon::prelude::*;
 use std::collections::HashMap;
@@ -88,7 +88,7 @@ fn main() -> io::Result<()> {
 
 fn run_j2_analysis(data_path: &str, gauge_field: &ChronoGauge<FloatType>) {
     // J2 Oblateness Estimation
-    println!("\n📐 Running J2 Oblateness Estimation (ChronoGaugeWitness::solve_j2)...");
+    println!("\n📐 Running J2 Oblateness Estimation (ChronoGaugeOps::solve_j2)...");
     let all_coords =
         collect_all_coordinates(data_path).expect("couldn't collect all coordinates data");
     println!(
@@ -99,7 +99,7 @@ fn run_j2_analysis(data_path: &str, gauge_field: &ChronoGauge<FloatType>) {
     if !all_coords.is_empty() {
         // Use the Gauge Field Witness to solve for J2
         // This leverages the HKT implementation in deep_causality_physics
-        match ChronoGaugeWitness::solve_j2(gauge_field, &all_coords) {
+        match gauge_field.solve_j2(&all_coords) {
             Ok(derived_j2) => {
                 // Reference J2 (JGM-3)
                 let reference_j2 = FloatType::from(EARTH_J2);
