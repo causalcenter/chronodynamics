@@ -5,7 +5,7 @@ time RUSTFLAGS='-C target-cpu=native' cargo run --release --bin chrono_mass
 ║  E00: CHRONO-MASS EXPERIMENT                                         ║
 ║  GM Derivation from Time Dilation via ChronoGauge                    ║
 ╠══════════════════════════════════════════════════════════════════════╣
-║  Float Type: deep_causality_num::float_double::DoubleFloat           ║
+║  Float Type: deep_causality_num::float_double::Float106           ║
 ║  Satellite:  E14 (Galileo)                                           ║
 ║  Theory:     Chrono-Gauge Lattice (U(1) × SU(2) Electroweak)         ║
 ╚══════════════════════════════════════════════════════════════════════╝

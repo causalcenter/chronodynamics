@@ -8,7 +8,7 @@ use chrono_data_manager::{
 use chrono_experiments::print_utils::{print_mass_global_summary, print_mass_statistics};
 use chrono_experiments::proces_utils::{apply_mad_filter, interpolate_space_time};
 use chrono_experiments::{AnalysisConfig, SpaceTimeCoordinate};
-use deep_causality_num::{DoubleFloat, RealField};
+use deep_causality_num::{Float106, RealField};
 use deep_causality_physics::{ChronoGauge, ChronoGaugeWitness};
 use deep_causality_topology::Lattice;
 use rayon::iter::IntoParallelRefIterator;
@@ -17,8 +17,8 @@ use std::io;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-/// Change this to `f64` for standard precision or `DoubleFloat` for quad-precision.
-type FloatType = DoubleFloat;
+/// Change this to `f64` for standard precision or `Float106` for quad-precision.
+type FloatType = Float106;
 
 /// Satellite ID for this experiment (Galileo E14).
 pub const SAT_ID: &str = "E14";

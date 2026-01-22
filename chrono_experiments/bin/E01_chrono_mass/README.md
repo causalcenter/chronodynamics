@@ -42,7 +42,7 @@ $$GM = \frac{c^2 \cdot \Delta\dot{\tau} + \frac{1}{2}\Delta v^2}{\Delta(1/r)}$$
 **Experiment Configuration**:
 
 - **Theory**: Chrono-Gauge Lattice (U(1) × SU(2))
-- **Precision**: `DoubleFloat` (Quad-Precision)
+- **Precision**: `Float106` (Quad-Precision)
 - **Data**: Full-year coverage (2016: 100%, 2017: 100%, 2018: ~30%)
 - **Filtering**: IGS14 Reference Frame Transition (Jan-Feb 2017)
 
@@ -136,7 +136,7 @@ pub const ANOMALOUS_GNSS_WEEKS: &[u32] = &[
 ## Usage
 
 ```bash
-# Run analysis with Chrono-Gauge and DoubleFloat
+# Run analysis with Chrono-Gauge and Float106
 cargo run --release --bin chrono_mass
 ```
 

@@ -13,7 +13,7 @@ use chrono_experiments::utils::observatory_utils::windowing::{
     AnomalyTier, scan_temporal_anomalies,
 };
 use chrono_experiments::{IncidentRecord, OBSERVATORY_CONFIG, ObservatoryConfigParams};
-use deep_causality_num::{DoubleFloat, RealField};
+use deep_causality_num::{Float106, RealField};
 use deep_causality_physics::NEWTONIAN_CONSTANT_OF_GRAVITATION as G_REF;
 use deep_causality_physics::{EARTH_GM, SPEED_OF_LIGHT};
 // Added
@@ -30,8 +30,8 @@ use std::fs;
 use std::io;
 use std::sync::Mutex;
 
-/// Change this to `f64` for standard precision or `DoubleFloat` for quad-precision.
-type FloatType = DoubleFloat;
+/// Change this to `f64` for standard precision or `Float106` for quad-precision.
+type FloatType = Float106;
 
 // CONSTANTS
 const WINDOW_SIZE_EPOCHS: usize = 2016; // 1 week

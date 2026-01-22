@@ -12,7 +12,7 @@ pub fn print_gauge_header() {
 
     println!(
         "🔬 Float Type: {}",
-        std::any::type_name::<deep_causality_num::DoubleFloat>()
+        std::any::type_name::<deep_causality_num::Float106>()
     );
 }
 

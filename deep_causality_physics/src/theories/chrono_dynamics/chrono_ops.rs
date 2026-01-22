@@ -80,7 +80,6 @@ pub trait ChronoGaugeOps<R: RealField> {
 
     /// Computes action-phase correlation for wave validation.
     fn action_phase_correlation(&self) -> Result<R, TopologyError>;
-    
 
     // =========================================================================
     // Monte Carlo Methods

@@ -4,7 +4,7 @@
 ║               Lattice Gauge Theory Cross-Validation                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-🔬 Float Type: deep_causality_num::float_double::DoubleFloat
+🔬 Float Type: deep_causality_num::float_double::Float106
 📊 Data path: /Users/marvin/RustroverProjects/dcl/chrono_dynamics/data_manager/data/gnss
 Folder found at path: /Users/marvin/RustroverProjects/dcl/chrono_dynamics/data_manager/data/gnss
 

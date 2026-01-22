@@ -33,7 +33,7 @@ use crate::theories::alias::ChronoGauge;
 use crate::theories::chrono_dynamics::ChronoVector;
 use deep_causality_haft::{HKT4Unbound, NoConstraint, RiemannMap, Satisfies};
 use deep_causality_num::{Complex, RealField};
-use deep_causality_topology::{Electroweak, LatticeGaugeField, TopologyError};
+use deep_causality_topology::{LatticeGaugeField, SU2_U1, TopologyError};
 use std::marker::PhantomData;
 
 // ============================================================================
@@ -79,7 +79,7 @@ where
     T: RealField,
 {
     /// The underlying chrono-gauge lattice field.
-    pub field: LatticeGaugeField<Electroweak, 4, Complex<T>, T>,
+    pub field: LatticeGaugeField<SU2_U1, 4, Complex<T>, T>,
     _marker: PhantomData<(A, B, C, D)>,
 }
 
@@ -88,7 +88,7 @@ where
     T: RealField,
 {
     /// Creates a new ChronoGaugeTensor from a gauge field.
-    pub fn new(field: LatticeGaugeField<Electroweak, 4, Complex<T>, T>) -> Self {
+    pub fn new(field: LatticeGaugeField<SU2_U1, 4, Complex<T>, T>) -> Self {
         Self {
             field,
             _marker: PhantomData,
@@ -189,7 +189,7 @@ where
     /// Computes R(u,v)w = [∇_u, ∇_v]w, the commutator of covariant derivatives.
     /// For chrono-gauge: measures the time dilation curvature between directions u and v.
     fn curvature_impl(
-        field: &LatticeGaugeField<Electroweak, 4, Complex<T>, T>,
+        field: &LatticeGaugeField<SU2_U1, 4, Complex<T>, T>,
         u: &ChronoVector<T>,
         v: &ChronoVector<T>,
         w: &ChronoVector<T>,
@@ -229,7 +229,7 @@ where
     ///
     /// Computes two-body gravitational scattering using the chrono-gauge propagator.
     fn scatter_impl(
-        field: &LatticeGaugeField<Electroweak, 4, Complex<T>, T>,
+        field: &LatticeGaugeField<SU2_U1, 4, Complex<T>, T>,
         in_1: &ChronoVector<T>,
         in_2: &ChronoVector<T>,
     ) -> (ChronoVector<T>, ChronoVector<T>) {

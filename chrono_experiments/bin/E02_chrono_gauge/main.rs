@@ -28,7 +28,7 @@ use chrono_experiments::{
     proces_utils::interpolate_space_time_single_pass,
     statistics_utils::calculate_pca,
 };
-use deep_causality_num::{DoubleFloat, RealField};
+use deep_causality_num::{Float106, RealField};
 use deep_causality_physics::{ChronoGauge, ChronoGaugeWitness, EARTH_J2};
 use deep_causality_topology::{Lattice, LatticeGaugeField};
 use rayon::prelude::*;
@@ -40,8 +40,8 @@ use std::sync::Mutex;
 // CONFIGURATION
 // =============================================================================
 
-/// Float type for calculations. Use `DoubleFloat` for quad-precision.
-type FloatType = DoubleFloat;
+/// Float type for calculations. Use `Float106` for quad-precision.
+type FloatType = Float106;
 
 /// Minimum satellites needed per epoch for LGT construction.
 const MIN_SATELLITES: usize = 6;

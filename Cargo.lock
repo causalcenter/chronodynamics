@@ -106,12 +106,12 @@ checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 [[package]]
 name = "deep_causality_ast"
 version = "0.1.5"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 
 [[package]]
 name = "deep_causality_core"
-version = "0.0.4"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.0.5"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 dependencies = [
  "deep_causality_haft",
 ]
@@ -119,17 +119,17 @@ dependencies = [
 [[package]]
 name = "deep_causality_haft"
 version = "0.3.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 
 [[package]]
 name = "deep_causality_metric"
-version = "0.1.2"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.2.0"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 
 [[package]]
 name = "deep_causality_multivector"
-version = "0.3.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.4.0"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 dependencies = [
  "deep_causality_core",
  "deep_causality_haft",
@@ -140,8 +140,8 @@ dependencies = [
 
 [[package]]
 name = "deep_causality_num"
-version = "0.1.12"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.2.0"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 
 [[package]]
 name = "deep_causality_physics"
@@ -157,16 +157,16 @@ dependencies = [
 
 [[package]]
 name = "deep_causality_rand"
-version = "0.1.10"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.1.11"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 dependencies = [
  "deep_causality_num",
 ]
 
 [[package]]
 name = "deep_causality_sparse"
-version = "0.1.4"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.1.5"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 dependencies = [
  "deep_causality_haft",
  "deep_causality_num",
@@ -174,8 +174,8 @@ dependencies = [
 
 [[package]]
 name = "deep_causality_tensor"
-version = "0.3.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.4.0"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 dependencies = [
  "deep_causality_ast",
  "deep_causality_haft",
@@ -184,8 +184,8 @@ dependencies = [
 
 [[package]]
 name = "deep_causality_topology"
-version = "0.3.0"
-source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#a1d5683a2168fa48091462383119e57181020a5e"
+version = "0.4.0"
+source = "git+https://github.com/deepcausality-rs/deep_causality.git?branch=main#7da3208ef6f06cd3a2583e4c4668ede9cf7ba2a0"
 dependencies = [
  "deep_causality_haft",
  "deep_causality_metric",
@@ -271,9 +271,9 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.105"
+version = "1.0.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "535d180e0ecab6268a3e718bb9fd44db66bbbc256257165fc699dadf70d16fe7"
+checksum = "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
 dependencies = [
  "unicode-ident",
 ]

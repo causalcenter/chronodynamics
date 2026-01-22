@@ -1,6 +1,6 @@
 ╔══════════════════════════════════════════════════════════════════════════╗
 ║        Forensic Clock Analysis & Fleet Health Monitoring                 ║
-║       Float Type: deep_causality_num::float_double::DoubleFloat            ║
+║       Float Type: deep_causality_num::float_double::Float106            ║
 ╚══════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────┐
