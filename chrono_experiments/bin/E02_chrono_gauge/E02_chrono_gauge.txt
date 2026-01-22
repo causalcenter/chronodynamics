@@ -1,82 +1,117 @@
-     Running `target/release/chrono_gauge`
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║               E02 CHRONO-GAUGE VALIDATION EXPERIMENT                         ║
 ║               Lattice Gauge Theory Cross-Validation                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-🔬 Float Type: deep_causality_num::float_double::Float106
-📊 Data path: /Users/marvin/RustroverProjects/dcl/chrono_dynamics/data_manager/data/gnss
-Folder found at path: /Users/marvin/RustroverProjects/dcl/chrono_dynamics/data_manager/data/gnss
-
-###################################################
-# YEAR: 2016
-###################################################
-
-
-───────────────────────────────────────────────────
-  2016 SUMMARY
-───────────────────────────────────────────────────
-  Datasets:        112
-  Epochs:       156240
-  Sites:        156240
-
-  📊 OBSERVABLES (mean across datasets):
-  Mass Density:      1.964558e-31
-  Curl Magnitude:    0.000000e0
-  Gradient Mag:      2.898327e-13
-  Vorticity-Z:       0.000000e0
-  Derived Rotation:  7.275000e-5
-
-  📐 PHYSICS VALIDATIONS:
-  Time-Velocity Corr: 1.000000
-  Virial Ratio:       0.279744
-  Tolman Consistency: 1.000000
-###################################################
-# YEAR: 2017
-###################################################
+🔬 Float Type: deep_causality_num::float_106::Float106
+📊 Data path: /Users/marvin/RustroverProjects/dcl/chronodynamics/chrono_data_manager/data/gnss
+Folder found at path: /Users/marvin/RustroverProjects/dcl/chronodynamics/chrono_data_manager/data/gnss
 
 
 ───────────────────────────────────────────────────
   2017 SUMMARY
 ───────────────────────────────────────────────────
-  Datasets:        112
-  Epochs:       156240
-  Sites:        156240
+  Datasets:        364
+  Epochs:       507561
+  Sites:        507561
 
   📊 OBSERVABLES (mean across datasets):
-  Mass Density:      4.240316e-33
+  Mass Density:      4.515190e-32
   Curl Magnitude:    0.000000e0
-  Gradient Mag:      6.214167e-14
-  Vorticity-Z:       0.000000e0
-  Derived Rotation:  7.274330e-5
-
-  📐 PHYSICS VALIDATIONS:
-  Time-Velocity Corr: 0.999989
-  Virial Ratio:       0.280249
-  Tolman Consistency: 1.000000
-###################################################
-# YEAR: 2018
-###################################################
-
-
-───────────────────────────────────────────────────
-  2018 SUMMARY
-───────────────────────────────────────────────────
-  Datasets:        107
-  Epochs:       148726
-  Sites:        148726
-
-  📊 OBSERVABLES (mean across datasets):
-  Mass Density:      1.038671e-32
-  Curl Magnitude:    0.000000e0
-  Gradient Mag:      7.303884e-14
+  Gradient Mag:      1.923814e-13
   Vorticity-Z:       0.000000e0
   Derived Rotation:  7.275000e-5
 
   📐 PHYSICS VALIDATIONS:
-  Time-Velocity Corr: 1.000000
-  Virial Ratio:       0.280925
+  Time-Velocity Corr: 0.999993
+  Virial Ratio:       0.280353
   Tolman Consistency: 1.000000
+
+───────────────────────────────────────────────────
+  2018 SUMMARY
+───────────────────────────────────────────────────
+  Datasets:        368
+  Epochs:       512542
+  Sites:        512542
+
+  📊 OBSERVABLES (mean across datasets):
+  Mass Density:      2.556791e-33
+  Curl Magnitude:    0.000000e0
+  Gradient Mag:      2.378684e-14
+  Vorticity-Z:       0.000000e0
+  Derived Rotation:  7.274592e-5
+
+  📐 PHYSICS VALIDATIONS:
+  Time-Velocity Corr: 0.999999
+  Virial Ratio:       0.280761
+  Tolman Consistency: 1.000000
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║               PRINCIPAL COMPONENT ANALYSIS                                   ║
+║               Dimensionality Reduction of Validation Metrics                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📊 PCA Results (732 observations, 8 variables)
+───────────────────────────────────────────────────────────────────────────────
+
+Variance Explained by Principal Components:
+  PC1: 50.96% (Cumulative: 50.96%)
+  PC2: 33.39% (Cumulative: 84.34%)
+  PC3: 15.66% (Cumulative: 100.00%)
+
+───────────────────────────────────────────────────────────────────────────────
+Principal Component Loadings (Contribution of each variable):
+
+PC1 (explains 51.0% of variance):
+  Mass/Tidal (Laplacian)         + 0.000
+  Frame-Dragging (Curl)          + 0.000
+  Geoid (Gradient)               + 0.000
+  Spin (Vorticity-Z)             + 0.000
+  Momentum (Time-Vel Corr)       + 0.708 ████████████████████████████
+  Energy (Virial Ratio)          + 0.050 ██
+  Thermodynamics (Tolman)        + 0.000
+  Earth Rotation (Derived)       + 0.705 ████████████████████████████
+
+PC2 (explains 33.4% of variance):
+  Mass/Tidal (Laplacian)         + 0.000
+  Frame-Dragging (Curl)          + 0.000
+  Geoid (Gradient)               + 0.000
+  Spin (Vorticity-Z)             + 0.000
+  Momentum (Time-Vel Corr)       + 0.017
+  Energy (Virial Ratio)          + 0.996 ███████████████████████████████████████
+  Thermodynamics (Tolman)        + 0.000
+  Earth Rotation (Derived)       - 0.088 ███
+
+PC3 (explains 15.7% of variance):
+  Mass/Tidal (Laplacian)         + 0.000
+  Frame-Dragging (Curl)          + 0.000
+  Geoid (Gradient)               + 0.000
+  Spin (Vorticity-Z)             + 0.000
+  Momentum (Time-Vel Corr)       - 0.706 ████████████████████████████
+  Energy (Virial Ratio)          + 0.075 ██
+  Thermodynamics (Tolman)        + 0.000
+  Earth Rotation (Derived)       + 0.704 ████████████████████████████
+
+───────────────────────────────────────────────────────────────────────────────
+Interpretation Guide:
+  • PC1 typically represents the dominant validation pattern
+  • High loadings (>0.5) indicate strong contribution to that component
+  • Components with >70% cumulative variance capture most information
+  • Variables with similar loadings are correlated
+═══════════════════════════════════════════════════════════════════════════════
+
+
+📐 Running J2 Oblateness Estimation (ChronoGaugeOps::solve_j2)...
+   Collected 30314722 coordinates for J2 analysis.
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  J2 ESTIMATION RESULT (via Chrono Gauge Field)                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    Data Points:         30314722                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    Derived J2:         1.106791e-3                                          ║
+║    Reference J2:       1.082630e-3  (JGM-3)                                  ║
+║    Error:              2.2317e0%                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
 
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                     CHRONO-GAUGE VALIDATION SUMMARY                          ║
@@ -89,67 +124,11 @@ Folder found at path: /Users/marvin/RustroverProjects/dcl/chrono_dynamics/data_m
   │ Tidal (Laplacian)        │ 0.00      │        0.00 │ ✅ PASS      │
   │ Frame-Dragging (Curl)    │ 0.00      │        0.00 │ ✅ PASS      │
   │ Spin (Vorticity-Z)       │ 0.00      │        0.00 │ ✅ PASS      │
-  │ Momentum (Correlation)   │ 1.00      │      1.0000 │ ✅ PASS      │
-  │ Thermodynamics (Tolman)  │ 1.00      │      1.0000 │ ✅ PASS      │
+  │ Momentum (Correlation)   │ 1.00      │        1.00 │ ✅ PASS      │
+  │ Thermodynamics (Tolman)  │ 1.00      │        1.00 │ ✅ PASS      │
   │ Earth Rotation (rad/s)   │ 7.29e-5   │     7.27e-5 │ ✅ PASS      │
   │ Derived GM (m^3/s^2)     │ 3.99e14   │     3.99e14 │ ✅ PASS      │
   │ Derived Mass (kg)        │ 5.97e24   │     5.97e24 │ ✅ PASS      │
-  │ Derived Gravity (m/s^2)  │ 9.81      │      9.82e0 │ ✅ PASS      │
   └──────────────────────────┴───────────┴─────────────┴─────────────┘
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║               PRINCIPAL COMPONENT ANALYSIS                                   ║
-║               Dimensionality Reduction of Validation Metrics                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-📊 PCA Results (331 observations, 8 variables)
-───────────────────────────────────────────────────────────────────────────────
-
-Variance Explained by Principal Components:
-  PC1: 65.57% (Cumulative: 65.57%)
-  PC2: 33.34% (Cumulative: 98.91%)
-  PC3: 1.09% (Cumulative: 100.00%)
-
-───────────────────────────────────────────────────────────────────────────────
-Principal Component Loadings (Contribution of each variable):
-
-PC1 (explains 65.6% of variance):
-  Mass/Tidal (Laplacian)         + 0.000
-  Frame-Dragging (Curl)          + 0.000
-  Geoid (Gradient)               + 0.000
-  Spin (Vorticity-Z)             + 0.000
-  Momentum (Time-Vel Corr)       + 0.707 ████████████████████████████
-  Energy (Virial Ratio)          + 0.002
-  Thermodynamics (Tolman)        + 0.000
-  Earth Rotation (Derived)       + 0.707 ████████████████████████████
-
-PC2 (explains 33.3% of variance):
-  Mass/Tidal (Laplacian)         + 0.000
-  Frame-Dragging (Curl)          + 0.000
-  Geoid (Gradient)               + 0.000
-  Spin (Vorticity-Z)             + 0.000
-  Momentum (Time-Vel Corr)       - 0.011
-  Energy (Virial Ratio)          + 1.000 ███████████████████████████████████████
-  Thermodynamics (Tolman)        + 0.000
-  Earth Rotation (Derived)       + 0.007
-
-PC3 (explains 1.1% of variance):
-  Mass/Tidal (Laplacian)         + 0.000
-  Frame-Dragging (Curl)          + 0.000
-  Geoid (Gradient)               + 0.000
-  Spin (Vorticity-Z)             + 0.000
-  Momentum (Time-Vel Corr)       + 0.707 ████████████████████████████
-  Energy (Virial Ratio)          + 0.013
-  Thermodynamics (Tolman)        + 0.000
-  Earth Rotation (Derived)       - 0.707 ████████████████████████████
-
-───────────────────────────────────────────────────────────────────────────────
-Interpretation Guide:
-  • PC1 typically represents the dominant validation pattern
-  • High loadings (>0.5) indicate strong contribution to that component
-  • Components with >70% cumulative variance capture most information
-  • Variables with similar loadings are correlated
-═══════════════════════════════════════════════════════════════════════════════
-
 
 ✅ E02 Chrono-Gauge experiment complete.

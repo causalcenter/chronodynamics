@@ -25,7 +25,6 @@
 //!
 //! ## Recommendations
 //!
-//! 1. **Prefer safe alternatives**: Use the `source()` method directly with concrete types.
 //! 2. **Type-safe wrappers**: Always use `ChronoVector<T>` explicitly in your code.
 
 use crate::theories::chrono_dynamics::ChronoVector;

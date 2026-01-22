@@ -76,7 +76,7 @@ fn main() -> io::Result<()> {
     run_pca_analysis(&all_results);
 
     // J2 Analysis
-    // run_j2_analysis(data_path, &gauge_field);
+    run_j2_analysis(data_path, &gauge_field);
 
     // Pass None for global correlation override since we now compute it per-dataset correctly
     print_cross_validation_table(&all_results, None);
@@ -97,8 +97,7 @@ fn run_j2_analysis(data_path: &str, gauge_field: &ChronoGauge<FloatType>) {
     );
 
     if !all_coords.is_empty() {
-        // Use the Gauge Field Witness to solve for J2
-        // This leverages the HKT implementation in deep_causality_physics
+        // Use the Chrono Gauge Field to solve for J2
         match gauge_field.solve_j2(&all_coords) {
             Ok(derived_j2) => {
                 // Reference J2 (JGM-3)
@@ -110,7 +109,7 @@ fn run_j2_analysis(data_path: &str, gauge_field: &ChronoGauge<FloatType>) {
                     "╔══════════════════════════════════════════════════════════════════════════════╗"
                 );
                 println!(
-                    "║  J2 ESTIMATION RESULT (via ChronoGaugeWitness HKT)                          ║"
+                    "║  J2 ESTIMATION RESULT (via Chrono Gauge Field)                            ║"
                 );
                 println!(
                     "╠══════════════════════════════════════════════════════════════════════════════╣"
