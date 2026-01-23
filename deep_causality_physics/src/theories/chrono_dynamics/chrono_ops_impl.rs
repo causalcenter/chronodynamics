@@ -2,7 +2,9 @@ use crate::{ChronoGauge, ChronoGaugeOps, SpaceTimeCoord};
 use crate::{EARTH_GM, EARTH_RADIUS_EQUATORIAL, SPEED_OF_LIGHT};
 use deep_causality_num::RealField;
 use deep_causality_topology::TopologyError;
+use rayon::prelude::*;
 use std::fmt::Debug;
+use std::iter::Sum;
 
 impl<R> ChronoGaugeOps<R> for ChronoGauge<R>
 where
@@ -12,6 +14,9 @@ where
         + Into<f64>
         + Default
         + Debug
+        + Send
+        + Sync
+        + Sum
         + deep_causality_num::FromPrimitive
         + deep_causality_num::ToPrimitive,
 {
@@ -124,11 +129,126 @@ where
     // Einstein Field Equation Inversion
     // =========================================================================
 
-    fn solve_gm<C>(&self, _coord_a: &C, _coord_b: &C) -> Result<R, TopologyError>
-    where
-        C: SpaceTimeCoord<R>,
-    {
-        unimplemented!()
+    fn solve_gm(&self) -> Result<R, TopologyError> {
+        // Hybrid method: combine Polyakov loop (precision) + Wilson action (robustness)
+        let gm_polyakov = self.solve_gm_polyakov()?;
+        let gm_action = self.solve_gm_from_action()?;
+
+        // Consistency check
+        let tolerance = <R as From<f64>>::from(0.05); // 5%
+        let relative_diff = if gm_polyakov != R::zero() {
+            ((gm_polyakov - gm_action) / gm_polyakov).abs()
+        } else {
+            R::one()
+        };
+
+        if relative_diff < tolerance {
+            // Methods agree: weighted average (favor precision)
+            let w_p = <R as From<f64>>::from(0.7);
+            let w_a = <R as From<f64>>::from(0.3);
+            Ok(w_p * gm_polyakov + w_a * gm_action)
+        } else {
+            // Disagreement: trust Polyakov (more precise for weak field)
+            Ok(gm_polyakov)
+        }
+    }
+
+    fn solve_gm_polyakov(&self) -> Result<R, TopologyError> {
+        let shape = self.lattice().shape();
+        let n_radial = shape[1];
+
+        if n_radial < 2 {
+            return Err(TopologyError::LatticeGaugeError(
+                "Insufficient radial resolution for GM derivation".to_string(),
+            ));
+        }
+
+        // Parallel over radial shells
+        let measurements: Vec<(R, R)> = (0..n_radial)
+            .into_par_iter()
+            .map(|r_idx| {
+                let r = lattice_index_to_radius::<R>(r_idx, n_radial);
+
+                // Average Polyakov loop over angular coordinates
+                let n_theta = shape[2];
+                let n_phi = shape[3];
+
+                let angular_sum: R = (0..n_theta)
+                    .into_par_iter()
+                    .flat_map(|theta_idx| {
+                        (0..n_phi).into_par_iter().map(move |phi_idx| {
+                            let site = [0, r_idx, theta_idx, phi_idx];
+                            self.try_polyakov_loop(&site, 0)
+                                .map(|p| RealField::abs(p))
+                                .unwrap_or(R::one())
+                        })
+                    })
+                    .sum();
+
+                let count = n_theta * n_phi;
+                let avg_p = angular_sum / <R as From<f64>>::from(count as f64);
+                (r, avg_p)
+            })
+            .collect();
+
+        // Fit |P(r)| = 1 - GM/(rc²) via regression on (1/r, |P|)
+        let c_sq = <R as From<f64>>::from(SPEED_OF_LIGHT * SPEED_OF_LIGHT);
+        let (slope, _intercept) = linear_regression_inv_r(&measurements)?;
+
+        // slope = -GM/c² => GM = -slope * c²
+        Ok(-slope * c_sq)
+    }
+
+    fn solve_gm_from_action(&self) -> Result<R, TopologyError> {
+        let shape = self.lattice().shape();
+        let n_radial = shape[1];
+
+        if n_radial < 2 {
+            return Err(TopologyError::LatticeGaugeError(
+                "Insufficient radial resolution for GM derivation".to_string(),
+            ));
+        }
+
+        // Parallel over radial shells
+        let gm_estimates: Vec<R> = (0..n_radial)
+            .into_par_iter()
+            .filter_map(|r_idx| {
+                let r = lattice_index_to_radius::<R>(r_idx, n_radial);
+
+                // Average action over angular coordinates
+                let n_theta = shape[2];
+                let n_phi = shape[3];
+
+                let action_sum: R = (0..n_theta)
+                    .into_par_iter()
+                    .flat_map(|theta_idx| {
+                        (0..n_phi).into_par_iter().map(move |phi_idx| {
+                            let site = [0, r_idx, theta_idx, phi_idx];
+                            self.try_plaquette_action(&site, 0, 1).unwrap_or(R::zero())
+                        })
+                    })
+                    .sum();
+
+                let count = n_theta * n_phi;
+                let avg_action = action_sum / <R as From<f64>>::from(count as f64);
+
+                if avg_action > R::zero() {
+                    // sqrt(action) ∝ GM/r² => GM = sqrt(action) * r²
+                    Some(avg_action.sqrt() * r * r)
+                } else {
+                    None
+                }
+            })
+            .collect();
+
+        if gm_estimates.is_empty() {
+            return Err(TopologyError::LatticeGaugeError(
+                "No valid action measurements for GM derivation".to_string(),
+            ));
+        }
+
+        let sum: R = gm_estimates.par_iter().cloned().sum();
+        Ok(sum / <R as From<f64>>::from(gm_estimates.len() as f64))
     }
 
     fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
@@ -360,4 +480,157 @@ where
     let intercept = mean_y - slope * mean_x;
 
     Ok((slope, intercept))
+}
+
+// ============================================================================
+// Helper functions for GM calculation (module-level)
+// ============================================================================
+
+/// Physical bounds for radial mapping
+const EARTH_RADIUS_M: f64 = 6.371e6; // Earth surface (meters)
+const GEO_ORBIT_RADIUS_M: f64 = 4.2e7; // GEO orbit (meters)
+
+/// Converts a lattice index to physical radius (meters).
+///
+/// Uses linear mapping from Earth surface to GEO orbit.
+fn lattice_index_to_radius<R>(r_idx: usize, n_radial: usize) -> R
+where
+    R: RealField + From<f64>,
+{
+    let r_min = <R as From<f64>>::from(EARTH_RADIUS_M);
+    let r_max = <R as From<f64>>::from(GEO_ORBIT_RADIUS_M);
+    let idx_norm = <R as From<f64>>::from(r_idx as f64 / (n_radial - 1).max(1) as f64);
+    r_min + idx_norm * (r_max - r_min)
+}
+
+/// Converts a physical radius to lattice index.
+fn radius_to_lattice_index<R>(r: R, n_radial: usize) -> usize
+where
+    R: RealField + Into<f64>,
+{
+    let r_min = EARTH_RADIUS_M;
+    let r_max = GEO_ORBIT_RADIUS_M;
+    let r_f64: f64 = r.into();
+    let r_norm = (r_f64 - r_min) / (r_max - r_min);
+    let idx = (r_norm * (n_radial - 1) as f64).round() as usize;
+    idx.min(n_radial - 1)
+}
+
+/// Performs linear regression on (1/r, y) pairs.
+/// Returns (slope, intercept) where y = slope * (1/r) + intercept.
+fn linear_regression_inv_r<R>(data: &[(R, R)]) -> Result<(R, R), TopologyError>
+where
+    R: RealField + Clone + From<f64>,
+{
+    if data.is_empty() {
+        return Err(TopologyError::LatticeGaugeError(
+            "Cannot perform regression on empty dataset".to_string(),
+        ));
+    }
+
+    // Transform (r, y) to (1/r, y)
+    let transformed: Vec<(R, R)> = data
+        .iter()
+        .filter(|(r, _)| *r != R::zero())
+        .map(|(r, y)| (R::one() / *r, *y))
+        .collect();
+
+    if transformed.is_empty() {
+        return Err(TopologyError::LatticeGaugeError(
+            "All radii are zero, cannot compute 1/r".to_string(),
+        ));
+    }
+
+    linear_regression(&transformed)
+}
+
+// ============================================================================
+// ChronoGaugeMutOps Implementation
+// ============================================================================
+
+use crate::{ChronoGaugeMutOps, SpaceTimeCoordinate};
+use deep_causality_num::Complex;
+use deep_causality_topology::{CWComplex, LinkVariable, SU2_U1};
+
+impl<R> ChronoGaugeMutOps<R> for ChronoGauge<R>
+where
+    R: RealField
+        + Clone
+        + From<f64>
+        + Into<f64>
+        + Default
+        + Debug
+        + Send
+        + Sync
+        + deep_causality_num::FromPrimitive
+        + deep_causality_num::ToPrimitive,
+{
+    fn populate_links_from_source(&mut self) -> Result<(), TopologyError> {
+        let data: &Vec<SpaceTimeCoordinate<R>> = self.source();
+        let shape = self.lattice().shape();
+        let n_radial = shape[1];
+        let n_temporal = shape[0];
+
+        if data.is_empty() {
+            return Err(TopologyError::LatticeGaugeError(
+                "Source data is empty, cannot populate links".to_string(),
+            ));
+        }
+
+        // Bin data by radial index
+        let mut radial_bins: Vec<Vec<R>> = vec![Vec::new(); n_radial];
+        for coord in data {
+            let r_idx = radius_to_lattice_index(coord.r_m, n_radial);
+            radial_bins[r_idx].push(coord.clock_drift_rate);
+        }
+
+        // Compute average clock drift per radial shell
+        let mut avg_drifts: Vec<Option<R>> = Vec::with_capacity(n_radial);
+        for bin in &radial_bins {
+            if bin.is_empty() {
+                avg_drifts.push(None);
+            } else {
+                let sum: R = bin.iter().cloned().fold(R::zero(), |a, b| a + b);
+                let avg = sum / <R as From<f64>>::from(bin.len() as f64);
+                avg_drifts.push(Some(avg));
+            }
+        }
+
+        // Encoding scale: phase = (1 - drift) * N_t
+        // This ensures Polyakov loop |P| = exp(-sum_phase) encodes the integrated potential
+        let n_t_scale = <R as From<f64>>::from(n_temporal as f64);
+
+        // Update temporal links at each radial shell
+        // Collect all temporal edge cells first to avoid borrow conflict
+        let temporal_cells: Vec<_> = self
+            .lattice()
+            .cells(1)
+            .filter(|cell| {
+                // Only temporal links (direction 0)
+                let dir = cell.orientation().trailing_zeros() as usize;
+                dir == 0
+            })
+            .collect();
+
+        // Now iterate over collected cells and set links
+        for cell in temporal_cells {
+            let pos = cell.position();
+            let r_idx = pos[1];
+
+            if let Some(avg_drift) = avg_drifts.get(r_idx).and_then(|opt| opt.as_ref()) {
+                // phase = (1 - clock_drift_rate) * N_t
+                // For GNSS: drift ≈ 1 - 10^{-10}, so phase ≈ 10^{-10} * N_t
+                let phase = (R::one() - *avg_drift) * n_t_scale;
+
+                // Create link variable with this phase
+                // U_0 = exp(i * phase) for U(1) part in the SU(2)×U(1) representation
+                let link = LinkVariable::<SU2_U1, Complex<R>, R>::from_phase(phase);
+
+                // Set the link in the gauge field
+                self.set_link(cell, link);
+            }
+        }
+
+        Ok(())
+    }
 }

@@ -83,70 +83,72 @@ pub trait ChronoGaugeOps<R: RealField> {
     fn action_phase_correlation(&self) -> Result<R, TopologyError>;
 
     // =========================================================================
-    // Einstein Field Equation Inversion
+    // Einstein Field Equation Inversion - Gauge-Based Methods
     // =========================================================================
 
-    /// Inverts the Einstein field equation to compute gravity mass GM.
+    /// Derives GM using the field's internal source data and gauge observables.
     ///
-    /// This method solves the Einstein field equations in reverse, deriving
-    /// the gravitational parameter GM from observed curvature (clock effects)
-    /// and kinetic energy differences between two space-time coordinates.
-    fn solve_gm<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
-    where
-        C: SpaceTimeCoord<R>;
+    /// This is the primary method for computing GM. It uses a hybrid approach
+    /// combining Polyakov loop (precision) and Wilson action (robustness).
+    ///
+    /// # Workflow
+    ///
+    /// 1. The field must have source data attached via `with_source()`
+    /// 2. Links must be populated via `populate_links_from_source()`
+    /// 3. This method extracts GM from the populated lattice observables
+    ///
+    /// # Returns
+    ///
+    /// The gravitational parameter GM in m³/s².
+    fn solve_gm(&self) -> Result<R, TopologyError>;
 
-    /// Inverts the Einstein field equation to compute gravity mass GM.
+    /// Derives GM using Polyakov loop measurements across radial positions.
+    ///
+    /// Uses the relation: |P(r)| ≈ 1 - GM/(rc²)
+    /// Fits |P| vs 1/r to extract GM from the slope.
+    fn solve_gm_polyakov(&self) -> Result<R, TopologyError>;
+
+    /// Derives GM using Wilson action measurements across radial positions.
+    ///
+    /// Uses the relation: s(r) ∝ (GM/r²)²
+    /// Extracts GM from sqrt(action) * r².
+    fn solve_gm_from_action(&self) -> Result<R, TopologyError>;
+
+    // =========================================================================
+    // Einstein Field Equation Inversion - Analytical Methods
+    // =========================================================================
+
+    /// Inverts the Einstein field equation to compute gravity mass GM analytically.
     ///
     /// This method solves the Einstein field equations in reverse, deriving
     /// the gravitational parameter GM from observed curvature (clock effects)
     /// and kinetic energy differences between two space-time coordinates.
-    ///
-    /// # Mathematics
-    ///
-    /// Given curvature tensor R and stress-energy tensor T, solve:
-    ///
-    /// $$G_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}$$
-    ///
-    /// for the source mass parameter $GM$.
     ///
     /// # Formula
     ///
     /// $$GM = \frac{c^2(\dot{\tau}_b - \dot{\tau}_a) + \frac{1}{2}(v_b^2 - v_a^2)}{1/r_a - 1/r_b}$$
-    ///
-    /// # Arguments
-    ///
-    /// * `coord_a` - First space-time coordinate (typically lower altitude/slower clock)
-    /// * `coord_b` - Second space-time coordinate (typically higher altitude/faster clock)
-    ///
-    /// # Type Parameters
-    ///
-    /// * `C` - Type implementing `SpaceTimeCoord<R>` trait for coordinate access
-    ///
-    /// # Errors
-    ///
-    /// Returns `TopologyError::LatticeGaugeError` if the radial separation is insufficient.
     fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>;
 
-    /// Computes J2 oblateness coefficient anayltically (without the Gauge Feild)
+    /// Computes J2 oblateness coefficient analytically (without the Gauge Field)
     /// from observed satellite time data.
-    ///
-    /// The J2 term represents Earth's equatorial bulge and is a critical
-    /// correction for precise orbital mechanics and gravitational modeling.
-    ///
-    /// # Arguments
-    ///
-    /// * `data` - Slice of space-time coordinates for J2 calculation
-    ///
-    /// # Type Parameters
-    ///
-    /// * `C` - Type implementing `SpaceTimeCoord<R>` trait for coordinate access
-    ///
-    /// # Errors
-    ///
-    /// Returns `TopologyError::LatticeGaugeError` if computation fails.
     fn solve_j2_analytical<C>(&self, data: &[C]) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>;
+}
+
+/// Mutable operations for populating the gauge field from source data.
+pub trait ChronoGaugeMutOps<R: RealField> {
+    /// Populates temporal link variables from the internal source data.
+    ///
+    /// This method reads clock drift rates from `self.source()`, bins them
+    /// by radius, and encodes the average drift into temporal link phases:
+    ///
+    /// $$U_0(x) = \exp(i \cdot (1 - \dot{\tau}) \cdot N_t)$$
+    ///
+    /// # Requirements
+    ///
+    /// The field must have source data attached (S = Vec<SpaceTimeCoordinate>).
+    fn populate_links_from_source(&mut self) -> Result<(), TopologyError>;
 }

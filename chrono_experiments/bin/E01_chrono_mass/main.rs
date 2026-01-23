@@ -3,7 +3,7 @@
  * Copyright (c) "2025" . The DeepCausality Authors and Contributors. All Rights Reserved.
  */
 use chrono_data_manager::{
-    ANOMALOUS_WEEKS, DataManager, YEARS, get_gnss_data_input_path, get_year_datasets,
+    ANOMALOUS_WEEKS, DataManager, get_gnss_data_input_path, get_year_datasets,
 };
 use chrono_experiments::AnalysisConfig;
 use chrono_experiments::print_utils::{print_mass_global_summary, print_mass_statistics};
@@ -16,6 +16,8 @@ use rayon::prelude::*;
 use std::io;
 use std::sync::Arc;
 use std::sync::Mutex;
+
+pub const YEARS: [&str; 1] = ["2017"];
 
 /// Change this to `f64` for standard precision or `Float106` for quad-precision.
 type FloatType = Float106;

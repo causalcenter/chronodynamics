@@ -12,6 +12,7 @@ use deep_causality_physics::{
     EARTH_GM, EARTH_MASS_KG, EARTH_RADIUS, NEWTONIAN_CONSTANT_OF_GRAVITATION,
 };
 use std::io;
+use std::iter::Sum;
 
 /// Extract GPS week from dataset name (e.g., "gbm19670" -> 1967)
 pub fn extract_gps_week(dataset: &str) -> Option<u32> {
@@ -57,6 +58,9 @@ where
         + std::fmt::Debug
         + deep_causality_num::FromPrimitive
         + deep_causality_num::ToPrimitive,
+    R: Send,
+    R: Sum,
+    R: Sync,
 {
     // 1. Filter Anomalous Weeks
     if let Some(week) = extract_gps_week(dataset_name)
