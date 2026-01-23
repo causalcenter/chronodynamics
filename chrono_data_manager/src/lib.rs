@@ -55,9 +55,10 @@ pub const YEARS_INCL_2016: [&str; 3] = ["2016", "2017", "2018"];
 
 /// Anomalous GPS datasets to exclude from analysis
 /// Format: 5-digit identifier = WWWWD (Week + Day)
+/// See E00 Chrono Observatory Experiment for details on how these were found via chrono field forensic
 pub const ANOMALOUS_WEEKS: &[u32] = &[
     //  2016
-    // E14-specific issues
+    // E14-specific issues most likely due to unstable orbit.
     19236, 19095, 1923, 1909,
     // 2017
     // IGS14 Reference Frame Transition (Jan 1 - Feb 25, 2017)

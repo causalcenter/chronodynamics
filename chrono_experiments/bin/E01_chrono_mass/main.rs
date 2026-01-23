@@ -19,7 +19,7 @@ const SAT_ID: &str = "E14";
 /// Enable verbose logging
 const DBG: bool = false;
 /// Switch between Chrono Gauge Field Procssing (False) and analytical approxiamtioin (true)
-const ANALYTICAL: bool = true;
+const ANALYTICAL: bool = false;
 
 /// Change this to `f64` for standard precision or `Float106` for high precision.
 pub type FloatType = Float106;
@@ -84,6 +84,9 @@ fn run_year_analysis_gauge(
     datasets.par_iter().for_each(|dataset| {
         // Extract GPS dataset ID from filename (e.g., "gbm19670" -> 19670)
         if let Some(dataset_id) = extract_gps_dataset_id(dataset)
+            // Filter out "Broken" GPS weeks e.g. Clocks crisis 2017, IGS08 to IGS14 transition, or Sept. anomaly 2018
+            // See E00 Chrono Experiment for how these were found via chrono forensic
+            // and see chrono_data_manager/src/lib.rs for a complete list of filtered out GPS weeks
             && ANOMALOUS_WEEKS.contains(&dataset_id)
         {
             if DBG {
