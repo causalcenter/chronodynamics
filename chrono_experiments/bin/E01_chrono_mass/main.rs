@@ -1,30 +1,28 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) "2025" . The DeepCausality Authors and Contributors. All Rights Reserved.
- */
 use chrono_data_manager::{
-    ANOMALOUS_WEEKS, DataManager, get_gnss_data_input_path, get_year_datasets,
+    ANOMALOUS_WEEKS, DataManager, YEARS, extract_gps_dataset_id, get_gnss_data_input_path,
+    get_year_datasets,
 };
-use chrono_experiments::AnalysisConfig;
-use chrono_experiments::print_utils::{print_mass_global_summary, print_mass_statistics};
+use chrono_experiments::print_utils::{print_chrono_mass_header, print_mass_summary};
 use chrono_experiments::proces_utils::{apply_mad_filter, interpolate_space_time};
+use chrono_experiments::*;
 use deep_causality_num::{Float106, RealField};
-use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, SpaceTimeCoordinate};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeMutOps, ChronoGaugeOps, SpaceTimeCoordinate};
 use deep_causality_topology::Lattice;
-use rayon::iter::IntoParallelRefIterator;
 use rayon::prelude::*;
 use std::io;
+use std::io::Error;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-pub const YEARS: [&str; 1] = ["2017"];
-
-/// Change this to `f64` for standard precision or `Float106` for quad-precision.
-type FloatType = Float106;
-
 /// Satellite ID for this experiment (Galileo E14).
-pub const SAT_ID: &str = "E14";
-pub const DBG: bool = false;
+const SAT_ID: &str = "E14";
+/// Enable verbose logging
+const DBG: bool = false;
+/// Switch between Chrono Gauge Field Procssing (False) and analytical approxiamtioin (true)
+const ANALYTICAL: bool = true;
+
+/// Change this to `f64` for standard precision or `Float106` for high precision.
+pub type FloatType = Float106;
 
 /// Macro to convert f64 literals to FloatType.
 macro_rules! flt {
@@ -33,71 +31,50 @@ macro_rules! flt {
     };
 }
 
-// =============================================================================
-// SETUP & INITIALIZATION
-// =============================================================================
-
 fn main() -> io::Result<()> {
-    println!("╔══════════════════════════════════════════════════════════════════════╗");
-    println!("║  E00: CHRONO-MASS EXPERIMENT                                         ║");
-    println!("║  GM Derivation from Time Dilation via ChronoGauge                    ║");
-    println!("╠══════════════════════════════════════════════════════════════════════╣");
-    println!("║  Float Type: {:<56}║", std::any::type_name::<FloatType>());
-    println!("║  Satellite:  E14 (Galileo)                                           ║");
-    println!("║  Theory:     Chrono-Gauge Lattice (U(1) × SU(2)                      ║");
-    println!("╚══════════════════════════════════════════════════════════════════════╝\n");
+    print_chrono_mass_header(ANALYTICAL);
 
     // Verify data path
     let data_path_buf = get_gnss_data_input_path();
     let data_path = data_path_buf.to_str().unwrap();
 
-    // Create the ChronoGauge field
-    let gauge_field = create_chrono_gauge();
-    // Run the experiment
-    run_experiment(&gauge_field, data_path)?;
-
-    Ok(())
-}
-
-fn create_chrono_gauge() -> ChronoGauge<FloatType> {
     // 4D lattice, size 32^4, periodic boundaries
-    let shape = [32, 32, 32, 32];
-    let periodic = [true, true, true, true];
-    let lattice = Arc::new(Lattice::new(shape, periodic));
+    let lattice = Arc::new(Lattice::new([32, 32, 32, 32], [true, true, true, true]));
 
-    // Initialize with identity configuration
-    // beta = 1.0 (coupling constant parameter, irrelevant for static analysis)
-    ChronoGauge::identity(lattice, flt!(1.0))
-}
-
-// =============================================================================
-// EXPERIMENT EXECUTION
-// =============================================================================
-
-/// Runs the chrono-mass experiment on real GNSS data.
-fn run_experiment(gauge_field: &ChronoGauge<FloatType>, data_path: &str) -> io::Result<()> {
     let mut yearly_results: Vec<(String, Vec<FloatType>)> = Vec::new();
-
     for year in YEARS {
-        let results = run_year_analysis(year, gauge_field, data_path)?;
+        let results = run_year_analysis(ANALYTICAL, year, lattice.clone(), data_path)?;
         yearly_results.push((year.to_string(), results));
     }
 
     let mut master_results: Vec<FloatType> = Vec::new();
     for (year, results) in &yearly_results {
-        print_mass_global_summary(results, year);
+        print_mass_summary(results, year);
         master_results.extend(results.iter().cloned());
     }
 
-    print_mass_global_summary(&master_results, "TOTAL (All Years)");
+    print_mass_summary(&master_results, "TOTAL (All Years)");
 
     Ok(())
 }
 
-/// Analyze a single year of data.
 fn run_year_analysis(
+    analytical: bool,
     year: &str,
-    gauge_field: &ChronoGauge<FloatType>,
+    lattice: Arc<Lattice<4>>,
+    data_path: &str,
+) -> io::Result<Vec<FloatType>> {
+    if analytical {
+        run_year_analysis_analytical(year, lattice, data_path)
+    } else {
+        run_year_analysis_gauge(year, lattice, data_path)
+    }
+}
+
+/// Analyze a single year of data.
+fn run_year_analysis_gauge(
+    year: &str,
+    lattice: Arc<Lattice<4>>,
     data_path: &str,
 ) -> io::Result<Vec<FloatType>> {
     let datasets = get_year_datasets(year);
@@ -121,7 +98,34 @@ fn run_year_analysis(
         let clk_path = format!("{}/{}/{}.clk", data_path, year, dataset);
         let sp3_path = format!("{}/{}/{}.sp3", data_path, year, dataset);
 
-        match process_dataset(dataset, &clk_path, &sp3_path, gauge_field) {
+        let process_result = (|| -> Result<Vec<FloatType>, io::Error> {
+            // Load GNSS data
+            let dm = DataManager::default();
+            let (clocks, orbits) = dm.load_gnss_single_satellite(&clk_path, &sp3_path, SAT_ID)?;
+
+            // Interpolate orbits to clock timestamps using 10th-order Lagrange polynomial
+            let data: Vec<SpaceTimeCoordinate<FloatType>> =
+                interpolate_space_time(&clocks, &orbits);
+
+            // 1. Create field and attach source data
+            // Use beta = 1.0 (standard stiffness)
+            let mut gauge_field =
+                ChronoGauge::<FloatType>::identity(lattice.clone(), flt!(1.0)).with_source(data);
+
+            // 2. Populate link variables from source (clock drift → link phase)
+            // This maps the clock drift rates into the U(1) phase of temporal links
+            if let Err(e) = gauge_field.populate_links_from_source() {
+                return Err(Error::other(e));
+            }
+
+            // 3. Extract GM via Gauge field
+            match gauge_field.solve_gm() {
+                Ok(gm) => Ok(vec![gm]),
+                Err(e) => Err(Error::other(e)),
+            }
+        })();
+
+        match process_result {
             Ok(results) => {
                 let mut acc = global_results.lock().unwrap();
                 acc.extend(results);
@@ -136,94 +140,101 @@ fn run_year_analysis(
     Ok(final_results)
 }
 
-/// Extract GPS dataset identifier from dataset name (e.g., "gbm19670" -> 19670)
-fn extract_gps_dataset_id(dataset: &str) -> Option<u32> {
-    // The dataset string is typically just the basename without extension, e.g., "gbm19670"
-    // "gbm" (3 chars) + Week (4 chars) + Day (1 char) = 5-digit identifier
-    if dataset.len() >= 8 && dataset.starts_with("gbm") {
-        let id_str = &dataset[3..8];
-        id_str.parse::<u32>().ok()
-    } else {
-        None
-    }
-}
+/// Analyze a single year of data.
+fn run_year_analysis_analytical(
+    year: &str,
+    lattice: Arc<Lattice<4>>,
+    data_path: &str,
+) -> io::Result<Vec<FloatType>> {
+    let datasets = get_year_datasets(year);
+    let global_results = Mutex::new(Vec::new());
 
-/// Processes a single dataset file pair.
-fn process_dataset(
-    dataset_name: &str,
-    clk_path: &str,
-    sp3_path: &str,
-    gauge_field: &ChronoGauge<FloatType>,
-) -> Result<Vec<FloatType>, io::Error> {
-    let config = AnalysisConfig::default();
+    let gauge_field = ChronoGauge::<FloatType>::identity(lattice, flt!(1.0));
 
-    // Load GNSS data
-    let dm = DataManager::default();
-    let (clocks, orbits) = dm.load_gnss_single_satellite(clk_path, sp3_path, SAT_ID)?;
-
-    // Interpolate orbits to clock timestamps using 10th-order Lagrange polynomial
-    let data: Vec<SpaceTimeCoordinate<FloatType>> = interpolate_space_time(&clocks, &orbits);
-
-    if DBG {
-        println!(
-            "[{}] Interpolated {} orbit × {} clock → {} space-time coords",
-            dataset_name,
-            orbits.len(),
-            clocks.len(),
-            data.len()
-        );
-    }
-
-    // Skip datasets with insufficient data
-    if data.len() <= config.window_size_indices {
-        if DBG {
-            println!("  → Insufficient data points for window size");
-        }
-        return Ok(Vec::new());
-    }
-
-    // Derive GM values using ChronoGaugeWitness::source()
-    let mut raw_gm_values: Vec<FloatType> = Vec::new();
-
-    let mut i = 0;
-    while i < data.len() - config.window_size_indices {
-        let idx_a = i;
-        let idx_b = i + config.window_size_indices;
-
-        let r_a: FloatType = data[idx_a].r_m;
-        let r_b: FloatType = data[idx_b].r_m;
-        let d_h: FloatType = (r_a - r_b).abs();
-
-        // Skip if height difference is too small
-        if d_h < config.min_height_diff_m {
-            i += 1;
-            continue;
+    // Process datasets in parallel
+    datasets.par_iter().for_each(|dataset| {
+        // Extract GPS dataset ID from filename (e.g., "gbm19670" -> 19670)
+        if let Some(dataset_id) = extract_gps_dataset_id(dataset)
+            && ANOMALOUS_WEEKS.contains(&dataset_id)
+        {
+            if DBG {
+                println!(
+                    "[{}] Skipping anomalous dataset {} (2017/2018 Data Crisis)",
+                    dataset, dataset_id
+                );
+            }
+            return;
         }
 
-        // Use source() to invert the Einstein field equation
-        if let Ok(gm) = gauge_field.solve_gm_analytical(&data[idx_a], &data[idx_b]) {
-            raw_gm_values.push(gm);
+        let clk_path = format!("{}/{}/{}.clk", data_path, year, dataset);
+        let sp3_path = format!("{}/{}/{}.sp3", data_path, year, dataset);
+
+        let process_result = (|| -> Result<Vec<FloatType>, io::Error> {
+            let config = AnalysisConfig::default();
+
+            // Load GNSS data
+            let dm = DataManager::default();
+            let (clocks, orbits) = dm.load_gnss_single_satellite(&clk_path, &sp3_path, SAT_ID)?;
+
+            // Interpolate orbits to clock timestamps using 10th-order Lagrange polynomial
+            let data: Vec<SpaceTimeCoordinate<FloatType>> =
+                interpolate_space_time(&clocks, &orbits);
+
+            // Skip datasets with insufficient data
+            if data.len() <= config.window_size_indices {
+                if DBG {
+                    println!("  → Insufficient data points for window size");
+                }
+                return Ok(Vec::new());
+            }
+
+            let mut raw_gm_values: Vec<FloatType> = Vec::new();
+
+            let mut i = 0;
+            while i < data.len() - config.window_size_indices {
+                let idx_a = i;
+                let idx_b = i + config.window_size_indices;
+
+                let r_a: FloatType = data[idx_a].r_m;
+                let r_b: FloatType = data[idx_b].r_m;
+                let d_h: FloatType = (r_a - r_b).abs();
+
+                // Skip if height difference is too small
+                if d_h < config.min_height_diff_m {
+                    i += 1;
+                    continue;
+                }
+
+                // Use solve_gm_analytical() to invert the Einstein field equation analytically
+                if let Ok(gm) = gauge_field.solve_gm_analytical(&data[idx_a], &data[idx_b]) {
+                    raw_gm_values.push(gm);
+                }
+
+                i += config.step_size;
+            }
+
+            if raw_gm_values.is_empty() {
+                println!("  → No valid GM derivations");
+                return Ok(Vec::new());
+            }
+
+            // Apply MAD filter for outlier rejection (now generic over Float)
+            let filtered = apply_mad_filter(&raw_gm_values, flt!(config.outlier_sigma));
+
+            Ok(filtered)
+        })();
+
+        match process_result {
+            Ok(results) => {
+                let mut acc = global_results.lock().unwrap();
+                acc.extend(results);
+            }
+            Err(e) => {
+                eprintln!("Failed to process dataset {}: {}", dataset, e);
+            }
         }
+    });
 
-        i += config.step_size;
-    }
-
-    if raw_gm_values.is_empty() {
-        println!("  → No valid GM derivations");
-        return Ok(Vec::new());
-    }
-
-    // Apply MAD filter for outlier rejection (now generic over Float)
-    let filtered = apply_mad_filter(&raw_gm_values, flt!(config.outlier_sigma));
-
-    if DBG {
-        println!(
-            "  → {} raw → {} filtered GM values",
-            raw_gm_values.len(),
-            filtered.len()
-        );
-        print_mass_statistics(&filtered)?;
-    }
-
-    Ok(filtered)
+    let final_results = global_results.into_inner().unwrap();
+    Ok(final_results)
 }

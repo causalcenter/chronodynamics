@@ -1,142 +1,105 @@
-time RUSTFLAGS='-C target-cpu=native' cargo run --release --bin chrono_mass
-    Finished `release` profile [optimized] target(s) in 0.06s
-     Running `target/release/chrono_mass`
-╔══════════════════════════════════════════════════════════════════════╗
+RUSTFLAGS='-C target-cpu=native' cargo run --release --bin  chrono_mass
+
+══════════════════════════════════════════════════════════════════════╗
 ║  E00: CHRONO-MASS EXPERIMENT                                         ║
 ║  GM Derivation from Time Dilation via ChronoGauge                    ║
 ╠══════════════════════════════════════════════════════════════════════╣
-║  Float Type: deep_causality_num::float_double::Float106           ║
 ║  Satellite:  E14 (Galileo)                                           ║
-║  Theory:     Chrono-Gauge Lattice (U(1) × SU(2) Electroweak)         ║
+║  Mode:       Analytical Approximation                                ║
 ╚══════════════════════════════════════════════════════════════════════╝
-
-
-═══════════════════════════════════════════════════════════════
-  FINAL SUMMARY REPORT
-═══════════════════════════════════════════════════════════════
-
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  CHRONO-MASS RESULT: 2016
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  DATA QUALITY                                                                ║
-║    Total Data Points:          171332                                       ║
-║    Std Deviation (GM):     7.39e12 m³/s²                                   ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  ★ PRIMARY RESULT: GM DERIVED FROM TIME (No External Mass/G Required)       ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║    GM (derived):           3.985994e14 m³/s²                                ║
-║    GM (HP Mean):           3.985056126053321875000000000000e14 m³/s²       ║
-║    GM (reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
-║    GM Error:               0.0003%                                           ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 1: Recover G (Requires Assuming M = 5.9722e24 kg)        ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║    G = GM / M_assumed                                                        ║
-║    G (recovered):          6.67426e-11 m³/(kg·s²)                            ║
-║    G (reference):          6.67430e-11 m³/(kg·s²)  (CODATA 2022)             ║
-║    G Error:                0.0006%                                           ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 2: Recover M (Requires Assuming G = 6.67430e-11)          ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║    M = GM / G_assumed                                                        ║
-║    M (recovered):          5.9722e24 kg                                     ║
-║    M (reference):          5.9722e24 kg  (IERS 2010)                        ║
-║    M Error:                0.0006%                                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║  CHRONO-MASS RESULT: 2017
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║  DATA QUALITY                                                                ║
-║    Total Data Points:          164460                                       ║
-║    Std Deviation (GM):     4.00e12 m³/s²                                   ║
+║    Total Data Points:          517813                                       ║
+║    Variance (GM):          1.65e25 (m³/s²)²                               ║
+║    Std Deviation (GM):     4.07e12 m³/s²                                   ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║  ★ PRIMARY RESULT: GM DERIVED FROM TIME (No External Mass/G Required)       ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║    GM (derived):           3.986043e14 m³/s²                                ║
-║    GM (HP Mean):           3.986026731034975625000000000000e14 m³/s²       ║
-║    GM (reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
-║    GM Error:               0.0010%                                           ║
+║    GM (Median):            3.986039e14 m³/s²                                ║
+║    GM (HP Mean):           3.986005821718740625000000000000e14 m³/s²       ║
+║    Distribution:           Symmetric       (Skew:  -0.03)                 ║
+║    GM (Reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
+║    GM median error:        0.0009%                                           ║
+║    GM mean error:          0.0000%                                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 1: Recover G (Requires Assuming M = 5.9722e24 kg)        ║
+║  SEPARATION STEP 1: Recover G (Based on GM Mean, M = 5.9722e24 kg) ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║    G = GM / M_assumed                                                        ║
-║    G (recovered):          6.67434e-11 m³/(kg·s²)                            ║
+║    G (recovered):          6.67428e-11 m³/(kg·s²)                            ║
 ║    G (reference):          6.67430e-11 m³/(kg·s²)  (CODATA 2022)             ║
-║    G Error:                0.0006%                                           ║
+║    G Error:                0.0003%                                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 2: Recover M (Requires Assuming G = 6.67430e-11)          ║
+║  SEPARATION STEP 2: Recover M (Based on GM Mean, G = 6.67430e-11)   ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║    M = GM / G_assumed                                                        ║
 ║    M (recovered):          5.9722e24 kg                                     ║
 ║    M (reference):          5.9722e24 kg  (IERS 2010)                        ║
-║    M Error:                0.0006%                                           ║
+║    M Error:                0.0003%                                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║  CHRONO-MASS RESULT: 2018
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║  DATA QUALITY                                                                ║
-║    Total Data Points:          182315                                       ║
-║    Std Deviation (GM):     3.43e12 m³/s²                                   ║
+║    Total Data Points:          556689                                       ║
+║    Variance (GM):          1.19e25 (m³/s²)²                               ║
+║    Std Deviation (GM):     3.45e12 m³/s²                                   ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║  ★ PRIMARY RESULT: GM DERIVED FROM TIME (No External Mass/G Required)       ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║    GM (derived):           3.985970e14 m³/s²                                ║
-║    GM (HP Mean):           3.986060885526063750000000000000e14 m³/s²       ║
-║    GM (reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
-║    GM Error:               0.0009%                                           ║
+║    GM (Median):            3.985982e14 m³/s²                                ║
+║    GM (HP Mean):           3.986107423889382500000000000000e14 m³/s²       ║
+║    Distribution:           Symmetric       (Skew:   0.01)                 ║
+║    GM (Reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
+║    GM median error:        0.0006%                                           ║
+║    GM mean error:          0.0026%                                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 1: Recover G (Requires Assuming M = 5.9722e24 kg)        ║
+║  SEPARATION STEP 1: Recover G (Based on GM Median, M = 5.9722e24 kg) ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║    G = GM / M_assumed                                                        ║
-║    G (recovered):          6.67422e-11 m³/(kg·s²)                            ║
+║    G (recovered):          6.67424e-11 m³/(kg·s²)                            ║
 ║    G (reference):          6.67430e-11 m³/(kg·s²)  (CODATA 2022)             ║
-║    G Error:                0.0012%                                           ║
+║    G Error:                0.0009%                                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 2: Recover M (Requires Assuming G = 6.67430e-11)          ║
+║  SEPARATION STEP 2: Recover M (Based on GM Median, G = 6.67430e-11)   ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║    M = GM / G_assumed                                                        ║
 ║    M (recovered):          5.9721e24 kg                                     ║
 ║    M (reference):          5.9722e24 kg  (IERS 2010)                        ║
-║    M Error:                0.0012%                                           ║
+║    M Error:                0.0009%                                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-───────────────────────────────────────────────────────────────
-  MASTER CALCULATION (ALL YEARS COMBINED)
-───────────────────────────────────────────────────────────────
-
-
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  CHRONO-MASS RESULT: TOTAL (2016-2018)
+║  CHRONO-MASS RESULT: TOTAL (All Years)
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║  DATA QUALITY                                                                ║
-║    Total Data Points:          518107                                       ║
-║    Std Deviation (GM):     5.23e12 m³/s²                                   ║
+║    Total Data Points:         1074502                                       ║
+║    Variance (GM):          1.41e25 (m³/s²)²                               ║
+║    Std Deviation (GM):     3.76e12 m³/s²                                   ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║  ★ PRIMARY RESULT: GM DERIVED FROM TIME (No External Mass/G Required)       ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║    GM (derived):           3.985997e14 m³/s²                                ║
-║    GM (HP Mean):           3.985717781693095000000000000000e14 m³/s²       ║
-║    GM (reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
-║    GM Error:               0.0002%                                           ║
+║    GM (Median):            3.986006e14 m³/s²                                ║
+║    GM (HP Mean):           3.986058460811801875000000000000e14 m³/s²       ║
+║    Distribution:           Symmetric       (Skew:  -0.01)                 ║
+║    GM (Reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
+║    GM median error:        0.0000%                                           ║
+║    GM mean error:          0.0014%                                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 1: Recover G (Requires Assuming M = 5.9722e24 kg)        ║
+║  SEPARATION STEP 1: Recover G (Based on GM Median, M = 5.9722e24 kg) ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║    G = GM / M_assumed                                                        ║
-║    G (recovered):          6.67426e-11 m³/(kg·s²)                            ║
+║    G (recovered):          6.67428e-11 m³/(kg·s²)                            ║
 ║    G (reference):          6.67430e-11 m³/(kg·s²)  (CODATA 2022)             ║
-║    G Error:                0.0006%                                           ║
+║    G Error:                0.0003%                                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  SEPARATION STEP 2: Recover M (Requires Assuming G = 6.67430e-11)          ║
+║  SEPARATION STEP 2: Recover M (Based on GM Median, G = 6.67430e-11)   ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║    M = GM / G_assumed                                                        ║
 ║    M (recovered):          5.9722e24 kg                                     ║
 ║    M (reference):          5.9722e24 kg  (IERS 2010)                        ║
-║    M Error:                0.0006%                                           ║
+║    M Error:                0.0003%                                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-
-real	0m4.161s
-user	0m30.744s
-sys	0m1.574s

@@ -3,6 +3,7 @@ mod data_manager;
 mod data_path;
 mod errors;
 mod types;
+mod utils;
 
 // data loader
 pub(crate) use crate::data_loader::load_all_satellites::load_all_satellites;
@@ -41,6 +42,9 @@ pub use crate::types::satelite_types::SatId;
 pub use crate::types::sparc_types::*;
 pub use crate::types::strong_gravity_types::*;
 
+// Utils
+pub use crate::utils::extract_gps_dataset_id;
+
 // 2017 t0 2018 uses the new high precision IGS14 Reference Frame
 pub const YEARS: [&str; 2] = ["2017", "2018"];
 
@@ -74,12 +78,10 @@ pub const ANOMALOUS_WEEKS: &[u32] = &[
     // Week 1999 (Apr 29 - May 05, 2018) - E18 Extreme Anomaly
     19990, 19991, 19992, 19993, 19994, 19995, 19996,
     // September 2018 "Crisis" - Filtering ALL of September
-    // Week 2017 (Partial: Sep 1)
-    20176, // Week 2018 (Sep 02 - Sep 08)
-    20180, 20181, 20182, 20183, 20184, 20185, 20186, // Week 2019 (Sep 09 - Sep 15)
-    20190, 20191, 20192, 20193, 20194, 20195, 20196, // Week 2020 (Sep 16 - Sep 22)
-    20200, 20201, 20202, 20203, 20204, 20205, 20206, // Week 2021 (Sep 23 - Sep 29)
-    20210, 20211, 20212, 20213, 20214, 20215, 20216,
-    // Week 2022 (Partial: Sep 30) - Rank 1 Anomaly
-    20220,
+    20176, // Week 2017 (Partial: Sep 1)
+    20180, 20181, 20182, 20183, 20184, 20185, 20186, // Week 2018 (Sep 02 - Sep 08)
+    20190, 20191, 20192, 20193, 20194, 20195, 20196, // Week 2019 (Sep 09 - Sep 15)
+    20200, 20201, 20202, 20203, 20204, 20205, 20206, // Week 2020 (Sep 16 - Sep 22)
+    20210, 20211, 20212, 20213, 20214, 20215, 20216, // Week 2021 (Sep 23 - Sep 29)
+    20220, 20221, 20222, 20223, 20224, 20225, 20226, // Week 2022 - Rank 1 Anomaly
 ];

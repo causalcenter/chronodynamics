@@ -1,8 +1,9 @@
 use crate::{ChronoGauge, ChronoGaugeOps, SpaceTimeCoord};
-use crate::{EARTH_GM, EARTH_RADIUS_EQUATORIAL, SPEED_OF_LIGHT};
+use crate::{ChronoGaugeMutOps, SpaceTimeCoordinate};
+use crate::{EARTH_GM, EARTH_RADIUS_EQUATORIAL, GEO_ORBIT_RADIUS_M, SPEED_OF_LIGHT};
+use deep_causality_num::Complex;
 use deep_causality_num::RealField;
-use deep_causality_topology::TopologyError;
-use rayon::prelude::*;
+use deep_causality_topology::{CWComplex, LinkVariable, SU2_U1, TopologyError};
 use std::fmt::Debug;
 use std::iter::Sum;
 
@@ -126,34 +127,10 @@ where
     }
 
     // =========================================================================
-    // Einstein Field Equation Inversion
+    // Inverted Einstein Field Equation
     // =========================================================================
 
     fn solve_gm(&self) -> Result<R, TopologyError> {
-        // Hybrid method: combine Polyakov loop (precision) + Wilson action (robustness)
-        let gm_polyakov = self.solve_gm_polyakov()?;
-        let gm_action = self.solve_gm_from_action()?;
-
-        // Consistency check
-        let tolerance = <R as From<f64>>::from(0.05); // 5%
-        let relative_diff = if gm_polyakov != R::zero() {
-            ((gm_polyakov - gm_action) / gm_polyakov).abs()
-        } else {
-            R::one()
-        };
-
-        if relative_diff < tolerance {
-            // Methods agree: weighted average (favor precision)
-            let w_p = <R as From<f64>>::from(0.7);
-            let w_a = <R as From<f64>>::from(0.3);
-            Ok(w_p * gm_polyakov + w_a * gm_action)
-        } else {
-            // Disagreement: trust Polyakov (more precise for weak field)
-            Ok(gm_polyakov)
-        }
-    }
-
-    fn solve_gm_polyakov(&self) -> Result<R, TopologyError> {
         let shape = self.lattice().shape();
         let n_radial = shape[1];
 
@@ -163,92 +140,95 @@ where
             ));
         }
 
-        // Parallel over radial shells
-        let measurements: Vec<(R, R)> = (0..n_radial)
-            .into_par_iter()
-            .map(|r_idx| {
-                let r = lattice_index_to_radius::<R>(r_idx, n_radial);
+        let data: &Vec<SpaceTimeCoordinate<R>> = self.source();
+        if data.is_empty() {
+            return Err(TopologyError::LatticeGaugeError(
+                "Data empty. No date GM derivation possible without data!".to_string(),
+            ));
+        }
 
-                // Average Polyakov loop over angular coordinates
-                let n_theta = shape[2];
-                let n_phi = shape[3];
+        // Bin data by radial index (same logic as populate_links)
+        // We do this serially here since we need to aggregate first
+        // Store (inv_r, drift) to compute proper means
+        let mut radial_bins: Vec<Vec<(R, R)>> = vec![Vec::new(); n_radial];
 
-                let angular_sum: R = (0..n_theta)
-                    .into_par_iter()
-                    .flat_map(|theta_idx| {
-                        (0..n_phi).into_par_iter().map(move |phi_idx| {
-                            let site = [0, r_idx, theta_idx, phi_idx];
-                            self.try_polyakov_loop(&site, 0)
-                                .map(|p| RealField::abs(p))
-                                .unwrap_or(R::one())
-                        })
-                    })
-                    .sum();
-
-                let count = n_theta * n_phi;
-                let avg_p = angular_sum / <R as From<f64>>::from(count as f64);
-                (r, avg_p)
-            })
-            .collect();
-
-        // Fit |P(r)| = 1 - GM/(rc²) via regression on (1/r, |P|)
+        // Physical constant for kinetic energy correction
         let c_sq = <R as From<f64>>::from(SPEED_OF_LIGHT * SPEED_OF_LIGHT);
-        let (slope, _intercept) = linear_regression_inv_r(&measurements)?;
+        let half = <R as From<f64>>::from(0.5);
 
-        // slope = -GM/c² => GM = -slope * c²
-        Ok(-slope * c_sq)
-    }
+        for coord in data {
+            let r_idx = radius_to_lattice_index(coord.r_m, n_radial);
 
-    fn solve_gm_from_action(&self) -> Result<R, TopologyError> {
-        let shape = self.lattice().shape();
-        let n_radial = shape[1];
+            // Kinetic energy correction
+            let v = coord.inertial_velocity_magnitude();
+            let k_term = half * v * v / c_sq;
+            let corrected_drift = coord.clock_drift_rate + k_term;
 
-        if n_radial < 2 {
-            return Err(TopologyError::LatticeGaugeError(
-                "Insufficient radial resolution for GM derivation".to_string(),
-            ));
+            // Store 1/r for precise averaging
+            let r = coord.r_m;
+            let inv_r = if r != R::zero() {
+                R::one() / r
+            } else {
+                R::zero()
+            };
+
+            radial_bins[r_idx].push((inv_r, corrected_drift));
         }
 
-        // Parallel over radial shells
-        let gm_estimates: Vec<R> = (0..n_radial)
-            .into_par_iter()
-            .filter_map(|r_idx| {
-                let r = lattice_index_to_radius::<R>(r_idx, n_radial);
+        // Calculate (r, phase) measurements
+        // Phase(r) = (1 - avg_drift) * N_t (link phase) * N_t (Polyakov loop sum)
+        // Total Phi = N_t * N_t * (1 - drift)
+        let n_t = shape[0] as f64;
+        let n_t_scale = <R as From<f64>>::from(n_t);
+        let n_t_sq = n_t_scale * n_t_scale;
 
-                // Average action over angular coordinates
-                let n_theta = shape[2];
-                let n_phi = shape[3];
-
-                let action_sum: R = (0..n_theta)
-                    .into_par_iter()
-                    .flat_map(|theta_idx| {
-                        (0..n_phi).into_par_iter().map(move |phi_idx| {
-                            let site = [0, r_idx, theta_idx, phi_idx];
-                            self.try_plaquette_action(&site, 0, 1).unwrap_or(R::zero())
-                        })
-                    })
-                    .sum();
-
-                let count = n_theta * n_phi;
-                let avg_action = action_sum / <R as From<f64>>::from(count as f64);
-
-                if avg_action > R::zero() {
-                    // sqrt(action) ∝ GM/r² => GM = sqrt(action) * r²
-                    Some(avg_action.sqrt() * r * r)
-                } else {
+        let measurements: Vec<(R, R, R)> = radial_bins
+            .into_iter()
+            .filter_map(|bin| {
+                if bin.is_empty() {
                     None
+                } else {
+                    // Compute mean 1/r and mean drift
+                    // This reduces lattice quantization error significantly
+                    let zeros = (R::zero(), R::zero());
+                    let (sum_inv_r, sum_drift) = bin
+                        .iter()
+                        .cloned()
+                        .fold(zeros, |acc, x| (acc.0 + x.0, acc.1 + x.1));
+                    let count = <R as From<f64>>::from(bin.len() as f64);
+
+                    let avg_inv_r = sum_inv_r / count;
+                    let avg_drift = sum_drift / count;
+
+                    // Effective radius for this bin (to pass to regression)
+                    // linear_regression_inv_r takes r and inverts it.
+                    // So we pass r_eff = 1 / avg_inv_r
+                    let r_eff = if avg_inv_r != R::zero() {
+                        R::one() / avg_inv_r
+                    } else {
+                        R::zero()
+                    };
+                    // loop_phase = link_phase * N_t
+                    let phase = (R::one() - avg_drift) * n_t_sq;
+
+                    // Use sample count as weight for regression
+                    Some((r_eff, phase, count))
                 }
             })
             .collect();
 
-        if gm_estimates.is_empty() {
+        if measurements.is_empty() {
             return Err(TopologyError::LatticeGaugeError(
-                "No valid action measurements for GM derivation".to_string(),
+                "No populated radial bins for GM derivation".to_string(),
             ));
         }
 
-        let sum: R = gm_estimates.par_iter().cloned().sum();
-        Ok(sum / <R as From<f64>>::from(gm_estimates.len() as f64))
+        // Fit Phase(r) = (GM * N_t^2 / c^2) * (1/r)
+        // Weighted regression to account for non-uniform data density
+        let (slope, _intercept) = weighted_linear_regression_inv_r(&measurements)?;
+
+        // GM = slope * c^2 / N_t^2
+        Ok(slope * c_sq / n_t_sq)
     }
 
     fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
@@ -483,32 +463,14 @@ where
 }
 
 // ============================================================================
-// Helper functions for GM calculation (module-level)
+// Helper functions for GM calculation
 // ============================================================================
-
-/// Physical bounds for radial mapping
-const EARTH_RADIUS_M: f64 = 6.371e6; // Earth surface (meters)
-const GEO_ORBIT_RADIUS_M: f64 = 4.2e7; // GEO orbit (meters)
-
-/// Converts a lattice index to physical radius (meters).
-///
-/// Uses linear mapping from Earth surface to GEO orbit.
-fn lattice_index_to_radius<R>(r_idx: usize, n_radial: usize) -> R
-where
-    R: RealField + From<f64>,
-{
-    let r_min = <R as From<f64>>::from(EARTH_RADIUS_M);
-    let r_max = <R as From<f64>>::from(GEO_ORBIT_RADIUS_M);
-    let idx_norm = <R as From<f64>>::from(r_idx as f64 / (n_radial - 1).max(1) as f64);
-    r_min + idx_norm * (r_max - r_min)
-}
-
 /// Converts a physical radius to lattice index.
 fn radius_to_lattice_index<R>(r: R, n_radial: usize) -> usize
 where
     R: RealField + Into<f64>,
 {
-    let r_min = EARTH_RADIUS_M;
+    let r_min = EARTH_RADIUS_EQUATORIAL;
     let r_max = GEO_ORBIT_RADIUS_M;
     let r_f64: f64 = r.into();
     let r_norm = (r_f64 - r_min) / (r_max - r_min);
@@ -516,9 +478,9 @@ where
     idx.min(n_radial - 1)
 }
 
-/// Performs linear regression on (1/r, y) pairs.
-/// Returns (slope, intercept) where y = slope * (1/r) + intercept.
-fn linear_regression_inv_r<R>(data: &[(R, R)]) -> Result<(R, R), TopologyError>
+/// Performs weighted linear regression on (x, y, weight) tuples
+/// Returns (slope, intercept)
+fn weighted_linear_regression<R>(data: &[(R, R, R)]) -> Result<(R, R), TopologyError>
 where
     R: RealField + Clone + From<f64>,
 {
@@ -528,11 +490,67 @@ where
         ));
     }
 
-    // Transform (r, y) to (1/r, y)
-    let transformed: Vec<(R, R)> = data
+    // Compute weighted means
+    let mut sum_w = R::zero();
+    let mut sum_wx = R::zero();
+    let mut sum_wy = R::zero();
+
+    for (x, y, w) in data {
+        sum_w += *w;
+        sum_wx += *w * *x;
+        sum_wy += *w * *y;
+    }
+
+    let epsilon = <R as From<f64>>::from(1e-20);
+    if sum_w.abs() < epsilon {
+        return Err(TopologyError::LatticeGaugeError(
+            "Sum of weights is zero".to_string(),
+        ));
+    }
+
+    let mean_x = sum_wx / sum_w;
+    let mean_y = sum_wy / sum_w;
+
+    // Compute weighted slope
+    let mut numerator = R::zero();
+    let mut denominator = R::zero();
+
+    for (x, y, w) in data {
+        let dx = *x - mean_x;
+        let dy = *y - mean_y;
+        numerator += *w * dx * dy;
+        denominator += *w * dx * dx;
+    }
+
+    if denominator.abs() < epsilon {
+        return Err(TopologyError::LatticeGaugeError(
+            "Degenerate weighted regression".to_string(),
+        ));
+    }
+
+    let slope = numerator / denominator;
+    let intercept = mean_y - slope * mean_x;
+
+    Ok((slope, intercept))
+}
+
+/// Performs weighted linear regression on (1/r, y, weight) tuples.
+/// Returns (slope, intercept) where y = slope * (1/r) + intercept.
+fn weighted_linear_regression_inv_r<R>(data: &[(R, R, R)]) -> Result<(R, R), TopologyError>
+where
+    R: RealField + Clone + From<f64>,
+{
+    if data.is_empty() {
+        return Err(TopologyError::LatticeGaugeError(
+            "Cannot perform regression on empty dataset".to_string(),
+        ));
+    }
+
+    // Transform (r, y, w) to (1/r, y, w)
+    let transformed: Vec<(R, R, R)> = data
         .iter()
-        .filter(|(r, _)| *r != R::zero())
-        .map(|(r, y)| (R::one() / *r, *y))
+        .filter(|(r, _, _)| *r != R::zero())
+        .map(|(r, y, w)| (R::one() / *r, *y, *w))
         .collect();
 
     if transformed.is_empty() {
@@ -541,16 +559,12 @@ where
         ));
     }
 
-    linear_regression(&transformed)
+    weighted_linear_regression(&transformed)
 }
 
 // ============================================================================
 // ChronoGaugeMutOps Implementation
 // ============================================================================
-
-use crate::{ChronoGaugeMutOps, SpaceTimeCoordinate};
-use deep_causality_num::Complex;
-use deep_causality_topology::{CWComplex, LinkVariable, SU2_U1};
 
 impl<R> ChronoGaugeMutOps<R> for ChronoGauge<R>
 where

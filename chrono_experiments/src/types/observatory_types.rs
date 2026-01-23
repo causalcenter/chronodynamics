@@ -1,4 +1,4 @@
-use crate::observatory_utils::windowing::AnomalyTier;
+use crate::observatory_utils::AnomalyTier;
 use chrono_data_manager::SatelliteState;
 
 #[derive(Debug, Clone)]

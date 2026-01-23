@@ -8,7 +8,7 @@
 
 ## 1. Objective
 
-Implement `solve_gm(&self) -> Result<R, TopologyError>` that **calculates GM from the gauge field's link variables and lattice observables** - not by wrapping the analytical formula.
+Implement `solve_gm(&self) -> Result<R, TopologyError>` that **calculates GM from the gauge field's link variables and lattice observables** - not by wrapping the ANALYTICAL formula.
 
 The gauge field's `source: Vec<SpaceTimeCoordinate<R>>` provides the clock/orbit data.  
 This data is used to **populate the link variables $U_\mu(x)$**, which encode gravitational effects.  

@@ -86,10 +86,9 @@ pub trait ChronoGaugeOps<R: RealField> {
     // Einstein Field Equation Inversion - Gauge-Based Methods
     // =========================================================================
 
-    /// Derives GM using the field's internal source data and gauge observables.
-    ///
-    /// This is the primary method for computing GM. It uses a hybrid approach
-    /// combining Polyakov loop (precision) and Wilson action (robustness).
+    /// Derives GM using Wilson action measurements across radial positions.
+    /// Uses the relation: s(r) ∝ (GM/r²)²
+    /// Extracts GM from sqrt(action) * r².
     ///
     /// # Workflow
     ///
@@ -101,22 +100,6 @@ pub trait ChronoGaugeOps<R: RealField> {
     ///
     /// The gravitational parameter GM in m³/s².
     fn solve_gm(&self) -> Result<R, TopologyError>;
-
-    /// Derives GM using Polyakov loop measurements across radial positions.
-    ///
-    /// Uses the relation: |P(r)| ≈ 1 - GM/(rc²)
-    /// Fits |P| vs 1/r to extract GM from the slope.
-    fn solve_gm_polyakov(&self) -> Result<R, TopologyError>;
-
-    /// Derives GM using Wilson action measurements across radial positions.
-    ///
-    /// Uses the relation: s(r) ∝ (GM/r²)²
-    /// Extracts GM from sqrt(action) * r².
-    fn solve_gm_from_action(&self) -> Result<R, TopologyError>;
-
-    // =========================================================================
-    // Einstein Field Equation Inversion - Analytical Methods
-    // =========================================================================
 
     /// Inverts the Einstein field equation to compute gravity mass GM analytically.
     ///

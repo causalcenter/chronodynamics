@@ -5,3 +5,5 @@ pub mod linear_algebra;
 pub mod residual_filter;
 pub mod swarm_analysis;
 pub mod windowing;
+
+pub use windowing::*;

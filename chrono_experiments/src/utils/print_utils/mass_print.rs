@@ -8,12 +8,26 @@ use deep_causality_num::RealField;
 use deep_causality_physics::{EARTH_GM, EARTH_MASS_KG, NEWTONIAN_CONSTANT_OF_GRAVITATION};
 use std::io::Error;
 
+pub fn print_chrono_mass_header(analytical: bool) {
+    println!("╔══════════════════════════════════════════════════════════════════════╗");
+    println!("║  E00: CHRONO-MASS EXPERIMENT                                         ║");
+    println!("║  GM Derivation from Time Dilation via ChronoGauge                    ║");
+    println!("╠══════════════════════════════════════════════════════════════════════╣");
+    println!("║  Satellite:  E14 (Galileo)                                           ║");
+    if analytical {
+        println!("║  Mode:       Analytical Approximation                                ║");
+    } else {
+        println!("║  Mode:       Chrono-Gauge Lattice (U(1) × SU(2)                      ║");
+    }
+    println!("╚══════════════════════════════════════════════════════════════════════╝\n");
+}
+
 /// Prints the global summary showing GM as the TRUE measurement,
 /// with explicit separation steps for G and M.
 ///
 /// # Type Parameter
 /// - `R`: Input real field type that can be converted to f64 for display
-pub fn print_mass_global_summary<R>(gm_results: &[R], label: &str)
+pub fn print_mass_summary<R>(gm_results: &[R], label: &str)
 where
     R: RealField + Into<f64> + From<f64> + Clone + std::fmt::LowerExp,
 {
