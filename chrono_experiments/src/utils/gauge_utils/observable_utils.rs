@@ -2,11 +2,12 @@
 //!
 //! These formulas match the legacy gqcd_chrono_manifold DEC calculations.
 
-use crate::SpaceTimeCoordinate;
 use crate::types::gauge_types::EpochMetrics;
 use crate::utils::proces_utils::apply_mad_filter;
 use deep_causality_num::{Float, FromPrimitive, RealField, ToPrimitive};
-use deep_causality_physics::{EARTH_GM, EARTH_RADIUS, EARTH_ROTATION_RATE, SPEED_OF_LIGHT};
+use deep_causality_physics::{
+    EARTH_GM, EARTH_RADIUS, EARTH_ROTATION_RATE, SPEED_OF_LIGHT, SpaceTimeCoordinate,
+};
 
 pub const C_SQ: f64 = SPEED_OF_LIGHT * SPEED_OF_LIGHT;
 

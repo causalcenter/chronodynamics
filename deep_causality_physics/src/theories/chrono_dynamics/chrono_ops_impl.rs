@@ -124,7 +124,14 @@ where
     // Einstein Field Equation Inversion
     // =========================================================================
 
-    fn solve_gm<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
+    fn solve_gm<C>(&self, _coord_a: &C, _coord_b: &C) -> Result<R, TopologyError>
+    where
+        C: SpaceTimeCoord<R>,
+    {
+        unimplemented!()
+    }
+
+    fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>,
     {
@@ -157,12 +164,12 @@ where
         Ok((term_time + term_kinetic) / term_potential)
     }
 
-    fn solve_j2<C>(&self, data: &[C]) -> Result<R, TopologyError>
+    fn solve_j2_analytical<C>(&self, data: &[C]) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>,
     {
         // =====================================================================
-        // J2 Oblateness via Lattice Wilson Loop / Plaquette Analysis
+        // J2 Oblateness
         // =====================================================================
         //
         // Strategy:

@@ -5,7 +5,7 @@
 This review evaluates the implementation of the **Chrono-Gauge Lattice Theory (CGLT)** against the specification in `physics_chrono_gauge.md`. The review is based on code analysis of `chrono_hkt.rs` and `chrono_ops_impl.rs` and experimental results from `E02_chrono_gauge` and `E00_chrono_mass`.
 
 * **Status:** ✅ **Workable / Validated**
-* **Accuracy:** ⭐ **High (0.0002% GM Error)**
+* **Accuracy:** ✅ **High (0.0002% GM Error)**
 * **Architecture:** ⚠️ **Hybrid (Partially Bypassed)**
 
 ---
@@ -25,7 +25,7 @@ Used for topological and global validation metrics. This code interacts with `La
 ### Engine B: Analytical Bypass (Continuous)
 Used for high-precision inversions where the discrete lattice grid is too coarse ($\approx 1$ km) to capture the exact gradient needed for $10^{-15}$ precision.
 
-*   **GM Source (`source()`)**: ⚠️ **Bypasses Lattice**.
+*   **GM Source (`solve_gm()`)**: ⚠️ **Bypasses Lattice**.
     *   *Spec Implication*: `solve_for_gm` calculates source from lattice curvature.
     *   *Actual Implementation*: Directly calculates `(c²Δrate + ΔK) / Δ(1/r)` from `SpaceTimeCoordinate`. The `&self` (Gauge Field) parameter is unused.
 *   **J2 Oblateness (`solve_j2()`)**: ⚠️ **Bypasses Lattice**.
@@ -57,10 +57,13 @@ The "Hybrid" approach yields exceptional results by leveraging the strengths of 
 2.  **HKT Integration**: The system successfully implements the `RiemannMap`, `Adjunction`, and `Promonad` traits, fulfilling the interface contract even if the internal dispatch is "unsafe" or analytical.
 3.  **Comprehensive Validation**: The `E02` experiment successfully cross-validates 7 different physical observables.
 
+### Architectural Risks
+
+**Unsafe Dispatch**: The explicit use of `unsafe` code to cast pointers for `HKT4` dispatch (`chrono_hkt.rs`) is a known trade-off for GAT limitations but requires careful maintenance (must only pass `ChronoVector`).
 
 ## 4. Recommendations
 
-1.  **Documentation Update**: Explicitly document in `physics_chrono_gauge.md` that `source()` and `solve_j2()` are **Analytical/Continuous** methods that bypass the discrete lattice for precision reasons.
+1.  **Documentation Update**: Explicitly document in `physics_chrono_gauge.md` that `solve_gm()` and `solve_j2()` are **Analytical/Continuous** methods that bypass the discrete lattice for precision reasons.
 2.  **API Clarification**: Consider marking methods that ignore the lattice state (like `source`) with a specific note or moving them to a `ContinuousOps` trait to distinguish them from `LatticeOps`.
 3.  **Future Feature**: If "Lattice-Based GM" is truly desired (e.g., for Quantum Gravity simulations where continuous data doesn't exist), a true lattice implementation of `curvature_impl` must be written (currently just a placeholder).
 

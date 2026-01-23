@@ -91,6 +91,15 @@ pub trait ChronoGaugeOps<R: RealField> {
     /// This method solves the Einstein field equations in reverse, deriving
     /// the gravitational parameter GM from observed curvature (clock effects)
     /// and kinetic energy differences between two space-time coordinates.
+    fn solve_gm<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
+    where
+        C: SpaceTimeCoord<R>;
+
+    /// Inverts the Einstein field equation to compute gravity mass GM.
+    ///
+    /// This method solves the Einstein field equations in reverse, deriving
+    /// the gravitational parameter GM from observed curvature (clock effects)
+    /// and kinetic energy differences between two space-time coordinates.
     ///
     /// # Mathematics
     ///
@@ -116,11 +125,12 @@ pub trait ChronoGaugeOps<R: RealField> {
     /// # Errors
     ///
     /// Returns `TopologyError::LatticeGaugeError` if the radial separation is insufficient.
-    fn solve_gm<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
+    fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>;
 
-    /// Computes J2 oblateness coefficient from observed satellite data.
+    /// Computes J2 oblateness coefficient anayltically (without the Gauge Feild)
+    /// from observed satellite time data.
     ///
     /// The J2 term represents Earth's equatorial bulge and is a critical
     /// correction for precise orbital mechanics and gravitational modeling.
@@ -136,7 +146,7 @@ pub trait ChronoGaugeOps<R: RealField> {
     /// # Errors
     ///
     /// Returns `TopologyError::LatticeGaugeError` if computation fails.
-    fn solve_j2<C>(&self, data: &[C]) -> Result<R, TopologyError>
+    fn solve_j2_analytical<C>(&self, data: &[C]) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>;
 }

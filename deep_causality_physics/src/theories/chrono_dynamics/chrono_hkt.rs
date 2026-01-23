@@ -28,6 +28,7 @@
 //! 2. **Type-safe wrappers**: Always use `ChronoVector<T>` explicitly in your code.
 
 use crate::theories::chrono_dynamics::ChronoVector;
+use deep_causality_haft::{Adjunction, HKT, HKT3Unbound, Promonad};
 use deep_causality_haft::{HKT4Unbound, NoConstraint, RiemannMap, Satisfies};
 use deep_causality_num::{Complex, RealField};
 use deep_causality_topology::{LatticeGaugeField, SU2_U1};
@@ -250,29 +251,8 @@ where
 }
 
 // ============================================================================
-// Source Computation (Einstein Field Equation Inversion)
-// ============================================================================
-
-/// Trait for types that can provide space-time coordinate data.
-pub trait SpaceTimeCoord<T: RealField> {
-    /// Returns the clock drift rate (proper time / coordinate time - 1).
-    fn clock_drift_rate(&self) -> T;
-
-    /// Returns the radial distance from Earth's center in meters.
-    fn radius_m(&self) -> T;
-
-    /// Returns the inertial velocity magnitude in m/s.
-    fn inertial_velocity_magnitude(&self) -> T;
-
-    /// Returns the Z coordinate (ECEF) in meters.
-    fn z_m(&self) -> T;
-}
-
-// ============================================================================
 // Adjunction: Stokes Theorem (d ⊣ ∂) for Chrono-Gauge
 // ============================================================================
-
-use deep_causality_haft::{Adjunction, HKT, HKT3Unbound, Promonad};
 
 /// Witness for the chrono exterior derivative d: ΩT^k → ΩT^(k+1).
 ///

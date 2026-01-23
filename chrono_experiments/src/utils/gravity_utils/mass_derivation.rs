@@ -3,11 +3,11 @@
  * Copyright (c) "2025" . The DeepCausality Authors and Contributors. All Rights Reserved.
  */
 
+use crate::AnalysisConfig;
 use crate::utils::proces_utils::{apply_mad_filter, interpolate_space_time};
-use crate::{AnalysisConfig, SpaceTimeCoordinate};
 use chrono_data_manager::DataManager;
 use deep_causality_num::RealField;
-use deep_causality_physics::{ChronoGauge, ChronoGaugeOps};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, SpaceTimeCoordinate};
 use deep_causality_physics::{
     EARTH_GM, EARTH_MASS_KG, EARTH_RADIUS, NEWTONIAN_CONSTANT_OF_GRAVITATION,
 };
@@ -91,7 +91,7 @@ where
 
         // We need SpaceTimeCoordinate to implement ChronoGaugeWitness logic if not using the trait...
         // But assuming the trait is available as used in E01.
-        if let Ok(gm) = gauge_field.solve_gm(&data[idx_a], &data[idx_b]) {
+        if let Ok(gm) = gauge_field.solve_gm_analytical(&data[idx_a], &data[idx_b]) {
             raw_gm_values.push(gm);
         }
 

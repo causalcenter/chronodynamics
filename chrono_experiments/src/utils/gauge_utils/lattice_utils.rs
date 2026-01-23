@@ -8,9 +8,8 @@
 //! This module provides functions to construct ChronoGauge lattices from
 //! GNSS satellite data.
 
-use crate::SpaceTimeCoordinate;
 use deep_causality_num::{Field, Float, FromPrimitive, RealField, ToPrimitive};
-use deep_causality_physics::ChronoGauge;
+use deep_causality_physics::{ChronoGauge, SpaceTimeCoordinate};
 use deep_causality_topology::{Lattice, LatticeGaugeField};
 use std::sync::Arc;
 

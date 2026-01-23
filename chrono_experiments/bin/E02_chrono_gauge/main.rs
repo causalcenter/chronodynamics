@@ -22,14 +22,14 @@ use chrono_experiments::gauge_utils::{
     compute_dataset_time_velocity_correlation, compute_epoch_metrics_fast,
 };
 use chrono_experiments::{
-    EpochMetrics, GaugeValidationResult, SpaceTimeCoordinate, folder_utils, gauge_utils,
+    EpochMetrics, GaugeValidationResult, folder_utils, gauge_utils,
     gravity_utils::derive_mass_from_dataset,
     print_utils::{print_cross_validation_table, print_gauge_header, print_gauge_summary},
     proces_utils::interpolate_space_time_single_pass,
     statistics_utils::calculate_pca,
 };
 use deep_causality_num::{Float106, RealField};
-use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, EARTH_J2};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, EARTH_J2, SpaceTimeCoordinate};
 use deep_causality_topology::{Lattice, LatticeGaugeField};
 use rayon::prelude::*;
 use std::collections::HashMap;
@@ -98,7 +98,7 @@ fn run_j2_analysis(data_path: &str, gauge_field: &ChronoGauge<FloatType>) {
 
     if !all_coords.is_empty() {
         // Use the Chrono Gauge Field to solve for J2
-        match gauge_field.solve_j2(&all_coords) {
+        match gauge_field.solve_j2_analytical(&all_coords) {
             Ok(derived_j2) => {
                 // Reference J2 (JGM-3)
                 let reference_j2 = FloatType::from(EARTH_J2);

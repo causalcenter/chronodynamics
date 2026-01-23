@@ -5,11 +5,11 @@
 use chrono_data_manager::{
     ANOMALOUS_WEEKS, DataManager, YEARS, get_gnss_data_input_path, get_year_datasets,
 };
+use chrono_experiments::AnalysisConfig;
 use chrono_experiments::print_utils::{print_mass_global_summary, print_mass_statistics};
 use chrono_experiments::proces_utils::{apply_mad_filter, interpolate_space_time};
-use chrono_experiments::{AnalysisConfig, SpaceTimeCoordinate};
 use deep_causality_num::{Float106, RealField};
-use deep_causality_physics::{ChronoGauge, ChronoGaugeOps};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, SpaceTimeCoordinate};
 use deep_causality_topology::Lattice;
 use rayon::iter::IntoParallelRefIterator;
 use rayon::prelude::*;
@@ -199,7 +199,7 @@ fn process_dataset(
         }
 
         // Use source() to invert the Einstein field equation
-        if let Ok(gm) = gauge_field.solve_gm(&data[idx_a], &data[idx_b]) {
+        if let Ok(gm) = gauge_field.solve_gm_analytical(&data[idx_a], &data[idx_b]) {
             raw_gm_values.push(gm);
         }
 
