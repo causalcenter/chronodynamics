@@ -118,7 +118,6 @@ where
 
     fn action_phase_correlation(&self) -> Result<R, TopologyError> {
         // Correlation between action density and Polyakov loop
-        let _action = self.try_wilson_action()?;
         let origin = [0usize; 4];
         let polyakov = self.try_polyakov_loop(&origin, 0)?;
 
