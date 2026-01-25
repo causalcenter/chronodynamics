@@ -67,12 +67,12 @@ fn run_year_analysis(
     if analytical {
         run_year_analysis_analytical(year, lattice, data_path)
     } else {
-        run_year_analysis_gauge(year, lattice, data_path)
+        run_year_analysis_gauge_kineetic(year, lattice, data_path)
     }
 }
 
 /// Analyze a single year of data.
-fn run_year_analysis_gauge(
+fn run_year_analysis_gauge_kineetic(
     year: &str,
     lattice: Arc<Lattice<4>>,
     data_path: &str,
