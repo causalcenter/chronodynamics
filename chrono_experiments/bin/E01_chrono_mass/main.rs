@@ -18,8 +18,9 @@ use std::sync::Mutex;
 const SAT_ID: &str = "E14";
 /// Enable verbose logging
 const DBG: bool = false;
-/// Switch between Chrono Gauge Field Procssing (False) and analytical approxiamtioin (true)
-const ANALYTICAL: bool = false;
+
+/// Active mode for this experiment run
+const GM_MODE: GmDeriveMode = GmDeriveMode::GaugeAction;
 
 /// Change this to `f64` for standard precision or `Float106` for high precision.
 pub type FloatType = Float106;
@@ -32,7 +33,7 @@ macro_rules! flt {
 }
 
 fn main() -> io::Result<()> {
-    print_chrono_mass_header(ANALYTICAL);
+    print_chrono_mass_header(GM_MODE == GmDeriveMode::Analytical);
 
     // Verify data path
     let data_path_buf = get_gnss_data_input_path();
@@ -43,7 +44,7 @@ fn main() -> io::Result<()> {
 
     let mut yearly_results: Vec<(String, Vec<FloatType>)> = Vec::new();
     for year in YEARS {
-        let results = run_year_analysis(ANALYTICAL, year, lattice.clone(), data_path)?;
+        let results = run_year_analysis(GM_MODE, year, lattice.clone(), data_path)?;
         yearly_results.push((year.to_string(), results));
     }
 
@@ -59,15 +60,15 @@ fn main() -> io::Result<()> {
 }
 
 fn run_year_analysis(
-    analytical: bool,
+    mode: GmDeriveMode,
     year: &str,
     lattice: Arc<Lattice<4>>,
     data_path: &str,
 ) -> io::Result<Vec<FloatType>> {
-    if analytical {
-        run_year_analysis_analytical(year, lattice, data_path)
-    } else {
-        run_year_analysis_gauge_kineetic(year, lattice, data_path)
+    match mode {
+        GmDeriveMode::Analytical => run_year_analysis_analytical(year, lattice, data_path),
+        GmDeriveMode::GaugeKinetic => run_year_analysis_gauge_kineetic(year, lattice, data_path),
+        GmDeriveMode::GaugeAction => run_year_analysis_gauge_action(year, lattice, data_path),
     }
 }
 
@@ -122,7 +123,75 @@ fn run_year_analysis_gauge_kineetic(
             }
 
             // 3. Extract GM via Gauge field
-            match gauge_field.solve_gm() {
+            match gauge_field.solve_gm_from_kinectic() {
+                Ok(gm) => Ok(vec![gm]),
+                Err(e) => Err(Error::other(e)),
+            }
+        })();
+
+        match process_result {
+            Ok(results) => {
+                let mut acc = global_results.lock().unwrap();
+                acc.extend(results);
+            }
+            Err(e) => {
+                eprintln!("Failed to process dataset {}: {}", dataset, e);
+            }
+        }
+    });
+
+    let final_results = global_results.into_inner().unwrap();
+    Ok(final_results)
+}
+
+/// Analyze a single year of data using Gauge Action (Kinematic Inversion).
+fn run_year_analysis_gauge_action(
+    year: &str,
+    lattice: Arc<Lattice<4>>,
+    data_path: &str,
+) -> io::Result<Vec<FloatType>> {
+    let datasets = get_year_datasets(year);
+    let global_results = Mutex::new(Vec::new());
+
+    // Process datasets in parallel
+    datasets.par_iter().for_each(|dataset| {
+        // Extract GPS dataset ID from filename (e.g., "gbm19670" -> 19670)
+        if let Some(dataset_id) = extract_gps_dataset_id(dataset)
+            // Filter out "Broken" GPS weeks
+            && ANOMALOUS_WEEKS.contains(&dataset_id)
+        {
+            if DBG {
+                println!(
+                    "[{}] Skipping anomalous dataset {} (2017/2018 Data Crisis)",
+                    dataset, dataset_id
+                );
+            }
+            return;
+        }
+
+        let clk_path = format!("{}/{}/{}.clk", data_path, year, dataset);
+        let sp3_path = format!("{}/{}/{}.sp3", data_path, year, dataset);
+
+        let process_result = (|| -> Result<Vec<FloatType>, io::Error> {
+            // Load GNSS data
+            let dm = DataManager::default();
+            let (clocks, orbits) = dm.load_gnss_single_satellite(&clk_path, &sp3_path, SAT_ID)?;
+
+            // Interpolate orbits to clock timestamps using 10th-order Lagrange polynomial
+            let data: Vec<SpaceTimeCoordinate<FloatType>> =
+                interpolate_space_time(&clocks, &orbits);
+
+            // 1. Create field and attach source data
+            let mut gauge_field =
+                ChronoGauge::<FloatType>::identity(lattice.clone(), flt!(1.0)).with_source(data);
+
+            // 2. Populate link variables from source
+            if let Err(e) = gauge_field.populate_links_from_source() {
+                return Err(Error::other(e));
+            }
+
+            // 3. Extract GM via Gauge Action (Kinematic Inversion)
+            match gauge_field.solve_gm_from_action() {
                 Ok(gm) => Ok(vec![gm]),
                 Err(e) => Err(Error::other(e)),
             }

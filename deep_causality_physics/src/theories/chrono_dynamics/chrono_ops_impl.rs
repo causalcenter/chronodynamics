@@ -130,7 +130,7 @@ where
     // Inverted Einstein Field Equation
     // =========================================================================
 
-    fn solve_gm(&self) -> Result<R, TopologyError> {
+    fn solve_gm_from_kinectic(&self) -> Result<R, TopologyError> {
         let shape = self.lattice().shape();
         let n_radial = shape[1];
 
@@ -229,6 +229,118 @@ where
 
         // GM = slope * c^2 / N_t^2
         Ok(slope * c_sq / n_t_sq)
+    }
+
+    fn solve_gm_from_action(&self) -> Result<R, TopologyError> {
+        // =====================================================================
+        // Kinematic Inversion: Mass from Field Curvature
+        // =====================================================================
+        //
+        // Theory:
+        // The Wilson action density S for a temporal plaquette measures the
+        // field strength squared: S ≈ (1/2) F_μν².
+        //
+        // In the chrono-gauge:
+        // U_0(r) = exp(i φ(r)) where φ(r) ∝ GM/r
+        // F_0r ≈ ∂_r φ ∝ GM/r²
+        //
+        // Therefore:
+        // S ∝ (GM/r²)²
+        //
+        // Inverting this relation yields GM from the action:
+        // GM = C * r² * √S
+        //
+        // This realizes the "Kinematic Inversion" where mass is derived
+        // from the field's geometric properties (curvature).
+
+        let shape = self.lattice().shape();
+        let n_radial = shape[1];
+        let n_temporal = shape[0];
+
+        if n_radial < 2 {
+            return Err(TopologyError::LatticeGaugeError(
+                "Insufficient radial resolution for GM derivation".to_string(),
+            ));
+        }
+
+        // Physical constants
+        let c = <R as From<f64>>::from(SPEED_OF_LIGHT);
+        let c_sq = c * c;
+        let n_t = <R as From<f64>>::from(n_temporal as f64);
+
+        // Calibration Constant C:
+        // Based on phase encoding: phase = (1 - drift) * N_t ≈ (GM/rc^2) * N_t
+        // Plaquette phase θ ≈ Δphase ≈ (GM/r^2 c^2) * N_t (assuming Δr=1 lattice unit)
+        // Action S ≈ θ²/2
+        // √S ≈ θ/√2 = (GM/r^2 c^2) * N_t / √2
+        //
+        // Solving for GM:
+        // GM = (c^2 r^2 √2 / N_t) * √S / ΔR
+        let root_2 = <R as From<f64>>::from(2.0).sqrt();
+        // prefactor has units [m^2/s^2]
+
+        // Virial Correction:
+        // Clock drift dτ/dt ≈ 1 - Φ/c² - v²/2c²
+        // For circular orbits (Virial thm): v² = GM/r = -Φ
+        // So dτ/dt ≈ 1 - 1.5(GM/rc²)
+        // The gauge field encodes this 1.5 factor, so we must divide by it.
+        let virial_factor = <R as From<f64>>::from(1.5);
+        let prefactor = c_sq * root_2 / (n_t * virial_factor);
+
+        // Calculate Physical Radial Spacing ΔR
+        let r_min_f64 = EARTH_RADIUS_EQUATORIAL;
+        let r_max_f64 = GEO_ORBIT_RADIUS_M;
+        let n_rad_f64 = (n_radial - 1) as f64;
+        let delta_r_phys_f64 = (r_max_f64 - r_min_f64) / n_rad_f64;
+        let delta_r_phys = <R as From<f64>>::from(delta_r_phys_f64);
+
+        let mut gm_sum = R::zero();
+        let mut gm_count = R::zero();
+
+        // Iterate over radial shells to sample action
+        // We skip the boundary shells to avoid edge effects
+        for r_idx in 1..(n_radial - 1) {
+            // Get radius at this index
+            // We need the physical radius r to scale the result
+            // This requires inverting the radius_to_lattice_index mapping,
+            // which is linear for now.
+            let r_idx_f64 = r_idx as f64;
+            let n_rad_f64 = (n_radial - 1) as f64;
+            let percent = r_idx_f64 / n_rad_f64;
+            let r_min = EARTH_RADIUS_EQUATORIAL;
+            let r_max = GEO_ORBIT_RADIUS_M;
+            let r_val = r_min + (r_max - r_min) * percent;
+            let r = <R as From<f64>>::from(r_val);
+
+            // Compute average temporal action at this radius
+            // Sample a few angular points to get average density
+            // Temporal plaquette is in 0-1 plane (Time-Radial) if map is T, R, Theta, Phi
+            // Lattice dirs: 0=T, 1=R, 2=Theta, 3=Phi
+            // We need plaquette in (0, 1) plane
+            let zero = 0usize;
+            let one = 1usize;
+            let origin = [0, r_idx, 0, 0]; // Sample at theta=0, phi=0 for now (spherical sym)
+
+            let action = self.try_plaquette_action(&origin, zero, one)?;
+
+            if action > R::zero() {
+                // Invert to find GM
+                // GM = prefactor * r^2 * sqrt(S) / ΔR
+                // Units: [m^2/s^2] * [m^2] * [1] / [m] = [m^3/s^2] (Correct)
+                let gm_local = (prefactor * r * r * action.sqrt()) / delta_r_phys;
+
+                gm_sum += gm_local;
+                gm_count += <R as From<f64>>::from(1.0);
+            }
+        }
+
+        if gm_count == R::zero() {
+            return Err(TopologyError::LatticeGaugeError(
+                "No non-zero action found for GM derivation".to_string(),
+            ));
+        }
+
+        Ok(gm_sum / gm_count)
     }
 
     fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
@@ -632,9 +744,12 @@ where
             let r_idx = pos[1];
 
             if let Some(avg_drift) = avg_drifts.get(r_idx).and_then(|opt| opt.as_ref()) {
-                // phase = (1 - clock_drift_rate) * N_t
-                // For GNSS: drift ≈ 1 - 10^{-10}, so phase ≈ 10^{-10} * N_t
-                let phase = (R::one() - *avg_drift) * n_t_scale;
+                // drift is usually deviation (d(bias)/dt).
+                // d(tau)/dt = 1 + drift.
+                // Potential phi roughly corresponds to 1 - d(tau)/dt = -drift.
+                // So phase = (1 - (1+drift)) * Nt = -drift * Nt.
+                // Since drift is typically negative (clocks run slow), phase is positive.
+                let phase = -(*avg_drift) * n_t_scale;
 
                 // Create link variable with this phase
                 // U_0 = exp(i * phase) for U(1) part in the SU(2)×U(1) representation

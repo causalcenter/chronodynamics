@@ -4,6 +4,15 @@
 
 use crate::types::gravity_types::GravitySolverResult;
 
+/// Mode for GM derivation
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum GmDeriveMode {
+    Analytical,
+    GaugeKinetic,
+    GaugeAction,
+}
+
 /// Detailed record of mass experiment results including full vectors.
 /// Tuple structure: (Timestamp, R_A, R_B, Delta_H, Result, Position, Velocity)
 pub type DetailedMassRecord<R> = (

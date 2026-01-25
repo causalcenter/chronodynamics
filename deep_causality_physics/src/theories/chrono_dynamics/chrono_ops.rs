@@ -83,7 +83,7 @@ pub trait ChronoGaugeOps<R: RealField> {
     fn action_phase_correlation(&self) -> Result<R, TopologyError>;
 
     // =========================================================================
-    // Einstein Field Equation Inversion - Gauge-Based Methods
+    // Einstein Field Equation Inversion
     // =========================================================================
 
     /// Derives GM using Wilson action measurements across radial positions.
@@ -99,7 +99,16 @@ pub trait ChronoGaugeOps<R: RealField> {
     /// # Returns
     ///
     /// The gravitational parameter GM in m³/s².
-    fn solve_gm(&self) -> Result<R, TopologyError>;
+    fn solve_gm_from_kinectic(&self) -> Result<R, TopologyError>;
+
+    /// Derives GM using Wilson action measurements across radial positions.
+    ///
+    /// This determines GM from the field curvature (Wilson action density),
+    /// realizing the Kinematic Inversion where matter properties are derived
+    /// from field topology.
+    ///
+    /// Formula: GM ∝ r² ⋅ √Action
+    fn solve_gm_from_action(&self) -> Result<R, TopologyError>;
 
     /// Inverts the Einstein field equation to compute gravity mass GM analytically.
     ///
