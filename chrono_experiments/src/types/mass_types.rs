@@ -9,8 +9,7 @@ use crate::types::gravity_types::GravitySolverResult;
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum GmDeriveMode {
     Analytical,
-    GaugeKinetic,
-    GaugeAction,
+    Gauge,
 }
 
 /// Detailed record of mass experiment results including full vectors.

@@ -7,7 +7,7 @@ use crate::AnalysisConfig;
 use crate::utils::proces_utils::{apply_mad_filter, interpolate_space_time};
 use chrono_data_manager::DataManager;
 use deep_causality_num::RealField;
-use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, SpaceTimeCoordinate};
+use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, SpaceTimeCoord, SpaceTimeCoordinate};
 use deep_causality_physics::{
     EARTH_GM, EARTH_MASS_KG, EARTH_RADIUS, NEWTONIAN_CONSTANT_OF_GRAVITATION,
 };
@@ -90,12 +90,11 @@ where
 
     let mut i = 0;
     while i < data.len() - config.window_size_indices {
-        let idx_a = i;
-        let idx_b = i + config.window_size_indices;
+
 
         // We need SpaceTimeCoordinate to implement ChronoGaugeWitness logic if not using the trait...
         // But assuming the trait is available as used in E01.
-        if let Ok(gm) = gauge_field.solve_gm_analytical(&data[idx_a], &data[idx_b]) {
+        if let Ok(gm) = gauge_field.solve_gm_analytical::<>() {
             raw_gm_values.push(gm);
         }
 

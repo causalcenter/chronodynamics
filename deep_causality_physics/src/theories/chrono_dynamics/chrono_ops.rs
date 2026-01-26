@@ -86,40 +86,34 @@ pub trait ChronoGaugeOps<R: RealField> {
     // Einstein Field Equation Inversion
     // =========================================================================
 
-    /// Derives GM using Wilson action measurements across radial positions.
-    /// Uses the relation: s(r) ∝ (GM/r²)²
-    /// Extracts GM from sqrt(action) * r².
-    ///
-    /// # Workflow
-    ///
-    /// 1. The field must have source data attached via `with_source()`
-    /// 2. Links must be populated via `populate_links_from_source()`
-    /// 3. This method extracts GM from the populated lattice observables
-    ///
-    /// # Returns
-    ///
-    /// The gravitational parameter GM in m³/s².
-    fn solve_gm_from_kinectic(&self) -> Result<R, TopologyError>;
-
-    /// Derives GM using Wilson action measurements across radial positions.
+    /// Derives GM from source chrono data (satellite clocks) using
+    /// Wilson action measurements of the Gauge Field across radial positions.
     ///
     /// This determines GM from the field curvature (Wilson action density),
     /// realizing the Kinematic Inversion where matter properties are derived
     /// from field topology.
     ///
     /// Formula: GM ∝ r² ⋅ √Action
-    fn solve_gm_from_action(&self) -> Result<R, TopologyError>;
+    fn solve_gm(&self) -> Result<R, TopologyError>;
 
-    /// Inverts the Einstein field equation to compute gravity mass GM analytically.
+    /// Derives GM from source chrono data (satellite clocks) using kinetic energy corrections
+    /// without relying on the lattice gauge field.
     ///
-    /// This method solves the Einstein field equations in reverse, deriving
-    /// the gravitational parameter GM from observed curvature (clock effects)
-    /// and kinetic energy differences between two space-time coordinates.
+    /// This method performs a regression analysis on the clock drift rates of satellites,
+    /// correcting for their kinematic state (velocity) to isolate the gravitational potential.
     ///
-    /// # Formula
+    /// # Physics
     ///
-    /// $$GM = \frac{c^2(\dot{\tau}_b - \dot{\tau}_a) + \frac{1}{2}(v_b^2 - v_a^2)}{1/r_a - 1/r_b}$$
-    fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
+    /// The clock drift rate $d\tau/dt$ is related to the potential $\Phi$ and velocity $v$ by:
+    /// $$ \frac{d\tau}{dt} \approx 1 + \frac{\Phi}{c^2} - \frac{v^2}{2c^2} $$
+    ///
+    /// By isolating $\Phi = -GM/r$, we can solve for GM:
+    /// $$ \Phi \approx c^2 \left( \frac{d\tau}{dt} - 1 + \frac{v^2}{2c^2} \right) $$
+    ///
+    /// # Returns
+    ///
+    /// The gravitational parameter GM in m³/s².
+    fn solve_gm_analytical<C>(&self) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>;
 

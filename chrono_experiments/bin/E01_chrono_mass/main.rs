@@ -3,9 +3,9 @@ use chrono_data_manager::{
     get_year_datasets,
 };
 use chrono_experiments::print_utils::{print_chrono_mass_header, print_mass_summary};
-use chrono_experiments::proces_utils::{apply_mad_filter, interpolate_space_time};
+use chrono_experiments::proces_utils::interpolate_space_time;
 use chrono_experiments::*;
-use deep_causality_num::{Float106, RealField};
+use deep_causality_num::Float106;
 use deep_causality_physics::{ChronoGauge, ChronoGaugeMutOps, ChronoGaugeOps, SpaceTimeCoordinate};
 use deep_causality_topology::Lattice;
 use rayon::prelude::*;
@@ -20,7 +20,7 @@ const SAT_ID: &str = "E14";
 const DBG: bool = false;
 
 /// Active mode for this experiment run
-const GM_MODE: GmDeriveMode = GmDeriveMode::GaugeAction;
+const GM_MODE: GmDeriveMode = GmDeriveMode::Gauge;
 
 /// Change this to `f64` for standard precision or `Float106` for high precision.
 pub type FloatType = Float106;
@@ -67,13 +67,12 @@ fn run_year_analysis(
 ) -> io::Result<Vec<FloatType>> {
     match mode {
         GmDeriveMode::Analytical => run_year_analysis_analytical(year, lattice, data_path),
-        GmDeriveMode::GaugeKinetic => run_year_analysis_gauge_kineetic(year, lattice, data_path),
-        GmDeriveMode::GaugeAction => run_year_analysis_gauge_action(year, lattice, data_path),
+        GmDeriveMode::Gauge => run_year_analysis_gauge(year, lattice, data_path),
     }
 }
 
 /// Analyze a single year of data.
-fn run_year_analysis_gauge_kineetic(
+fn run_year_analysis_analytical(
     year: &str,
     lattice: Arc<Lattice<4>>,
     data_path: &str,
@@ -123,7 +122,7 @@ fn run_year_analysis_gauge_kineetic(
             }
 
             // 3. Extract GM via Gauge field
-            match gauge_field.solve_gm_from_kinectic() {
+            match gauge_field.solve_gm_analytical::<SpaceTimeCoordinate<FloatType>>() {
                 Ok(gm) => Ok(vec![gm]),
                 Err(e) => Err(Error::other(e)),
             }
@@ -145,7 +144,7 @@ fn run_year_analysis_gauge_kineetic(
 }
 
 /// Analyze a single year of data using Gauge Action (Kinematic Inversion).
-fn run_year_analysis_gauge_action(
+fn run_year_analysis_gauge(
     year: &str,
     lattice: Arc<Lattice<4>>,
     data_path: &str,
@@ -190,110 +189,11 @@ fn run_year_analysis_gauge_action(
                 return Err(Error::other(e));
             }
 
-            // 3. Extract GM via Gauge Action (Kinematic Inversion)
-            match gauge_field.solve_gm_from_action() {
+            // 3. Extract GM via Gauge Field
+            match gauge_field.solve_gm() {
                 Ok(gm) => Ok(vec![gm]),
                 Err(e) => Err(Error::other(e)),
             }
-        })();
-
-        match process_result {
-            Ok(results) => {
-                let mut acc = global_results.lock().unwrap();
-                acc.extend(results);
-            }
-            Err(e) => {
-                eprintln!("Failed to process dataset {}: {}", dataset, e);
-            }
-        }
-    });
-
-    let final_results = global_results.into_inner().unwrap();
-    Ok(final_results)
-}
-
-/// Analyze a single year of data.
-fn run_year_analysis_analytical(
-    year: &str,
-    lattice: Arc<Lattice<4>>,
-    data_path: &str,
-) -> io::Result<Vec<FloatType>> {
-    let datasets = get_year_datasets(year);
-    let global_results = Mutex::new(Vec::new());
-
-    let gauge_field = ChronoGauge::<FloatType>::identity(lattice, flt!(1.0));
-
-    // Process datasets in parallel
-    datasets.par_iter().for_each(|dataset| {
-        // Extract GPS dataset ID from filename (e.g., "gbm19670" -> 19670)
-        if let Some(dataset_id) = extract_gps_dataset_id(dataset)
-            && ANOMALOUS_WEEKS.contains(&dataset_id)
-        {
-            if DBG {
-                println!(
-                    "[{}] Skipping anomalous dataset {} (2017/2018 Data Crisis)",
-                    dataset, dataset_id
-                );
-            }
-            return;
-        }
-
-        let clk_path = format!("{}/{}/{}.clk", data_path, year, dataset);
-        let sp3_path = format!("{}/{}/{}.sp3", data_path, year, dataset);
-
-        let process_result = (|| -> Result<Vec<FloatType>, io::Error> {
-            let config = AnalysisConfig::default();
-
-            // Load GNSS data
-            let dm = DataManager::default();
-            let (clocks, orbits) = dm.load_gnss_single_satellite(&clk_path, &sp3_path, SAT_ID)?;
-
-            // Interpolate orbits to clock timestamps using 10th-order Lagrange polynomial
-            let data: Vec<SpaceTimeCoordinate<FloatType>> =
-                interpolate_space_time(&clocks, &orbits);
-
-            // Skip datasets with insufficient data
-            if data.len() <= config.window_size_indices {
-                if DBG {
-                    println!("  → Insufficient data points for window size");
-                }
-                return Ok(Vec::new());
-            }
-
-            let mut raw_gm_values: Vec<FloatType> = Vec::new();
-
-            let mut i = 0;
-            while i < data.len() - config.window_size_indices {
-                let idx_a = i;
-                let idx_b = i + config.window_size_indices;
-
-                let r_a: FloatType = data[idx_a].r_m;
-                let r_b: FloatType = data[idx_b].r_m;
-                let d_h: FloatType = (r_a - r_b).abs();
-
-                // Skip if height difference is too small
-                if d_h < config.min_height_diff_m {
-                    i += 1;
-                    continue;
-                }
-
-                // Use solve_gm_analytical() to invert the Einstein field equation analytically
-                if let Ok(gm) = gauge_field.solve_gm_analytical(&data[idx_a], &data[idx_b]) {
-                    raw_gm_values.push(gm);
-                }
-
-                i += config.step_size;
-            }
-
-            if raw_gm_values.is_empty() {
-                println!("  → No valid GM derivations");
-                return Ok(Vec::new());
-            }
-
-            // Apply MAD filter for outlier rejection (now generic over Float)
-            let filtered = apply_mad_filter(&raw_gm_values, flt!(config.outlier_sigma));
-
-            Ok(filtered)
         })();
 
         match process_result {

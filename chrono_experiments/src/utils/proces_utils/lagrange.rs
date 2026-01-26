@@ -4,7 +4,7 @@
  */
 use chrono::NaiveDateTime;
 use chrono_data_manager::{ClockData, OrbitData};
-use deep_causality_num::RealField;
+use deep_causality_num::{FromPrimitive, RealField};
 use deep_causality_physics::{EARTH_ROTATION_RATE, SpaceTimeCoordinate};
 
 /// Maximum time gap (seconds) for centered finite difference in clock drift rate.
@@ -192,7 +192,7 @@ pub fn interpolate_space_time<R>(
     orbit_data: &[OrbitData<R>],
 ) -> Vec<SpaceTimeCoordinate<R>>
 where
-    R: RealField + From<f64> + Into<f64> + Clone,
+    R: RealField + From<f64> + Into<f64> + Clone + FromPrimitive,
 {
     // =========================================================================
     // PASS 1: Interpolate position/velocity, store raw coordinates

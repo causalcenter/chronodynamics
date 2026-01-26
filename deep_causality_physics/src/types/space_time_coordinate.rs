@@ -1,5 +1,5 @@
 use crate::{SPEED_OF_LIGHT, SpaceTimeCoord};
-use deep_causality_num::RealField;
+use deep_causality_num::{FromPrimitive, RealField};
 
 /// Represents a point in 4D Space-Time with associated kinematic and clock data.
 ///
@@ -31,15 +31,15 @@ pub struct SpaceTimeCoordinate<R: RealField> {
     pub clock_drift_rate: R,
 }
 
-impl<R: RealField + From<f64>> SpaceTimeCoordinate<R> {
+impl<R: RealField + FromPrimitive> SpaceTimeCoordinate<R> {
     /// Helper to restore relativistic effects removed by IGS.
     /// Calculates $\Delta t_{periodic} = -2(\vec{r} \cdot \vec{v}) / c^2$
     pub fn get_total_bias(&self) -> R {
         let dot_rv = self.position[0] * self.velocity[0]
             + self.position[1] * self.velocity[1]
             + self.position[2] * self.velocity[2];
-        let c_sq = R::from(SPEED_OF_LIGHT * SPEED_OF_LIGHT);
-        let two = R::from(2.0);
+        let c_sq = R::from_f64(SPEED_OF_LIGHT * SPEED_OF_LIGHT).unwrap();
+        let two = R::from_f64(2.0).unwrap();
         let rel_correction = -two * dot_rv / c_sq;
         self.clock_bias_s + rel_correction
     }

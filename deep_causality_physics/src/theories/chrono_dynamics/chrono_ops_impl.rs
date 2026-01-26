@@ -129,108 +129,7 @@ where
     // Inverted Einstein Field Equation
     // =========================================================================
 
-    fn solve_gm_from_kinectic(&self) -> Result<R, TopologyError> {
-        let shape = self.lattice().shape();
-        let n_radial = shape[1];
-
-        if n_radial < 2 {
-            return Err(TopologyError::LatticeGaugeError(
-                "Insufficient radial resolution for GM derivation".to_string(),
-            ));
-        }
-
-        let data: &Vec<SpaceTimeCoordinate<R>> = self.source();
-        if data.is_empty() {
-            return Err(TopologyError::LatticeGaugeError(
-                "Data empty. No date GM derivation possible without data!".to_string(),
-            ));
-        }
-
-        // Bin data by radial index (same logic as populate_links)
-        // We do this serially here since we need to aggregate first
-        // Store (inv_r, drift) to compute proper means
-        let mut radial_bins: Vec<Vec<(R, R)>> = vec![Vec::new(); n_radial];
-
-        // Physical constant for kinetic energy correction
-        let c_sq = <R as From<f64>>::from(SPEED_OF_LIGHT * SPEED_OF_LIGHT);
-        let half = <R as From<f64>>::from(0.5);
-
-        for coord in data {
-            let r_idx = radius_to_lattice_index(coord.r_m, n_radial);
-
-            // Kinetic energy correction
-            let v = coord.inertial_velocity_magnitude();
-            let k_term = half * v * v / c_sq;
-            let corrected_drift = coord.clock_drift_rate + k_term;
-
-            // Store 1/r for precise averaging
-            let r = coord.r_m;
-            let inv_r = if r != R::zero() {
-                R::one() / r
-            } else {
-                R::zero()
-            };
-
-            radial_bins[r_idx].push((inv_r, corrected_drift));
-        }
-
-        // Calculate (r, phase) measurements
-        // Phase(r) = (1 - avg_drift) * N_t (link phase) * N_t (Polyakov loop sum)
-        // Total Phi = N_t * N_t * (1 - drift)
-        let n_t = shape[0] as f64;
-        let n_t_scale = <R as From<f64>>::from(n_t);
-        let n_t_sq = n_t_scale * n_t_scale;
-
-        let measurements: Vec<(R, R, R)> = radial_bins
-            .into_iter()
-            .filter_map(|bin| {
-                if bin.is_empty() {
-                    None
-                } else {
-                    // Compute mean 1/r and mean drift
-                    // This reduces lattice quantization error significantly
-                    let zeros = (R::zero(), R::zero());
-                    let (sum_inv_r, sum_drift) = bin
-                        .iter()
-                        .cloned()
-                        .fold(zeros, |acc, x| (acc.0 + x.0, acc.1 + x.1));
-                    let count = <R as From<f64>>::from(bin.len() as f64);
-
-                    let avg_inv_r = sum_inv_r / count;
-                    let avg_drift = sum_drift / count;
-
-                    // Effective radius for this bin (to pass to regression)
-                    // linear_regression_inv_r takes r and inverts it.
-                    // So we pass r_eff = 1 / avg_inv_r
-                    let r_eff = if avg_inv_r != R::zero() {
-                        R::one() / avg_inv_r
-                    } else {
-                        R::zero()
-                    };
-                    // loop_phase = link_phase * N_t
-                    let phase = (R::one() - avg_drift) * n_t_sq;
-
-                    // Use sample count as weight for regression
-                    Some((r_eff, phase, count))
-                }
-            })
-            .collect();
-
-        if measurements.is_empty() {
-            return Err(TopologyError::LatticeGaugeError(
-                "No populated radial bins for GM derivation".to_string(),
-            ));
-        }
-
-        // Fit Phase(r) = (GM * N_t^2 / c^2) * (1/r)
-        // Weighted regression to account for non-uniform data density
-        let (slope, _intercept) = weighted_linear_regression_inv_r(&measurements)?;
-
-        // GM = slope * c^2 / N_t^2
-        Ok(slope * c_sq / n_t_sq)
-    }
-
-    fn solve_gm_from_action(&self) -> Result<R, TopologyError> {
+    fn solve_gm(&self) -> Result<R, TopologyError> {
         // =====================================================================
         // Kinematic Inversion: Mass from Field Curvature
         // =====================================================================
@@ -342,37 +241,134 @@ where
         Ok(gm_sum / gm_count)
     }
 
-    fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
+    fn solve_gm_analytical<C>(&self) -> Result<R, TopologyError>
     where
         C: SpaceTimeCoord<R>,
     {
-        use crate::SPEED_OF_LIGHT;
+        // =====================================================================
+        // GM Derivation from Source Data (Kinetic/Kinematic Method)
+        // =====================================================================
+        //
+        // This method derives the gravitational parameter GM directly from the
+        // observational data (satellite clocks and orbits), without relying on
+        // the lattice gauge field state.
+        //
+        // Theory:
+        // The proper time rate dτ/dt is affected by both gravitational potential
+        // (general relativity) and velocity (special relativity).
+        //
+        // dτ/dt ≈ 1 + Φ/c² - v²/(2c²)
+        //
+        // where Φ = -GM/r. Rearranging for GM:
+        // GM/r ≈ c² * (1 - dτ/dt - v²/(2c²))
+        //
+        // We define the "corrected drift" as:
+        // drift_corr = drift_obs + v²/(2c²)
+        //
+        // Then we fit the relation:
+        // drift_corr ≈ -GM/(c² r)
 
-        let c_sq = <R as From<f64>>::from(SPEED_OF_LIGHT * SPEED_OF_LIGHT);
+        let shape = self.lattice().shape();
+        let n_radial = shape[1];
 
-        // Term 1: Clock rate difference (curvature contribution)
-        let term_time = c_sq * (coord_b.clock_drift_rate() - coord_a.clock_drift_rate());
-
-        // Term 2: Kinetic energy difference
-        let v_a = coord_a.inertial_velocity_magnitude();
-        let v_b = coord_b.inertial_velocity_magnitude();
-        let half = <R as From<f64>>::from(0.5);
-        let term_kinetic = half * (v_b * v_b - v_a * v_a);
-
-        // Term 3: Potential geometry
-        let r_a = coord_a.radius_m();
-        let r_b = coord_b.radius_m();
-        let term_potential = R::one() / r_a - R::one() / r_b;
-
-        // Check for sufficient separation
-        let epsilon = <R as From<f64>>::from(1e-20);
-        if term_potential.abs() < epsilon {
+        if n_radial < 2 {
             return Err(TopologyError::LatticeGaugeError(
-                "Insufficient radial separation for GM derivation".to_string(),
+                "Insufficient radial resolution for GM derivation".to_string(),
             ));
         }
 
-        Ok((term_time + term_kinetic) / term_potential)
+        let data: &Vec<SpaceTimeCoordinate<R>> = self.source();
+        if data.is_empty() {
+            return Err(TopologyError::LatticeGaugeError(
+                "Data empty. No date GM derivation possible without data!".to_string(),
+            ));
+        }
+
+        // Bin data by radial index (same logic as populate_links)
+        // We do this serially here since we need to aggregate first
+        // Store (inv_r, drift) to compute proper means
+        let mut radial_bins: Vec<Vec<(R, R)>> = vec![Vec::new(); n_radial];
+
+        // Physical constant for kinetic energy correction
+        let c_sq = <R as From<f64>>::from(SPEED_OF_LIGHT * SPEED_OF_LIGHT);
+        let half = <R as From<f64>>::from(0.5);
+
+        for coord in data {
+            let r_idx = radius_to_lattice_index(coord.r_m, n_radial);
+
+            // Kinetic Energy Correction:
+            // Remove the special relativistic time dilation caused by satellite motion.
+            // This isolates the gravitational potential contribution.
+            // k_term = v² / 2c²
+            let v = coord.inertial_velocity_magnitude();
+            let k_term = half * v * v / c_sq;
+            let corrected_drift = coord.clock_drift_rate + k_term;
+
+            // Store 1/r for precise averaging
+            let r = coord.r_m;
+            let inv_r = if r != R::zero() {
+                R::one() / r
+            } else {
+                R::zero()
+            };
+
+            radial_bins[r_idx].push((inv_r, corrected_drift));
+        }
+
+        // Calculate (r, phase) measurements for regression
+        // We map the drift back to a "phase" variable to reuse the regression logic,
+        // effectively fitting: Phase ~ 1/r
+        let n_t = shape[0] as f64;
+        let n_t_scale = <R as From<f64>>::from(n_t);
+        let n_t_sq = n_t_scale * n_t_scale;
+
+        let measurements: Vec<(R, R, R)> = radial_bins
+            .into_iter()
+            .filter_map(|bin| {
+                if bin.is_empty() {
+                    None
+                } else {
+                    // Compute mean 1/r and mean drift
+                    // This reduces lattice quantization error significantly
+                    let zeros = (R::zero(), R::zero());
+                    let (sum_inv_r, sum_drift) = bin
+                        .iter()
+                        .cloned()
+                        .fold(zeros, |acc, x| (acc.0 + x.0, acc.1 + x.1));
+                    let count = <R as From<f64>>::from(bin.len() as f64);
+
+                    let avg_inv_r = sum_inv_r / count;
+                    let avg_drift = sum_drift / count;
+
+                    // Effective radius for this bin (to pass to regression)
+                    // linear_regression_inv_r takes r and inverts it.
+                    // So we pass r_eff = 1 / avg_inv_r
+                    let r_eff = if avg_inv_r != R::zero() {
+                        R::one() / avg_inv_r
+                    } else {
+                        R::zero()
+                    };
+                    // loop_phase = link_phase * N_t
+                    let phase = (R::one() - avg_drift) * n_t_sq;
+
+                    // Use sample count as weight for regression
+                    Some((r_eff, phase, count))
+                }
+            })
+            .collect();
+
+        if measurements.is_empty() {
+            return Err(TopologyError::LatticeGaugeError(
+                "No populated radial bins for GM derivation".to_string(),
+            ));
+        }
+
+        // Fit Phase(r) = (GM * N_t^2 / c^2) * (1/r)
+        // Weighted regression to account for non-uniform data density
+        let (slope, _) = weighted_linear_regression_inv_r(&measurements)?;
+
+        // GM = slope * c^2 / N_t^2
+        Ok(slope * c_sq / n_t_sq)
     }
 
     fn solve_j2_analytical<C>(&self, data: &[C]) -> Result<R, TopologyError>

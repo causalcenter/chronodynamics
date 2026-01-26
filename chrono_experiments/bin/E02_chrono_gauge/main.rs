@@ -16,14 +16,13 @@
 //! | Tolman         | `tolman_temperature()` | 1.00 |
 
 use chrono_data_manager::{
-    ANOMALOUS_WEEKS, DataManager, YEARS, get_gnss_data_input_path, get_year_datasets,
+    DataManager, YEARS, get_gnss_data_input_path, get_year_datasets,
 };
 use chrono_experiments::gauge_utils::{
     compute_dataset_time_velocity_correlation, compute_epoch_metrics_fast,
 };
 use chrono_experiments::{
     EpochMetrics, GaugeValidationResult, folder_utils, gauge_utils,
-    gravity_utils::derive_mass_from_dataset,
     print_utils::{print_cross_validation_table, print_gauge_header, print_gauge_summary},
     proces_utils::interpolate_space_time_single_pass,
     statistics_utils::calculate_pca,
@@ -189,7 +188,7 @@ fn process_dataset(
     dataset_name: &str,
     clk_path: &str,
     sp3_path: &str,
-    gauge_field: &ChronoGauge<FloatType>,
+    _gauge_field: &ChronoGauge<FloatType>,
 ) -> Result<Option<GaugeValidationResult<FloatType>>, io::Error> {
     // Load GNSS data
     let dm = DataManager::default();
@@ -292,26 +291,26 @@ fn process_dataset(
     let derived_rot = gauge_utils::estimate_earth_rotation::<FloatType>(&valid_coordinates);
     result.derived_earth_rotation = derived_rot;
 
-    // We construct paths assuming standard layout (which we have in arguments)
-    // Only derive for E14 to match E01 methodology, or if specific satellite requested.
-    // The E02 experiment iterates ALL datasets. We should try to derive mass for this dataset.
-    // derive_mass_from_dataset handles file loading internally to ensure fresh two-pass interpolation.
-    if let Ok(Some(mass_res)) = derive_mass_from_dataset(
-        dataset_name,
-        clk_path,
-        sp3_path,
-        "E14", // Try E14 first
-        gauge_field,
-        ANOMALOUS_WEEKS,
-    ) {
-        result.derived_gm = mass_res.derived_gm;
-        result.derived_mass = mass_res.derived_mass;
-        result.derived_gravity = mass_res.derived_gravity;
-    } else {
-        // If E14 failed or not present, try "E18" or fallback to primary if possible?
-        // For now, we stick to E14 as the "Gold Standard" mass witness.
-        // If satellite is not in file, it returns None.
-    }
+    // // We construct paths assuming standard layout (which we have in arguments)
+    // // Only derive for E14 to match E01 methodology, or if specific satellite requested.
+    // // The E02 experiment iterates ALL datasets. We should try to derive mass for this dataset.
+    // // derive_mass_from_dataset handles file loading internally to ensure fresh two-pass interpolation.
+    // if let Ok(Some(mass_res)) = derive_mass_from_dataset(
+    //     dataset_name,
+    //     clk_path,
+    //     sp3_path,
+    //     "E14", // Try E14 first
+    //     gauge_field,
+    //     ANOMALOUS_WEEKS,
+    // ) {
+    //     result.derived_gm = mass_res.derived_gm;
+    //     result.derived_mass = mass_res.derived_mass;
+    //     result.derived_gravity = mass_res.derived_gravity;
+    // } else {
+    //     // If E14 failed or not present, try "E18" or fallback to primary if possible?
+    //     // For now, we stick to E14 as the "Gold Standard" mass witness.
+    //     // If satellite is not in file, it returns None.
+    // }
 
     Ok(Some(result))
 }
