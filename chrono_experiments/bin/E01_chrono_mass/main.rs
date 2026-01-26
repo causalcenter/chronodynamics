@@ -3,10 +3,12 @@ use chrono_data_manager::{
     get_year_datasets,
 };
 use chrono_experiments::print_utils::{print_chrono_mass_header, print_mass_summary};
-use chrono_experiments::proces_utils::interpolate_space_time;
+use chrono_experiments::proces_utils::{apply_mad_filter, interpolate_space_time};
 use chrono_experiments::*;
-use deep_causality_num::Float106;
-use deep_causality_physics::{ChronoGauge, ChronoGaugeMutOps, ChronoGaugeOps, SpaceTimeCoordinate};
+use deep_causality_num::{Float106, RealField};
+use deep_causality_physics::{
+    ChronoGauge, ChronoOpsAnalytical, ChronoOpsGauge, ChronoOpsGaugeMut, SpaceTimeCoordinate,
+};
 use deep_causality_topology::Lattice;
 use rayon::prelude::*;
 use std::io;
@@ -80,13 +82,12 @@ fn run_year_analysis_analytical(
     let datasets = get_year_datasets(year);
     let global_results = Mutex::new(Vec::new());
 
+    let gauge_field = ChronoGauge::<FloatType>::identity(lattice, flt!(1.0));
+
     // Process datasets in parallel
     datasets.par_iter().for_each(|dataset| {
         // Extract GPS dataset ID from filename (e.g., "gbm19670" -> 19670)
         if let Some(dataset_id) = extract_gps_dataset_id(dataset)
-            // Filter out "Broken" GPS weeks e.g. Clocks crisis 2017, IGS08 to IGS14 transition, or Sept. anomaly 2018
-            // See E00 Chrono Experiment for how these were found via chrono forensic
-            // and see chrono_data_manager/src/lib.rs for a complete list of filtered out GPS weeks
             && ANOMALOUS_WEEKS.contains(&dataset_id)
         {
             if DBG {
@@ -102,6 +103,8 @@ fn run_year_analysis_analytical(
         let sp3_path = format!("{}/{}/{}.sp3", data_path, year, dataset);
 
         let process_result = (|| -> Result<Vec<FloatType>, io::Error> {
+            let config = AnalysisConfig::default();
+
             // Load GNSS data
             let dm = DataManager::default();
             let (clocks, orbits) = dm.load_gnss_single_satellite(&clk_path, &sp3_path, SAT_ID)?;
@@ -110,22 +113,48 @@ fn run_year_analysis_analytical(
             let data: Vec<SpaceTimeCoordinate<FloatType>> =
                 interpolate_space_time(&clocks, &orbits);
 
-            // 1. Create field and attach source data
-            // Use beta = 1.0 (standard stiffness)
-            let mut gauge_field =
-                ChronoGauge::<FloatType>::identity(lattice.clone(), flt!(1.0)).with_source(data);
-
-            // 2. Populate link variables from source (clock drift → link phase)
-            // This maps the clock drift rates into the U(1) phase of temporal links
-            if let Err(e) = gauge_field.populate_links_from_source() {
-                return Err(Error::other(e));
+            // Skip datasets with insufficient data
+            if data.len() <= config.window_size_indices {
+                if DBG {
+                    println!("  → Insufficient data points for window size");
+                }
+                return Ok(Vec::new());
             }
 
-            // 3. Extract GM via Gauge field
-            match gauge_field.solve_gm_analytical::<SpaceTimeCoordinate<FloatType>>() {
-                Ok(gm) => Ok(vec![gm]),
-                Err(e) => Err(Error::other(e)),
+            let mut raw_gm_values: Vec<FloatType> = Vec::new();
+
+            let mut i = 0;
+            while i < data.len() - config.window_size_indices {
+                let idx_a = i;
+                let idx_b = i + config.window_size_indices;
+
+                let r_a: FloatType = data[idx_a].r_m;
+                let r_b: FloatType = data[idx_b].r_m;
+                let d_h: FloatType = (r_a - r_b).abs();
+
+                // Skip if height difference is too small
+                if d_h < config.min_height_diff_m {
+                    i += 1;
+                    continue;
+                }
+
+                // Use solve_gm_analytical() to invert the Einstein field equation
+                if let Ok(gm) = gauge_field.solve_gm_analytical(&data[idx_a], &data[idx_b]) {
+                    raw_gm_values.push(gm);
+                }
+
+                i += config.step_size;
             }
+
+            if raw_gm_values.is_empty() {
+                println!("  → No valid GM derivations");
+                return Ok(Vec::new());
+            }
+
+            // Apply MAD filter for outlier rejection (now generic over Float)
+            let filtered = apply_mad_filter(&raw_gm_values, flt!(config.outlier_sigma));
+
+            Ok(filtered)
         })();
 
         match process_result {
@@ -185,7 +214,7 @@ fn run_year_analysis_gauge(
                 ChronoGauge::<FloatType>::identity(lattice.clone(), flt!(1.0)).with_source(data);
 
             // 2. Populate link variables from source
-            if let Err(e) = gauge_field.populate_links_from_source() {
+            if let Err(e) = gauge_field.populate_smooth_links_from_source() {
                 return Err(Error::other(e));
             }
 

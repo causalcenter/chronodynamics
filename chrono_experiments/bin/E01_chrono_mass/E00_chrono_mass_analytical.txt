@@ -1,6 +1,5 @@
 RUSTFLAGS='-C target-cpu=native' cargo run --release --bin  chrono_mass
-
-══════════════════════════════════════════════════════════════════════╗
+╔══════════════════════════════════════════════════════════════════════╗
 ║  E00: CHRONO-MASS EXPERIMENT                                         ║
 ║  GM Derivation from Time Dilation via ChronoGauge                    ║
 ╠══════════════════════════════════════════════════════════════════════╣

@@ -23,15 +23,15 @@
 //! current GAT trait solver limitations. See module documentation for details.
 
 mod chrono_hkt;
-mod chrono_ops;
-mod chrono_ops_impl;
-mod chrono_ops_monte_carlo;
-mod chrono_ops_monte_carlo_impl;
 mod chrono_params;
 mod chrono_vector;
 
 pub use chrono_hkt::*;
-pub use chrono_ops::*;
-pub use chrono_ops_monte_carlo::*;
+pub use chrono_ops::chrono_ops_analytical::*;
+pub use chrono_ops::chrono_ops_gauge::*;
+pub use chrono_ops::chrono_ops_gauge_mut::*;
+pub use chrono_ops::chrono_ops_monte_carlo::*;
 pub use chrono_params::*;
 pub use chrono_vector::*;
+
+mod chrono_ops;

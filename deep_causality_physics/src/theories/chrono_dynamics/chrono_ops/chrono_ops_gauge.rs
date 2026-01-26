@@ -14,7 +14,6 @@
 //! With standard Wilson action: O(a²) discretization errors.
 //! With Symanzik improvement: O(a⁴) discretization errors.
 
-use crate::SpaceTimeCoord;
 use deep_causality_num::RealField;
 use deep_causality_topology::TopologyError;
 
@@ -27,7 +26,7 @@ use deep_causality_topology::TopologyError;
 ///
 /// All methods return `Result<T, TopologyError>` to propagate errors from
 /// underlying lattice operations.
-pub trait ChronoGaugeOps<R: RealField> {
+pub trait ChronoOpsGauge<R: RealField> {
     // =========================================================================
     // Mass/Energy Observables
     // =========================================================================
@@ -95,46 +94,4 @@ pub trait ChronoGaugeOps<R: RealField> {
     ///
     /// Formula: GM ∝ r² ⋅ √Action
     fn solve_gm(&self) -> Result<R, TopologyError>;
-
-    /// Derives GM from source chrono data (satellite clocks) using kinetic energy corrections
-    /// without relying on the lattice gauge field.
-    ///
-    /// This method performs a regression analysis on the clock drift rates of satellites,
-    /// correcting for their kinematic state (velocity) to isolate the gravitational potential.
-    ///
-    /// # Physics
-    ///
-    /// The clock drift rate $d\tau/dt$ is related to the potential $\Phi$ and velocity $v$ by:
-    /// $$ \frac{d\tau}{dt} \approx 1 + \frac{\Phi}{c^2} - \frac{v^2}{2c^2} $$
-    ///
-    /// By isolating $\Phi = -GM/r$, we can solve for GM:
-    /// $$ \Phi \approx c^2 \left( \frac{d\tau}{dt} - 1 + \frac{v^2}{2c^2} \right) $$
-    ///
-    /// # Returns
-    ///
-    /// The gravitational parameter GM in m³/s².
-    fn solve_gm_analytical<C>(&self) -> Result<R, TopologyError>
-    where
-        C: SpaceTimeCoord<R>;
-
-    /// Computes J2 oblateness coefficient analytically (without the Gauge Field)
-    /// from observed satellite time data.
-    fn solve_j2_analytical<C>(&self, data: &[C]) -> Result<R, TopologyError>
-    where
-        C: SpaceTimeCoord<R>;
-}
-
-/// Mutable operations for populating the gauge field from source data.
-pub trait ChronoGaugeMutOps<R: RealField> {
-    /// Populates temporal link variables from the internal source data.
-    ///
-    /// This method reads clock drift rates from `self.source()`, bins them
-    /// by radius, and encodes the average drift into temporal link phases:
-    ///
-    /// $$U_0(x) = \exp(i \cdot (1 - \dot{\tau}) \cdot N_t)$$
-    ///
-    /// # Requirements
-    ///
-    /// The field must have source data attached (S = Vec<SpaceTimeCoordinate>).
-    fn populate_links_from_source(&mut self) -> Result<(), TopologyError>;
 }

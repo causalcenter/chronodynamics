@@ -15,9 +15,7 @@
 //! | Time-Vel Corr  | Correlations | +1.00 |
 //! | Tolman         | `tolman_temperature()` | 1.00 |
 
-use chrono_data_manager::{
-    DataManager, YEARS, get_gnss_data_input_path, get_year_datasets,
-};
+use chrono_data_manager::{DataManager, YEARS, get_gnss_data_input_path, get_year_datasets};
 use chrono_experiments::gauge_utils::{
     compute_dataset_time_velocity_correlation, compute_epoch_metrics_fast,
 };
@@ -28,7 +26,7 @@ use chrono_experiments::{
     statistics_utils::calculate_pca,
 };
 use deep_causality_num::{Float106, RealField};
-use deep_causality_physics::{ChronoGauge, ChronoGaugeOps, EARTH_J2, SpaceTimeCoordinate};
+use deep_causality_physics::{ChronoGauge, ChronoOpsAnalytical, EARTH_J2, SpaceTimeCoordinate};
 use deep_causality_topology::{Lattice, LatticeGaugeField};
 use rayon::prelude::*;
 use std::collections::HashMap;
