@@ -220,7 +220,18 @@ fn run_year_analysis_gauge(
 
             // 3. Extract GM via Gauge Field
             match gauge_field.solve_gm() {
-                Ok(gm) => Ok(vec![gm]),
+                Ok(gm) => {
+                    // Outlier detection requested by user
+                    let earth_gm = flt!(3.986004418e14);
+                    let diff = (gm - earth_gm).abs();
+                    let error = diff / earth_gm;
+                    
+                    if error > flt!(0.5) {
+                        println!("OUTLIER detected in {}: GM={:e} (Error: {:.1}%)", dataset, gm, error * flt!(100.0));
+                    }
+                    
+                    Ok(vec![gm])
+                },
                 Err(e) => Err(Error::other(e)),
             }
         })();

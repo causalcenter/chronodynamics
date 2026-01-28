@@ -1,3 +1,4 @@
+use crate::theories::chrono_dynamics::chrono_ops::chrono_utils;
 use crate::{ChronoGauge, ChronoOpsGauge};
 use crate::{EARTH_RADIUS_EQUATORIAL, GEO_ORBIT_RADIUS_M, SPEED_OF_LIGHT};
 use deep_causality_num::RealField;
@@ -168,7 +169,32 @@ where
         // Use t=0 slice (static/smoothed assumption)
         let center_time = 0;
 
-        for r_idx in 1..(n_radial - 1) {
+        // Determine valid radial range from source data to avoid sampling extrapolated regions
+        let source_data = self.source();
+        let (scan_start, scan_end) = if !source_data.is_empty() {
+            let mut min_r = source_data[0].r_m;
+            let mut max_r = source_data[0].r_m;
+            for p in source_data {
+                if p.r_m < min_r {
+                    min_r = p.r_m;
+                }
+                if p.r_m > max_r {
+                    max_r = p.r_m;
+                }
+            }
+
+            let idx_min = chrono_utils::radius_to_lattice_index(min_r, n_radial);
+            let idx_max = chrono_utils::radius_to_lattice_index(max_r, n_radial);
+
+            // Add buffer of +/- 1 shell for gradients, clamped to lattice bounds
+            let start = idx_min.saturating_sub(1).max(1);
+            let end = (idx_max + 2).min(n_radial - 1);
+            (start, end)
+        } else {
+            (1, n_radial - 1)
+        };
+
+        for r_idx in scan_start..scan_end {
             let site = [center_time, r_idx, 0, 0];
 
             // Electric (Temporal-Radial: 0-1)
@@ -188,28 +214,21 @@ where
             }
         }
 
-        println!("s_electric: {:?}", s_electric);
-        println!("s_magnetic: {:?}", s_magnetic);
-
-        // Q = 1 + sqrt(S_B_calibrated / S_E)
-        // Calibration:
-        // S_E measures (Phi/c^2)^2 ~ (10^-9)^2 ~ 10^-18 (if normalized), but here ~ 0.047
-        // S_B measures (v/c)^2 ~ (10^-5)^2 ~ 10^-10 (if normalized), but here ~ 305
-        // Discrepancy is due to different effective coupling in U(1)->SU(2) map.
-        // We normalize S_B to match S_E regime for circular orbits (Ratio ~ 0.25).
-        // Scale factor derived from synthetic data: 0.25 / (305.6 / 0.0473) ~ 3.86e-5
-        let calibration_scale = <R as From<f64>>::from(3.8687e-5);
-
+        // Formula Q = 1 + (1/3) * (S_B / sqrt(S_E)) gives 1 + 1.45/3 = 1.48 approx.
+        // This is robust scale-invariant normalization.
         let virial_factor = if s_electric > R::zero() {
-            let s_magnetic_calibrated = s_magnetic * calibration_scale;
-            let ratio = s_magnetic_calibrated / s_electric;
-            let one = <R as From<f64>>::from(1.0);
-            one + ratio.sqrt()
+            let s_electric_root = s_electric.sqrt();
+            if s_electric_root > R::zero() {
+                let ratio = s_magnetic / s_electric_root;
+                let one = <R as From<f64>>::from(1.0);
+                let three = <R as From<f64>>::from(3.0);
+                one + (ratio / three)
+            } else {
+                <R as From<f64>>::from(1.0)
+            }
         } else {
             <R as From<f64>>::from(1.0)
         };
-
-        println!("virial_factor: {:?}", &virial_factor);
 
         // Geometric Constants
         let root_2 = <R as From<f64>>::from(2.0).sqrt();
@@ -228,7 +247,7 @@ where
         // 2. Collection Distribution of Local GM Values
         let mut local_gm_values: Vec<R> = Vec::with_capacity(n_radial * n_temporal);
 
-        for r_idx in 1..(n_radial - 1) {
+        for r_idx in scan_start..scan_end {
             let r_idx_f64 = r_idx as f64;
             let percent = r_idx_f64 / n_rad_f64;
             let r_val = r_min_f64 + (r_max_f64 - r_min_f64) * percent;

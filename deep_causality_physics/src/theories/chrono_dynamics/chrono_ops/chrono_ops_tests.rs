@@ -10,9 +10,8 @@ use std::sync::Arc;
 #[test]
 fn test_solve_gm_smooth_synthetic() {
     // 1. Setup ideal parameters
-    // Scale GM up by 1e5 to make action visible in f64 (avoid underflow)
-    // Earth GM ~ 4e14. We use 4e19.
-    let _gm = EARTH_GM * 1e5;
+    // Use Real Earth GM for physical consistency with calibration
+    let gm = 3.986004418e14; // Earth GM (m^3/s^2)
     let c = SPEED_OF_LIGHT;
     let _c_sq = c * c;
 
