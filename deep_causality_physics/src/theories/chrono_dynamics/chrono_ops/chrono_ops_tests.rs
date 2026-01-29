@@ -1,8 +1,7 @@
 use crate::theories::chrono_dynamics::chrono_ops::chrono_ops_gauge::ChronoOpsGauge;
 use crate::theories::chrono_dynamics::chrono_ops::chrono_ops_gauge_mut::ChronoOpsGaugeMut;
 use crate::{
-    ChronoGauge, EARTH_GM, EARTH_RADIUS_EQUATORIAL, GEO_ORBIT_RADIUS_M, SPEED_OF_LIGHT,
-    SpaceTimeCoordinate,
+    ChronoGauge, EARTH_RADIUS_EQUATORIAL, GEO_ORBIT_RADIUS_M, SPEED_OF_LIGHT, SpaceTimeCoordinate,
 };
 use deep_causality_topology::Lattice;
 use std::sync::Arc;
@@ -11,7 +10,7 @@ use std::sync::Arc;
 fn test_solve_gm_smooth_synthetic() {
     // 1. Setup ideal parameters
     // Use Real Earth GM for physical consistency with calibration
-    let gm = 3.986004418e14; // Earth GM (m^3/s^2)
+    let _gm = 3.986004418e14; // Earth GM (m^3/s^2)
     let c = SPEED_OF_LIGHT;
     let _c_sq = c * c;
 

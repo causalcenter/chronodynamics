@@ -1,7 +1,7 @@
 use crate::theories::chrono_dynamics::chrono_ops::chrono_utils;
 use crate::{
-    ChronoGauge, ChronoOpsAnalytical, SpaceTimeCoord, EARTH_GM, EARTH_RADIUS_EQUATORIAL,
-    SPEED_OF_LIGHT,
+    ChronoGauge, ChronoOpsAnalytical, EARTH_GM, EARTH_RADIUS_EQUATORIAL, SPEED_OF_LIGHT,
+    SpaceTimeCoord,
 };
 use deep_causality_num::RealField;
 use deep_causality_topology::TopologyError;
@@ -10,15 +10,15 @@ use std::fmt::Debug;
 impl<R> ChronoOpsAnalytical<R> for ChronoGauge<R>
 where
     R: RealField
-    + Clone
-    + From<f64>
-    + Into<f64>
-    + Default
-    + Debug
-    + Send
-    + Sync
-    + deep_causality_num::FromPrimitive
-    + deep_causality_num::ToPrimitive,
+        + Clone
+        + From<f64>
+        + Into<f64>
+        + Default
+        + Debug
+        + Send
+        + Sync
+        + deep_causality_num::FromPrimitive
+        + deep_causality_num::ToPrimitive,
 {
     fn solve_gm_analytical<C>(&self, coord_a: &C, coord_b: &C) -> Result<R, TopologyError>
     where

@@ -25,3 +25,4 @@ chrono_data_manager = { workspace = true }
 deep_causality_physics = { workspace = true }
 deep_causality_num = { workspace = true }
 deep_causality_topology = { workspace = true }
+num-traits = "0.2.19"

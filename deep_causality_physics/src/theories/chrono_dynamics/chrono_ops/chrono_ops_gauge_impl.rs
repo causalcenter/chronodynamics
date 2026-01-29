@@ -259,11 +259,11 @@ where
             let origin = [0, r_idx, 0, 0];
 
             // Temporal Plaquette (Time-Radial)
-            if let Ok(action) = self.try_plaquette_action(&origin, 0, 1) {
-                if action > R::zero() {
-                    let gm_local = (prefactor_base * r * r * action.sqrt()) / delta_r_phys;
-                    local_gm_values.push(gm_local);
-                }
+            if let Ok(action) = self.try_plaquette_action(&origin, 0, 1)
+                && action > R::zero()
+            {
+                let gm_local = (prefactor_base * r * r * action.sqrt()) / delta_r_phys;
+                local_gm_values.push(gm_local);
             }
         }
 

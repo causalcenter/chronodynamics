@@ -68,7 +68,7 @@ where
             let r_idx = chrono_utils::radius_to_lattice_index(coord.r_m, n_radial);
             radial_vel_bins[r_idx].push(coord.v_ms);
         }
-        
+
         let c = <R as From<f64>>::from(3e8);
         let v_scale = n_t_scale / c;
 
@@ -84,19 +84,19 @@ where
                     let phase = -(*avg_drift) * n_t_scale;
                     let link = LinkVariable::<SU2_U1, Complex<R>, R>::from_phase(phase);
                     self.set_link(cell, link);
-                } 
+                }
                 // Spatial Links (Isotropic approximation)
                 else {
                     // Compute average velocity for this shell
                     // (In a real implementation, we'd cache this like avg_drifts)
                     let bin = &radial_vel_bins[r_idx];
                     if !bin.is_empty() {
-                         let sum: R = bin.iter().cloned().fold(R::zero(), |a, b| a + b);
-                         let avg_vel = sum / <R as From<f64>>::from(bin.len() as f64);
-                         
-                         let phase = avg_vel * v_scale;
-                         let link = LinkVariable::<SU2_U1, Complex<R>, R>::from_phase(phase);
-                         self.set_link(cell, link);
+                        let sum: R = bin.iter().cloned().fold(R::zero(), |a, b| a + b);
+                        let avg_vel = sum / <R as From<f64>>::from(bin.len() as f64);
+
+                        let phase = avg_vel * v_scale;
+                        let link = LinkVariable::<SU2_U1, Complex<R>, R>::from_phase(phase);
+                        self.set_link(cell, link);
                     }
                 }
             }

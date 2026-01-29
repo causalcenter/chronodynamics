@@ -8,12 +8,12 @@ use deep_causality_num::RealField;
 use deep_causality_physics::{EARTH_GM, EARTH_MASS_KG, NEWTONIAN_CONSTANT_OF_GRAVITATION};
 use std::io::Error;
 
-pub fn print_chrono_mass_header(analytical: bool) {
+pub fn print_chrono_mass_header(sat_id: &str, analytical: bool) {
     println!("╔══════════════════════════════════════════════════════════════════════╗");
     println!("║  E00: CHRONO-MASS EXPERIMENT                                         ║");
     println!("║  GM Derivation from Time Dilation via ChronoGauge                    ║");
     println!("╠══════════════════════════════════════════════════════════════════════╣");
-    println!("║  Satellite:  E14 (Galileo)                                           ║");
+    println!("║  Satellite:  {sat_id} (Galileo)                                           ║");
     if analytical {
         println!("║  Mode:       Analytical Approximation                                ║");
     } else {

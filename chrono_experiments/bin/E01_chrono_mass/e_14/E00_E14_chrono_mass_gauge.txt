@@ -1,0 +1,242 @@
+RUSTFLAGS='-C target-cpu=native' cargo run --release --bin  chrono_mass
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  E00: CHRONO-MASS EXPERIMENT                                         ║
+║  GM Derivation from Time Dilation via ChronoGauge                    ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  Satellite:  E14 (Galileo)                                           ║
+║  Mode:       Chrono-Gauge Lattice (U(1) × SU(2)                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Failed to process dataset gbm20274: LatticeGaugeField error: Source data is empty, cannot populate links
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  CHRONO-MASS RESULT: 2017
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  DATA QUALITY                                                                ║
+║    Total Data Points:             307                                       ║
+║    Variance (GM):          1.31e25 (m³/s²)²                               ║
+║    Std Deviation (GM):     3.62e12 m³/s²                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  ★ PRIMARY RESULT: GM DERIVED FROM TIME (No External Mass/G Required)       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    GM (Median):            5.100146e14 m³/s²                                ║
+║    GM (HP Mean):           5.094858590199038125000000000000e14 m³/s²       ║
+║    Distribution:           Left Skewed     (Skew:  -2.29)                 ║
+║    GM (Reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
+║    GM median error:        27.9513%                                           ║
+║    GM mean error:          27.8187%                                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  SEPARATION STEP 1: Recover G (Based on GM Mean, M = 5.9722e24 kg) ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    G = GM / M_assumed                                                        ║
+║    G (recovered):          8.53097e-11 m³/(kg·s²)                            ║
+║    G (reference):          6.67430e-11 m³/(kg·s²)  (CODATA 2022)             ║
+║    G Error:                27.8182%                                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  SEPARATION STEP 2: Recover M (Based on GM Mean, G = 6.67430e-11)   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    M = GM / G_assumed                                                        ║
+║    M (recovered):          7.6335e24 kg                                     ║
+║    M (reference):          5.9722e24 kg  (IERS 2010)                        ║
+║    M Error:                27.8182%                                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+=== GM ERROR ANALYSIS: 2017 ===
+  Mean Error:          +2.7819e-1
+  Median Error:        +2.7951e-1
+  Pearson (Alt vs Err):      0
+  Spearman (Alt vs Err):     0
+  Pearson (Alt vs |DevMean|):   0
+  Pearson (Alt vs |DevMedian|): 0
+  Pearson (Vr vs Err):       0
+  Spearman (Vr vs Err):      0
+  Pearson (Vr vs |DevMean|):    0
+  Pearson (Lat vs Err):      0
+  Spearman (Lat vs Err):     0
+  Pearson (Lat vs |DevMean|):   0
+  Pearson (|Lat| vs Err):    0
+  Pearson (Long vs Err):     0
+  Spearman (Long vs Err):    0
+  Pearson (Long vs |DevMean|):  0
+  Pearson (|Long| vs Err):   0
+
+--- Latitude Variance Normalization ---
+  Bin Sigmas (South to North):
+    Lat  -85.0°: σ=1.0000e0  (n=0)
+    Lat  -75.0°: σ=1.0000e0  (n=0)
+    Lat  -65.0°: σ=1.0000e0  (n=0)
+    Lat  -55.0°: σ=1.0000e0  (n=0)
+    Lat  -45.0°: σ=1.0000e0  (n=0)
+    Lat  -35.0°: σ=1.0000e0  (n=0)
+    Lat  -25.0°: σ=1.0000e0  (n=0)
+    Lat  -15.0°: σ=1.0000e0  (n=0)
+    Lat   -5.0°: σ=1.0000e0  (n=0)
+    Lat   +5.0°: σ=9.0999e-3  (n=307)
+    Lat  +15.0°: σ=1.0000e0  (n=0)
+    Lat  +25.0°: σ=1.0000e0  (n=0)
+    Lat  +35.0°: σ=1.0000e0  (n=0)
+    Lat  +45.0°: σ=1.0000e0  (n=0)
+    Lat  +55.0°: σ=1.0000e0  (n=0)
+    Lat  +65.0°: σ=1.0000e0  (n=0)
+    Lat  +75.0°: σ=1.0000e0  (n=0)
+    Lat  +85.0°: σ=1.0000e0  (n=0)
+  ---- After Normalization ----
+  Mean (Norm):         30.570409704608828+0.0000000000000013937217983427655
+  Median (Norm):       30.71618127396775+-0.0000000000000007285412507933487
+  Std Dev (Norm):      1+0.000000000000000000000000000000010311907257791004  (target: 1.0)
+  Pearson(Lat vs |NormErr|): 0  (target: 0.0)
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  CHRONO-MASS RESULT: 2018
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  DATA QUALITY                                                                ║
+║    Total Data Points:             326                                       ║
+║    Variance (GM):          6.08e24 (m³/s²)²                               ║
+║    Std Deviation (GM):     2.47e12 m³/s²                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  ★ PRIMARY RESULT: GM DERIVED FROM TIME (No External Mass/G Required)       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    GM (Median):            5.091299e14 m³/s²                                ║
+║    GM (HP Mean):           5.089400283929141875000000000000e14 m³/s²       ║
+║    Distribution:           Symmetric       (Skew:  -0.47)                 ║
+║    GM (Reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
+║    GM median error:        27.7294%                                           ║
+║    GM mean error:          27.6818%                                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  SEPARATION STEP 1: Recover G (Based on GM Mean, M = 5.9722e24 kg) ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    G = GM / M_assumed                                                        ║
+║    G (recovered):          8.52183e-11 m³/(kg·s²)                            ║
+║    G (reference):          6.67430e-11 m³/(kg·s²)  (CODATA 2022)             ║
+║    G Error:                27.6813%                                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  SEPARATION STEP 2: Recover M (Based on GM Mean, G = 6.67430e-11)   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    M = GM / G_assumed                                                        ║
+║    M (recovered):          7.6254e24 kg                                     ║
+║    M (reference):          5.9722e24 kg  (IERS 2010)                        ║
+║    M Error:                27.6813%                                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+=== GM ERROR ANALYSIS: 2018 ===
+  Mean Error:          +2.7682e-1
+  Median Error:        +2.7729e-1
+  Pearson (Alt vs Err):      0
+  Spearman (Alt vs Err):     0
+  Pearson (Alt vs |DevMean|):   0
+  Pearson (Alt vs |DevMedian|): 0
+  Pearson (Vr vs Err):       0
+  Spearman (Vr vs Err):      0
+  Pearson (Vr vs |DevMean|):    0
+  Pearson (Lat vs Err):      0
+  Spearman (Lat vs Err):     0
+  Pearson (Lat vs |DevMean|):   0
+  Pearson (|Lat| vs Err):    0
+  Pearson (Long vs Err):     0
+  Spearman (Long vs Err):    0
+  Pearson (Long vs |DevMean|):  0
+  Pearson (|Long| vs Err):   0
+
+--- Latitude Variance Normalization ---
+  Bin Sigmas (South to North):
+    Lat  -85.0°: σ=1.0000e0  (n=0)
+    Lat  -75.0°: σ=1.0000e0  (n=0)
+    Lat  -65.0°: σ=1.0000e0  (n=0)
+    Lat  -55.0°: σ=1.0000e0  (n=0)
+    Lat  -45.0°: σ=1.0000e0  (n=0)
+    Lat  -35.0°: σ=1.0000e0  (n=0)
+    Lat  -25.0°: σ=1.0000e0  (n=0)
+    Lat  -15.0°: σ=1.0000e0  (n=0)
+    Lat   -5.0°: σ=1.0000e0  (n=0)
+    Lat   +5.0°: σ=6.1979e-3  (n=326)
+    Lat  +15.0°: σ=1.0000e0  (n=0)
+    Lat  +25.0°: σ=1.0000e0  (n=0)
+    Lat  +35.0°: σ=1.0000e0  (n=0)
+    Lat  +45.0°: σ=1.0000e0  (n=0)
+    Lat  +55.0°: σ=1.0000e0  (n=0)
+    Lat  +65.0°: σ=1.0000e0  (n=0)
+    Lat  +75.0°: σ=1.0000e0  (n=0)
+    Lat  +85.0°: σ=1.0000e0  (n=0)
+  ---- After Normalization ----
+  Mean (Norm):         44.66282525369264+-0.000000000000000684058052948651
+  Median (Norm):       44.739783169319665+-0.000000000000003275732697208531
+  Std Dev (Norm):      1+-0.000000000000000000000000000000007281792971270879  (target: 1.0)
+  Pearson(Lat vs |NormErr|): 0  (target: 0.0)
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  CHRONO-MASS RESULT: TOTAL (All Years)
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  DATA QUALITY                                                                ║
+║    Total Data Points:             633                                       ║
+║    Variance (GM):          9.57e24 (m³/s²)²                               ║
+║    Std Deviation (GM):     3.09e12 m³/s²                                   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  ★ PRIMARY RESULT: GM DERIVED FROM TIME (No External Mass/G Required)       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    GM (Median):            5.095208e14 m³/s²                                ║
+║    GM (HP Mean):           5.092047519355458125000000000000e14 m³/s²       ║
+║    Distribution:           Left Skewed     (Skew:  -1.81)                 ║
+║    GM (Reference):         3.986004e14 m³/s²  (IERS 2010)                   ║
+║    GM median error:        27.8275%                                           ║
+║    GM mean error:          27.7482%                                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  SEPARATION STEP 1: Recover G (Based on GM Mean, M = 5.9722e24 kg) ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    G = GM / M_assumed                                                        ║
+║    G (recovered):          8.52626e-11 m³/(kg·s²)                            ║
+║    G (reference):          6.67430e-11 m³/(kg·s²)  (CODATA 2022)             ║
+║    G Error:                27.7477%                                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  SEPARATION STEP 2: Recover M (Based on GM Mean, G = 6.67430e-11)   ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║    M = GM / G_assumed                                                        ║
+║    M (recovered):          7.6293e24 kg                                     ║
+║    M (reference):          5.9722e24 kg  (IERS 2010)                        ║
+║    M Error:                27.7477%                                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+=== GM ERROR ANALYSIS: TOTAL (All Years) ===
+  Mean Error:          +2.7748e-1
+  Median Error:        +2.7827e-1
+  Pearson (Alt vs Err):      0
+  Spearman (Alt vs Err):     0
+  Pearson (Alt vs |DevMean|):   0
+  Pearson (Alt vs |DevMedian|): 0
+  Pearson (Vr vs Err):       0
+  Spearman (Vr vs Err):      0
+  Pearson (Vr vs |DevMean|):    0
+  Pearson (Lat vs Err):      0
+  Spearman (Lat vs Err):     0
+  Pearson (Lat vs |DevMean|):   0
+  Pearson (|Lat| vs Err):    0
+  Pearson (Long vs Err):     0
+  Spearman (Long vs Err):    0
+  Pearson (Long vs |DevMean|):  0
+  Pearson (|Long| vs Err):   0
+
+--- Latitude Variance Normalization ---
+  Bin Sigmas (South to North):
+    Lat  -85.0°: σ=1.0000e0  (n=0)
+    Lat  -75.0°: σ=1.0000e0  (n=0)
+    Lat  -65.0°: σ=1.0000e0  (n=0)
+    Lat  -55.0°: σ=1.0000e0  (n=0)
+    Lat  -45.0°: σ=1.0000e0  (n=0)
+    Lat  -35.0°: σ=1.0000e0  (n=0)
+    Lat  -25.0°: σ=1.0000e0  (n=0)
+    Lat  -15.0°: σ=1.0000e0  (n=0)
+    Lat   -5.0°: σ=1.0000e0  (n=0)
+    Lat   +5.0°: σ=7.7664e-3  (n=633)
+    Lat  +15.0°: σ=1.0000e0  (n=0)
+    Lat  +25.0°: σ=1.0000e0  (n=0)
+    Lat  +35.0°: σ=1.0000e0  (n=0)
+    Lat  +45.0°: σ=1.0000e0  (n=0)
+    Lat  +55.0°: σ=1.0000e0  (n=0)
+    Lat  +65.0°: σ=1.0000e0  (n=0)
+    Lat  +75.0°: σ=1.0000e0  (n=0)
+    Lat  +85.0°: σ=1.0000e0  (n=0)
+  ---- After Normalization ----
+  Mean (Norm):         35.72847139524004+-0.0000000000000016085872487240884
+  Median (Norm):       35.83056913044539+0.0000000000000008922051014921908
+  Std Dev (Norm):      1+0.000000000000000000000000000000027460347966554207  (target: 1.0)
+  Pearson(Lat vs |NormErr|): 0  (target: 0.0)
