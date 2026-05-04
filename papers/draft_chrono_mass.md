@@ -1,4 +1,4 @@
-# Derivation of the Geocentric Gravitational Constant from Satellite Clock Data
+# Recovery of the Geocentric Gravitational Constant from Galileo Satellite Clock Data via Chronometric Inversion
 
 **Draft Manuscript v1.0**
 
@@ -35,12 +35,18 @@ measuring the time dilation rate difference between two orbital positions, we ca
 
 ### 1.1 The Eccentric Orbit Requirement
 
-This method fundamentally requires altitude variation. For circular orbits, Δ(1/r) = 0 and the GM signal vanishes. The
-Galileo E14 and E18 satellites, launched in August 2014, entered highly eccentric orbits (e ≈ 0.162) due to a Fregat
+The method requires altitude variation. For coplanar circular orbits at the same altitude, Δ(1/r) = 0 and the GM signal
+vanishes outright. Cross-constellation pairing in principle gives a non-zero Δ(1/r): GPS at 20,200 km against Galileo
+MEO at 23,222 km yields Δ(1/r) ≈ 7 × 10⁻¹⁰ m⁻¹. In practice, however, this regime is dominated by clock-system
+synchronization residuals between the two systems, which exceed the GM signal we are trying to extract. Single-satellite
+recovery therefore requires a satellite with sufficient orbital eccentricity to span a meaningful radial range from a
+single onboard clock.
+
+The Galileo E14 and E18 satellites, launched in August 2014, entered highly eccentric orbits (e ≈ 0.162) due to a Fregat
 upper stage anomaly. This "failure" created a unique natural laboratory: satellites with precision atomic clocks
 traversing a ~8,500 km altitude range (perigee: ~17,200 km, apogee: ~25,900 km) every orbit.
 
-No other GNSS satellite has this property, and future constellation designs will avoid such anomalies. This experiment
+No other GNSS satellite has this property, and future constellation designs will avoid such anomalies. The experiment
 is therefore not replicable with any planned GNSS system.
 
 ---
@@ -54,8 +60,9 @@ and v_B:
 
 $$GM = \frac{c^2 \cdot (\dot{\tau}_B - \dot{\tau}_A) + \frac{1}{2}(v_B^2 - v_A^2)}{(1/r_A) - (1/r_B)}$$
 
-This is derived by taking the difference of the Schwarzschild metric time dilation at two points and solving for GM. The
-key observables are:
+This is derived by taking the difference of the relativistic clock equation in the weak-field 1PN limit at two points
+and solving for GM. The full kernel adds the J2 oblateness correction to the Newtonian potential; the equation above
+is the spherical-Earth special case (J2 = 0) for clarity. The key observables are:
 
 | Term                   | Source            | Description                   |
 |:-----------------------|:------------------|:------------------------------|
@@ -73,7 +80,7 @@ key observables are:
 
 ### 2.3 Data Processing
 
-1. **Interpolation**: Cubic spline interpolation of ephemeris to match clock epochs
+1. **Interpolation**: 10th-order Lagrange polynomial interpolation of ephemeris to match clock epochs
 2. **Pair selection**: Sequential epochs with Δt = 1800 s (half orbital period)
 3. **Outlier filtering**: Median Absolute Deviation (MAD) filter with 3σ threshold
 4. **Anomaly exclusion**:
@@ -100,7 +107,10 @@ the subtraction of nearly equal quantities.
 Reference: IERS 2010 GM = 3.986004418 × 10¹⁴ m³/s²
 
 The median GM agrees with the IERS reference value to within 5 × 10⁻⁷, which is consistent with the expected precision
-from clock and orbit error propagation.
+from clock and orbit error propagation. The mean GM error (1.4 × 10⁻⁵) is roughly 35× larger than the median error
+(4 × 10⁻⁷). This gap reflects heavier-than-Gaussian tails in the per-pair distribution. The MAD outlier filter removes
+symmetric outliers but residual asymmetry shifts the mean. We report the median as the central estimator throughout this
+work; readers focused on Gaussian noise floors should use the standard deviation rather than the mean error.
 
 ### 3.2 Cross-Validation: E18
 
@@ -136,8 +146,8 @@ reducing spurious latitude-error correlation by 91% (Pearson r: -0.178 → -0.01
 
 ### 4.1 Error Propagation: Clock to GM
 
-The Passive Hydrogen Maser (PHM) has fractional frequency stability of 10⁻¹⁴. However, the observed GM error is 10⁻⁷—a
-gap of 7 orders of magnitude explained by error propagation:
+The Passive Hydrogen Maser (PHM) has fractional frequency stability of 10⁻¹⁴. The observed GM error is 10⁻⁷, a gap of
+seven orders of magnitude explained by error propagation:
 
 **Theoretical clock-only limit**:
 
@@ -163,7 +173,7 @@ $$\frac{\delta GM}{GM} \approx \frac{c^2 \cdot \delta\Delta\dot{\tau}}{GM \cdot 
 | Relativistic Model  | ~10⁻⁸        | Schwarzschild + velocity   | Negligible |
 | Ionosphere          | ~10⁻⁹        | Dual-frequency             | Negligible |
 | Troposphere         | ~10⁻¹⁰       | Ground models              | Negligible |
-| J2 Oblateness       | ~10⁻⁸        | Tested via (r=0.003)       | Negligible | 
+| J2 Oblateness       | ~10⁻⁸        | Pearson r=0.003 vs latitude after correction | Negligible |
 | Frame Dragging      | ~10⁻¹²       | Lense-Thirring << noise    | Negligible |
 
 **Total systematic**: ~10⁻⁶ (dominated by clock → orbit error chain)
@@ -172,10 +182,10 @@ $$\frac{\delta GM}{GM} \approx \frac{c^2 \cdot \delta\Delta\dot{\tau}}{GM \cdot 
 
 | Method              | GM Uncertainty | Reference            |
 |:--------------------|:---------------|:---------------------|
-| GRACE               | 2 × 10⁻⁹       | Tapley et al. 2019   |
 | SLR                 | 5 × 10⁻⁹       | Ries et al. 2016     |
+| EGM2008 (combined)  | 2 × 10⁻⁹       | Pavlis et al. 2012   |
 | LLR                 | 1 × 10⁻⁸       | Williams et al. 2014 |
-| **This work (E14)** | **4 × 10⁻⁷**   | —                    |
+| **This work (E14)** | **4 × 10⁻⁷**   | (this work)          |
 
 Our precision is ~100× worse than dedicated geodesy missions, but achieved with **fundamentally different observables
 ** (clocks vs. ranging), providing independent validation of GM.
@@ -189,7 +199,7 @@ Our precision is ~100× worse than dedicated geodesy missions, but achieved with
 This experiment demonstrates that gravitational fields can be inferred from temporal observables alone. The recovered GM
 is consistent with IERS values to within measurement uncertainty, validating:
 
-1. The relativistic time dilation model (Schwarzschild metric)
+1. The 1PN weak-field clock equation with J2 oblateness correction
 2. The accuracy of IGS precise clock and ephemeris products
 3. The feasibility of "chronometric geodesy"
 
@@ -219,7 +229,9 @@ represents a **historically irreplaceable** record.
 We have derived the geocentric gravitational constant GM from satellite clock data with a precision of 4 × 10⁻⁷,
 demonstrating that gravitational fields can be inferred from temporal observables. Key findings:
 
-1. **GM = (3.986006 ± 0.002) × 10¹⁴ m³/s²** (E14 median, 2017-2018)
+1. **GM_median = 3.986006 × 10¹⁴ m³/s²** (E14, 2017-2018, N = 1,074,502 pairs). Median uncertainty
+   ~1.6 × 10⁸ m³/s² (relative 4 × 10⁻⁷). Per-pair standard deviation σ ≈ 3.76 × 10¹² m³/s², which is the
+   single-sample noise level rather than the median's uncertainty.
 2. Residual error is **white noise** with no systematic physics dependencies
 3. Precision is **limited by orbit determination**, not clock stability
 4. Cross-validation with E18 confirms the method at ~0.02% level
@@ -248,13 +260,18 @@ opportunity for fundamental physics research.
    121, 231101.
 5. Herrmann, S., et al. (2018). Test of the gravitational redshift with Galileo satellites in an eccentric orbit.
    *Physical Review Letters* 121, 231102.
+6. Bjerhammar, A. (1975). Discrete approaches to the solution of the boundary value problem in physical geodesy.
+   *Bulletin Géodésique* 49, 23-35.
+7. Vermeer, M. (1983). *Chronometric levelling*. Reports of the Finnish Geodetic Institute, 83:2.
+8. Ries, J. C., et al. (2016). The combined SLR-derived value of GM.
+9. Pavlis, N. K., et al. (2012). The development and evaluation of the Earth Gravitational Model 2008 (EGM2008).
+   *Journal of Geophysical Research: Solid Earth* 117, B04406.
+10. Williams, J. G., Turyshev, S. G., Boggs, D. H. (2014). Lunar laser ranging tests of the equivalence principle. *Classical and Quantum Gravity* 29(18), 184004.
 
 ---
 
 ## Appendix A: Data Availability
 
-- **Raw data**: IGS precise products (ftp://igs.org/)
-- **Processing code**: Available upon request
 - **Satellite**: Galileo E14 (NORAD 40128), E18 (NORAD 40129)
 
 ## Appendix B: Separation of G and M
@@ -273,5 +290,5 @@ The product GM is the true observable. Separation requires assuming one componen
 - Reference: 5.9722 × 10²⁴ kg (IERS 2010)
 - Error: 0.0003%
 
-These separations are **not independent measurements** of G or M—they are derived quantities that inherit the GM
+These separations are **not independent measurements** of G or M; they are derived quantities that inherit the GM
 precision.
