@@ -1,0 +1,370 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{authblk}
+\usepackage{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black,
+    pdftitle={Recovery of GM from Galileo Clock Data via Chronometric Inversion}
+}
+
+\sisetup{
+    output-exponent-marker=\text{e},
+    exponent-product=\times,
+    separate-uncertainty=true
+}
+
+\title{Recovery of the Geocentric Gravitational Constant from Galileo Satellite Clock Data via Chronometric Inversion}
+
+\author[1]{Marvin Hansen}
+\affil[1]{The Center for Dynamic Causality, \texttt{marvin.hansen@causalcenter.com}}
+
+
+\date{29 January 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+We derive the geocentric gravitational constant $GM$ directly from satellite atomic-clock measurements, without using any external mass or gravitational-constant input. The derivation inverts the first post-Newtonian clock equation along the orbit of a single satellite and recovers $GM$ from the differential of the proper-time rate between two epochs. Galileo satellites E14 and E18, placed in unintended eccentric orbits ($e \approx 0.162$) by a 2014 launch anomaly, traverse a radial range of about 8,500~km per revolution; this is the only operational GNSS configuration in which the inversion is well-posed. Across $1.07 \times 10^{6}$ epoch pairs from E14 over 2017--2018, we recover $GM_\text{med} = 3.986006 \times 10^{14}~\mathrm{m^3\,s^{-2}}$, with a median fractional deviation of $4 \times 10^{-7}$ from the IERS 2010 reference. Cross-validation with E18 ($1.07 \times 10^{6}$ pairs) reproduces the same per-pair noise floor of $\sigma \approx 3.7 \times 10^{12}~\mathrm{m^3\,s^{-2}}$, with a small satellite-specific bias of $+2 \times 10^{-4}$. We show that residual error is white in altitude, latitude, longitude, and radial velocity, and that the attainable precision is limited by orbit-determination uncertainty rather than clock stability. This is, to our knowledge, the first GM measurement obtained from a GNSS clock alone.
+\end{abstract}
+
+\noindent\textbf{Keywords:} gravitational constant; chronometric geodesy; Galileo; general relativity; GNSS; weak-field test
+
+\section{Introduction}
+
+The geocentric gravitational constant $GM = (3.986004418 \pm 0.000000008) \times 10^{14}~\mathrm{m^3\,s^{-2}}$ \citep{IERS2010} anchors satellite geodesy, time scales, and orbital dynamics. Its accepted value comes from satellite laser ranging, lunar laser ranging, and combined Earth gravity models. All three approaches share a common trait: they measure positions and velocities, then infer the potential. We invert that pipeline. Given the proper-time rate of a clock in orbit and the geometric state of the carrier, $GM$ falls out as a direct algebraic observable.
+
+The 1PN proper-time rate of an Earth-orbiting clock, relative to a non-rotating geocentric coordinate frame, satisfies
+\begin{equation}
+    \frac{d\tau}{dt} \;=\; 1 - \frac{GM}{c^2\,r} - \frac{v^2}{2c^2} + \mathcal{O}(c^{-4}),
+    \label{eq:clock}
+\end{equation}
+where $\tau$ is the satellite proper time, $t$ is geocentric coordinate time, $r$ is the geocentric radius, and $v$ is the inertial speed. Subtracting Eq.~\eqref{eq:clock} at two epochs $A$ and $B$ along the same orbit cancels the unit term and yields
+\begin{equation}
+    GM \;=\; \frac{c^2\,(\dot\tau_B - \dot\tau_A) + \tfrac{1}{2}(v_B^2 - v_A^2)}{(1/r_A) - (1/r_B)}.
+    \label{eq:gm-inversion}
+\end{equation}
+The numerator is dominated by clock observables; the denominator is dominated by orbit geometry. Both must be non-zero for the system to be invertible. That is the central physical constraint on the method.
+
+\subsection{The eccentric-orbit requirement}
+\label{sec:eccentric}
+
+Equation~\eqref{eq:gm-inversion} requires altitude variation. For coplanar circular orbits at the same radius, $\Delta(1/r) = 0$ and the signal vanishes outright. A cross-constellation pairing (GPS at \SI{20200}{\km} versus nominal Galileo MEO at \SI{23222}{\km}) gives a non-zero $\Delta(1/r) \approx 7 \times 10^{-10}~\mathrm{m^{-1}}$, but the two systems run on independently steered time scales whose synchronization residuals dominate the clock numerator. The cleanest configuration is the one used here: a single satellite whose orbital eccentricity spans a meaningful radial range with one onboard clock.
+
+Galileo E14 (GSAT-0201) and E18 (GSAT-0202), launched in August 2014, were left in eccentric orbits ($e \approx 0.162$) by a Fregat upper-stage anomaly. They sweep an altitude range of approximately 8,500~km each revolution (perigee $\approx$ \SI{17200}{\km}, apogee $\approx$ \SI{25900}{\km}). All other operational GNSS satellites carry quasi-circular orbits, and future constellation designs explicitly avoid such injection failures. The two anomalous Galileo satellites are therefore the only natural laboratory in which Eq.~\eqref{eq:gm-inversion} has a usable signal-to-noise ratio. After their end-of-life (estimated 2031--2039), the experiment in its current form will not be reproducible with any planned system.
+
+\subsection{Prior work}
+
+Eccentric Galileo orbits have already been used to test the gravitational redshift \citep{Delva2018, Herrmann2018}, refining the Pound--Rebka redshift bound by an order of magnitude. Those experiments fix $GM$ from external sources and measure deviations of $\dot\tau$. The present work runs the inversion in the opposite direction: $\dot\tau$ is the input, $GM$ is the output. The prerequisite of using clocks to read out the gravitational potential goes back at least to \citet{Bjerhammar1975} and \citet{Vermeer1983}, who proposed chronometric levelling. To our knowledge, Eq.~\eqref{eq:gm-inversion} has not previously been applied to GNSS data to recover $GM$ as a primary observable.
+
+\section{Method}
+
+\subsection{Data sources}
+
+We use the following standard products without modification, distributed by NASA's Crustal Dynamics Data Information System (CDDIS)\footnote{IGS MGEX final products at CDDIS: \url{https://www.earthdata.nasa.gov/data/catalog/cddis-gnss-igs-mgex-prod-1}} under the IGS Multi-GNSS Experiment (MGEX) \citep{CDDIS_MGEX, Noll2010}:
+\begin{itemize}
+    \item Satellite clock corrections at 30-second cadence from the IGS MGEX final clock combination (\texttt{.clk});
+    \item Precise satellite ephemerides at 15-minute cadence from the IGS MGEX final orbits (\texttt{.sp3});
+    \item Reference frame: IGS14 (ITRF2014-aligned) for the analysis window;
+    \item Satellites: Galileo E14 (PRN E14) and E18 (PRN E18);
+    \item Time span: full calendar years 2017 and 2018.
+\end{itemize}
+No external $GM$ value is used in the inversion. The reference $GM$ from IERS 2010 is used only for evaluation of the recovered estimate. The processed per-pair dataset, the GPS-week exclusion lists, and the analysis code used to produce the tables in this paper are openly available \citep{HansenData2026, HansenCode2026}.
+
+\subsection{Pre-processing}
+
+Ephemerides are interpolated to clock epochs using a sliding 10th-order Lagrange polynomial, which gives sub-millimetre interpolation noise across a 15-minute window. Each clock epoch yields a state $(t,\,r,\,v,\,\dot\tau)$; the proper-time rate $\dot\tau$ is computed as a finite difference of consecutive 30-second clock corrections. Pairs $(A,B)$ are formed at a fixed separation $\Delta t = 1800$~s (approximately half the orbital period at perigee), which maximizes $|\Delta(1/r)|$ while keeping clock-noise integration short.
+
+We exclude two known data-quality regimes:
+\begin{enumerate}
+    \item GPS Weeks 1930--1937 (Jan 1 to Feb 25, 2017), spanning the IGS08$\to$IGS14 frame transition. The transition introduced station-coordinate discontinuities at the centimetre level, which propagate into the orbit products. Including the window inflates the 2017 fractional GM error from $4 \times 10^{-7}$ to $3 \times 10^{-5}$.
+    \item GPS Week 1962 (centred on Aug 18, 2017), corresponding to a documented E14 clock anomaly visible in the IGS combined residuals.
+\end{enumerate}
+Per-pair outliers are then removed with a single-pass median-absolute-deviation (MAD) filter at $3\sigma$ on $GM$ itself.
+
+\subsection{Numerics}
+
+The numerator in Eq.~\eqref{eq:gm-inversion} is a difference of two nearly equal $\sim 10^{-10}$~s/s quantities, multiplied by $c^2 \sim 10^{17}$. Standard double precision loses 5--6 significant digits to cancellation. We compute the entire pipeline in double-double (Float106) arithmetic, which retains 32 decimal digits and pushes round-off below the orbit and clock noise floor. We verified that the dominant residual scales linearly with the IGS combined SISRE \citep{Galluzzo2021} and is independent of the working precision once Float106 is enabled.
+
+\subsection{Relativistic model}
+
+Equation~\eqref{eq:clock} is the Schwarzschild 1PN limit. We have separately tested two refinements: (i) the addition of the $J_2$ contribution to the Newtonian potential, which produces a latitude-correlated $\dot\tau$ signature and is the physically correct extension; and (ii) the inclusion of the Lense--Thirring frame-dragging term. The $J_2$ correction shifts the recovered $GM$ by $\Delta GM/GM \approx 10^{-8}$ and removes a residual latitude--error correlation of $r=0.16$ down to $r=0.003$ (Section~\ref{sec:errors}). The Lense--Thirring term is below $10^{-12}$ and is ignored. The numbers reported below use the spherical-Earth form of Eq.~\eqref{eq:gm-inversion} with the $J_2$ correction applied as an additive potential term in the numerator; the spherical-only result differs at the sixth significant figure of $GM$.
+
+\section{Results}
+
+\subsection{Primary recovery (E14)}
+
+Table~\ref{tab:e14-primary} summarizes the year-by-year recovery on E14.
+
+\begin{table}[h]
+    \centering
+    \caption{$GM$ recovered from E14, by year. The reference is IERS 2010 $GM = 3.986004418 \times 10^{14}~\mathrm{m^3\,s^{-2}}$.}
+    \label{tab:e14-primary}
+    \begin{tabular}{lrrrr}
+        \toprule
+        Year & Pairs & $GM_\text{med}$ ($10^{14}~\mathrm{m^3\,s^{-2}}$) & $|\delta GM/GM|_\text{med}$ & $|\delta GM/GM|_\text{mean}$ \\
+        \midrule
+        2017 & 517{,}813 & 3.986006 & $4 \times 10^{-7}$ & $1 \times 10^{-5}$ \\
+        2018 & 556{,}689 & 3.985982 & $6 \times 10^{-6}$ & $3 \times 10^{-5}$ \\
+        \midrule
+        Combined & 1{,}074{,}502 & 3.986006 & $4 \times 10^{-7}$ & $1.4 \times 10^{-5}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The median agrees with IERS 2010 at the level of $4 \times 10^{-7}$ in fractional terms. The mean error is roughly 35 times larger than the median error, reflecting non-Gaussian tails: the MAD filter removes symmetric outliers but leaves residual asymmetry that biases the mean. Throughout this work we use the median as the central estimator. Readers comparing to a Gaussian noise floor should use the per-pair standard deviation.
+
+\subsection{Cross-validation (E18)}
+
+E18 is in an orbit nearly identical to E14 in eccentricity but offset in argument of perigee, giving an independent draw of clock and orbit noise. Table~\ref{tab:e14-vs-e18} compares the two satellites.
+
+\begin{table}[h]
+    \centering
+    \caption{Cross-comparison of E14 and E18. Per-pair $\sigma$ is computed on the inlier population after MAD filtering.}
+    \label{tab:e14-vs-e18}
+    \begin{tabular}{lrr}
+        \toprule
+        Statistic & E14 & E18 \\
+        \midrule
+        Pairs & 1{,}074{,}502 & 1{,}070{,}984 \\
+        $|\delta GM/GM|_\text{med}$ & $4 \times 10^{-7}$ & $1.9 \times 10^{-4}$ \\
+        $|\delta GM/GM|_\text{mean}$ & $1.4 \times 10^{-5}$ & $3.1 \times 10^{-4}$ \\
+        Per-pair $\sigma$ ($\mathrm{m^3\,s^{-2}}$) & $3.76 \times 10^{12}$ & $3.64 \times 10^{12}$ \\
+        Skewness & $-0.01$ & $+0.07$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The two satellites share the same per-pair noise to within 3\%. They differ in central bias by about $2 \times 10^{-4}$. Because the noise is identical and the bias is not, the bias is satellite-specific. Most plausibly it reflects a long-term clock-calibration offset or an ephemeris quality difference between the two PRNs. The point is structural: the random-error budget of the method is set by the IGS data products, not by the satellite hardware, while the absolute accuracy is currently limited by per-satellite systematics that can be averaged out across the constellation.
+
+\subsection{Error structure}
+\label{sec:errors}
+
+If the inversion is correctly specified, the per-pair residual $\delta GM_i = GM_i - \langle GM \rangle$ should be uncorrelated with any orbit observable. We compute Pearson and Spearman correlations of $\delta GM_i$ against altitude, radial velocity, latitude, and longitude on the inlier population. Table~\ref{tab:correlations} reports the Pearson values; the Spearman values agree to within $0.01$.
+
+\begin{table}[h]
+    \centering
+    \caption{Pearson correlation of per-pair $GM$ residual against orbit observables, after $J_2$ correction and per-latitude variance normalization.}
+    \label{tab:correlations}
+    \begin{tabular}{lr}
+        \toprule
+        Observable & Pearson $r$ \\
+        \midrule
+        Altitude vs.\ residual & $+0.024$ \\
+        Radial velocity vs.\ residual & $-0.001$ \\
+        Latitude vs.\ residual & $-0.027$ \\
+        Longitude vs.\ residual & $-0.001$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+All four correlations are below $|r| = 0.03$. We separately observed a hemispheric variance asymmetry: the Southern hemisphere has roughly 30\% larger per-pair scatter than the Northern hemisphere. This is consistent with the known asymmetry of the IGS ground-station network. Computing per-latitude-bin standard deviations (10$^\circ$ bins) and dividing each residual by the $\sigma$ of its bin reduces the spurious latitude--error Pearson coefficient from $-0.178$ to $-0.015$, a 91\% reduction. The normalization is applied only to the diagnostic correlations and does not alter the central $GM$ estimate.
+
+\section{Error budget}
+
+\subsection{From clock noise to GM noise}
+
+The Galileo passive hydrogen maser (PHM) has a fractional frequency stability near $10^{-14}$ over the integration window of interest \citep{Droz2009}. The observed fractional GM noise is roughly $10^{-7}$ on the median, a gap of seven orders of magnitude. The gap is structural and recoverable.
+
+Linearizing Eq.~\eqref{eq:gm-inversion},
+\begin{equation}
+    \frac{\delta GM}{GM} \;\approx\; \frac{c^2\,\delta(\Delta\dot\tau)}{GM\,\Delta(1/r)}.
+\end{equation}
+For PHM stability $\delta\dot\tau \sim 10^{-14}$ over a 30-s clock interval, $c^2 \sim 9 \times 10^{16}$, $GM \sim 4 \times 10^{14}$, and $\Delta(1/r) \sim 2 \times 10^{-8}~\mathrm{m^{-1}}$, the clock-only floor is $\delta GM/GM \sim 10^{-9}$. The observed floor is two orders of magnitude worse, and the attribution is given in Table~\ref{tab:budget}.
+
+\begin{table}[h]
+    \centering
+    \caption{Empirical decomposition of the gap between PHM-only theoretical noise and observed GM noise.}
+    \label{tab:budget}
+    \begin{tabular}{lll}
+        \toprule
+        Factor & Multiplier & Origin \\
+        \midrule
+        Orbit determination & $\times 10$ & $\pm 2$~cm IGS combined position \\
+        IGS clock-product noise floor & $\times 10$ & SISRE $\sim 0.23$~m \\
+        Tropospheric delay residual & $\times 2$ & Ground-station mismodeling \\
+        Non-Gaussian tails & $\times 5$ & Clock jumps and gap re-entry \\
+        \midrule
+        Combined factor & $\sim 10^3$ & \\
+        Predicted floor & $\sim 10^{-6}$ -- $10^{-7}$ & \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The combined prediction matches the observed floor to within a factor of 2--3.
+
+\subsection{Systematics}
+
+Table~\ref{tab:syst} lists the dominant systematic sources and their estimated contribution to the recovered $GM$.
+
+\begin{table}[h]
+    \centering
+    \caption{Systematic error budget. ``Negligible'' is defined as $< 10^{-8}$ relative.}
+    \label{tab:syst}
+    \begin{tabular}{lll}
+        \toprule
+        Source & $\delta GM/GM$ & Note \\
+        \midrule
+        Clock stability (PHM) & $\sim 10^{-6}$ & Dominates after IGS processing chain \\
+        Orbit determination & $\sim 10^{-7}$ & IGS final orbits, $\pm 2$~cm \\
+        Relativistic 1PN truncation & $\sim 10^{-8}$ & Schwarzschild + velocity term \\
+        Ionospheric delay & $\sim 10^{-9}$ & Dual-frequency removed at IGS stage \\
+        Tropospheric delay & $\sim 10^{-10}$ & Ground-station mapping \\
+        $J_2$ oblateness & $\sim 10^{-8}$ & Latitude correlation falls to $r = 0.003$ \\
+        Frame dragging & $\sim 10^{-12}$ & Lense--Thirring, neglected \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The total systematic budget is dominated by the clock-product noise floor.
+
+\subsection{Comparison to dedicated geodesy}
+
+Table~\ref{tab:compare} places the present result alongside published $GM$ values.
+
+\begin{table}[h]
+    \centering
+    \caption{$GM$ uncertainty from independent measurement methods.}
+    \label{tab:compare}
+    \begin{tabular}{lll}
+        \toprule
+        Method & Fractional uncertainty & Source \\
+        \midrule
+        Satellite laser ranging & $5 \times 10^{-9}$ & \citet{Ries2016} \\
+        EGM2008 (combined) & $2 \times 10^{-9}$ & \citet{Pavlis2012} \\
+        Lunar laser ranging & $1 \times 10^{-8}$ & \citet{Williams2014} \\
+        This work (E14, median) & $4 \times 10^{-7}$ & --- \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The chronometric inversion is roughly two orders of magnitude less precise than dedicated geodesy. It nevertheless provides an independent observational pathway, with a different observable (clock rate) and a different error budget (clock noise dominates rather than tracking noise). That makes it useful as a cross-check rather than as a primary measurement.
+
+\section{Discussion}
+
+\subsection{What the result demonstrates}
+
+Three claims are supported by the analysis. First, $GM$ is recoverable from a single satellite clock, given an eccentric orbit and standard IGS products, at a precision of $4 \times 10^{-7}$. Second, the residual error is white in altitude, latitude, longitude, and radial velocity; no orbital observable carries unmodelled systematic structure at the level of the noise floor. Third, the noise floor is set by orbit determination, not by the clock; the PHM stability is two orders of magnitude in front of the data products, which means future improvements at the IGS processing layer will pass straight through to $GM$.
+
+\subsection{Separation of $G$ and $M$}
+
+The chronometric observable is $GM$, not $G$ and $M$ separately. Decomposition requires an external input. Adopting $M_\oplus = 5.9722 \times 10^{24}$~kg from IERS 2010 gives $G = 6.67428 \times 10^{-11}~\mathrm{m^3\,kg^{-1}\,s^{-2}}$, $4 \times 10^{-6}$ from the CODATA 2022 value $6.67430 \times 10^{-11}$. Adopting $G$ from CODATA gives the same fractional separation on $M$. These are not independent measurements of $G$ or $M$. They are derived quantities that inherit the chronometric $GM$ precision.
+
+\subsection{Limitations}
+
+Three limitations bound the present approach.
+
+The eccentric-orbit requirement is fundamental. The denominator $\Delta(1/r)$ in Eq.~\eqref{eq:gm-inversion} must be non-zero, and it must be substantially larger than its uncertainty. Operational GNSS constellations are circular by design. The two anomalous Galileo satellites are unique, with no replacement scheduled.
+
+The precision floor is currently set by orbit determination, not clock stability. The next IGS reprocessing campaign (repro4, IGS20) is expected to reduce the radial-position uncertainty by a factor of 2--3, which would translate into roughly $5 \times 10^{-8}$ on $GM$. Optical clocks ($10^{-18}$) and inter-satellite links would only matter beyond that point.
+
+Per-satellite biases at the $\sim 10^{-4}$ level (E18 vs.\ E14) limit the absolute accuracy of any single-satellite recovery, and they must be averaged across the available eccentric population to be removed.
+
+\subsection{Outlook}
+
+The Galileo E14/E18 dataset represents an irreplaceable archival record, the only single-clock GNSS measurement of $GM$ that the operational constellation is likely to produce. After end-of-life, the same inversion would require a dedicated mission with an eccentric orbit and a precision clock. Beyond that, the method generalizes to any planetary or solar-system body for which an in-orbit clock and an orbit determination of comparable quality are available; the same equation reads $GM_\text{Mars}$ from a Mars-orbiting clock and so on. That is the broader application surface for chronometric mass measurement.
+
+\section{Conclusions}
+
+We invert the 1PN clock equation along the orbit of a single eccentric Galileo satellite, and recover the geocentric gravitational constant from clock data alone. Across $1.07 \times 10^{6}$ epoch pairs from E14 over 2017--2018, the median recovered value is $GM_\text{med} = 3.986006 \times 10^{14}~\mathrm{m^3\,s^{-2}}$, $4 \times 10^{-7}$ in fractional terms from the IERS 2010 reference. Cross-validation with E18 reproduces the per-pair noise to 3\%. Residual error is white in the orbital observables, the precision floor is set by orbit determination rather than clock stability, and the result represents the first GNSS-based GM measurement.
+
+\section*{Acknowledgments}
+
+This work uses publicly available data products from the International GNSS Service (IGS) and the European Space Agency Galileo programme. The recovery method depends on the existence of two satellites in unintended eccentric orbits, an outcome of a launch anomaly that was, in retrospect, a useful one for fundamental physics.
+
+\section*{Statement on Responsible AI Usage}
+
+The Rust analysis pipeline that supports this paper was developed with the assistance of generally available AI coding agents, under human review at every step. AI tools were also used for proof-reading and editorial polishing of the manuscript text. The scientific design, the relativistic derivation, the data-quality decisions, the interpretation of the results, and final responsibility for the content rest with the corresponding author.
+
+\section*{Data and code availability}
+
+The analysis pipeline is implemented in Rust with double-double (Float106) arithmetic. The full source tree, including the exact configuration used to reproduce Tables~\ref{tab:e14-primary}--\ref{tab:correlations}, is published as open source on GitHub \citep{HansenCode2026}. The processed dataset, including the per-pair $GM$ time series and the GPS-week exclusion lists for the IGS08$\to$IGS14 reference-frame transition (Weeks 1930--1937) and the August 2017 E14 clock anomaly (Week 1962), is archived on Zenodo \citep{HansenData2026}. The IGS MGEX final clock and orbit products on which the analysis depends are distributed by NASA's Crustal Dynamics Data Information System (CDDIS) \citep{CDDIS_MGEX, Noll2010}.
+
+\appendix
+
+\section{Derivation of the inversion equation}
+\label{app:derivation}
+
+Writing Eq.~\eqref{eq:clock} at two orbit points $A$ and $B$ and subtracting,
+\begin{equation}
+    \dot\tau_B - \dot\tau_A \;=\; -\frac{GM}{c^2}\left(\frac{1}{r_B} - \frac{1}{r_A}\right) - \frac{1}{2c^2}(v_B^2 - v_A^2) + \mathcal{O}(c^{-4}).
+\end{equation}
+Solving for $GM$,
+\begin{equation}
+    GM \;=\; \frac{c^2\,(\dot\tau_B - \dot\tau_A) + \tfrac{1}{2}(v_B^2 - v_A^2)}{(1/r_A) - (1/r_B)}.
+\end{equation}
+The right-hand side is dimensionally $\mathrm{m^3\,s^{-2}}$ and contains no external mass or gravitational-constant input. Adding the $J_2$ correction replaces the Newtonian $-GM/r$ potential by
+\begin{equation}
+    U(r,\phi) = -\frac{GM}{r}\left[1 - J_2 \left(\frac{R_\oplus}{r}\right)^2 P_2(\sin\phi)\right],
+\end{equation}
+which contributes an additional latitude-dependent term to the numerator; it shifts $GM$ by $\sim 10^{-8}$ relative.
+
+\section{Verification of the eccentric-orbit requirement}
+\label{app:eccentric}
+
+For a circular orbit at radius $r_0$, $r_A = r_B = r_0$ at all epoch pairs. Then $\Delta(1/r) = 0$ and Eq.~\eqref{eq:gm-inversion} is undefined. Cross-pairing two satellites at different but constant radii $r_1, r_2$ gives a finite $\Delta(1/r) = 1/r_1 - 1/r_2$. For the GPS--Galileo MEO case, $\Delta(1/r) \approx 7 \times 10^{-10}~\mathrm{m^{-1}}$; for E14 perigee--apogee, $\Delta(1/r) \approx 2 \times 10^{-8}~\mathrm{m^{-1}}$, a factor of 30 larger. The cross-constellation case is, in principle, viable; in practice the clock numerator is contaminated by the system--system time offset, which has a per-pair noise that exceeds the GM signal by an order of magnitude. The single-satellite eccentric configuration is therefore the only one currently available with a usable signal-to-noise ratio.
+
+\begin{thebibliography}{99}
+
+\bibitem[CDDIS(2026)]{CDDIS_MGEX}
+NASA EOSDIS Crustal Dynamics Data Information System (CDDIS), ``GNSS IGS MGEX Final Products,'' NASA Earth Observing System Data and Information System, Greenbelt, MD, 2026. \url{https://www.earthdata.nasa.gov/data/catalog/cddis-gnss-igs-mgex-prod-1}.
+
+\bibitem[Noll(2010)]{Noll2010}
+C.~E.~Noll, ``The Crustal Dynamics Data Information System: A Resource to Support Scientific Analysis Using Space Geodesy,'' \emph{Advances in Space Research}, vol.~45(12), pp.~1421--1440, 2010. doi:\href{https://doi.org/10.1016/j.asr.2010.01.018}{10.1016/j.asr.2010.01.018}.
+
+\bibitem[Hansen(2026a)]{HansenData2026}
+M.~Hansen, ``Canonical dataset for chronometric analysis,'' [Data set], Zenodo, 2026. doi:\href{https://doi.org/10.5281/zenodo.20020236}{10.5281/zenodo.20020236}.
+
+\bibitem[Hansen(2026b)]{HansenCode2026}
+M.~Hansen, ``Chronodynamics: source code for chronometric experiments,'' [Source code], GitHub, 2026. \url{https://github.com/causalcenter/chronodynamics}.
+
+\bibitem[IERS Conventions(2010)]{IERS2010}
+G.~Petit and B.~Luzum (eds.), \emph{IERS Conventions (2010)}, IERS Technical Note 36, Bundesamt f\"ur Kartographie und Geod\"asie, Frankfurt am Main, 2010.
+
+\bibitem[Delva et al.(2018)]{Delva2018}
+P.~Delva et al., ``Gravitational Redshift Test Using Eccentric Galileo Satellites,'' \emph{Phys.\ Rev.\ Lett.}, vol.~121, 231101, 2018.
+
+\bibitem[Herrmann et al.(2018)]{Herrmann2018}
+S.~Herrmann et al., ``Test of the Gravitational Redshift with Galileo Satellites in an Eccentric Orbit,'' \emph{Phys.\ Rev.\ Lett.}, vol.~121, 231102, 2018.
+
+\bibitem[Bjerhammar(1975)]{Bjerhammar1975}
+A.~Bjerhammar, ``Discrete Approaches to the Solution of the Boundary Value Problem in Physical Geodesy,'' \emph{Bulletin G\'eod\'esique}, vol.~49, pp.~23--35, 1975.
+
+\bibitem[Vermeer(1983)]{Vermeer1983}
+M.~Vermeer, \emph{Chronometric Levelling}, Reports of the Finnish Geodetic Institute 83:2, 1983.
+
+\bibitem[Galluzzo et al.(2021)]{Galluzzo2021}
+G.~Galluzzo et al., ``Galileo Broadcast Ephemeris and Clock Errors Analysis: 1 January 2017 to 31 July 2020,'' \emph{Sensors}, vol.~20(23), 6832, 2021.
+
+\bibitem[Droz et al.(2009)]{Droz2009}
+F.~Droz et al., ``Space Passive Hydrogen Maser: Performances and Lifetime Data,'' in \emph{Proc.\ Joint IEEE Frequency Control Symposium and EFTF}, 2009.
+
+\bibitem[Ries(2016)]{Ries2016}
+J.~C.~Ries, ``The Combined SLR-derived Value of GM,'' Center for Space Research, University of Texas at Austin, 2016.
+
+\bibitem[Pavlis et al.(2012)]{Pavlis2012}
+N.~K.~Pavlis et al., ``The Development and Evaluation of the Earth Gravitational Model 2008 (EGM2008),'' \emph{J.\ Geophys.\ Res.\ Solid Earth}, vol.~117, B04406, 2012.
+
+\bibitem[Williams et al.(2014)]{Williams2014}
+J.~G.~Williams, S.~G.~Turyshev, and D.~H.~Boggs, ``Lunar Laser Ranging Tests of the Equivalence Principle,'' \emph{Class.\ Quantum Grav.}, vol.~29, 184004, 2014.
+
+\end{thebibliography}
+
+\end{document}
